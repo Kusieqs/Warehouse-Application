@@ -10,13 +10,13 @@ namespace Warehouse_Application
 
 			if (!File.Exists(systemOperation))
 			{
-				string jsonWriter = JsonConvert.SerializeObject("");
+				string jsonWriter = string.Empty;
 				File.WriteAllText(systemOperation, jsonWriter);
 			}
 			else
 			{
 				string jsonReader = File.ReadAllText(systemOperation);
-				products = JsonConvert.DeserializeObject<List<Product>>(systemOperation);
+				products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
 			}
 		}
 		public static void AddingProduct(ref List<Product> products)
@@ -43,14 +43,13 @@ namespace Warehouse_Application
 				Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345 )");
 				id = Console.ReadLine().Trim();
 
-				if(correctData && correctQuantity)
+				if(correctPrice && correctQuantity)
 				{
 					try
 					{
 						Product p1 = new Product(name, id, price, quantity, date);
 						correctData = true;
-						products.Add(p1);
-
+						products.Add(p1);/// blad przy dodawniu
 					}
 					catch(FormatException e)
 					{
@@ -63,38 +62,9 @@ namespace Warehouse_Application
                     }
 				}
 				else
-				{
-					Console.WriteLine("Information about product are not correct\nClick enter to continue");
-					Console.ReadKey();
-				}
+					Console.WriteLine("Test");
 			} while (!correctData);
 
-		}
-		public static void RaportOfProducts(List<Product> products)
-		{
-			bool endOfRaport = false;
-			do
-			{
-				Console.Clear();
-				Console.WriteLine("RAPORTS:");
-				Console.WriteLine("1.All Products\n2.Searching by infomration\n3.Sort by values\n4.Exit");
-				string answer = Console.ReadLine();
-				switch (answer)
-				{
-					case "1":
-						break;
-					case "2":
-						break;
-					case "3":
-						break;
-					case "4":
-						endOfRaport = true;
-						break;
-					default:
-						break;
-
-				}
-			} while (!endOfRaport);
 		}
 	}
 }

@@ -12,7 +12,7 @@ public class Product
 
     public Product(string name, string id, double price, int quantity, DateTime date)
     {
-        if (Regex.IsMatch((id), @"^[A-Za-z]{4}\d{5}&") && price > 0 && quantity >= 0 && name.Length > 0)
+        if (Regex.IsMatch((id), @"^[A-Za-z]{4}\d{5}$") && price > 0 && quantity >= 0 && name.Length > 0)
         {
             this.id = id.Trim();
             this.price = price;
@@ -43,7 +43,7 @@ public class Product
         }
         set
         {
-            if (Regex.IsMatch((value), @"^[A-Za-z]{4}\d{5}&"))
+            if (Regex.IsMatch((value), @"^[A-Za-z]{4}\d{5}$"))
             {
                 id = value.Trim();
             }
