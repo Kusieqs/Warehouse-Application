@@ -1,4 +1,5 @@
 ﻿using Warehouse_Application;
+using System.Text.RegularExpressions;
 internal class Program
 {
     private static void Main(string[] args)
@@ -29,7 +30,7 @@ internal class Program
                     break;
 
                 case 2:
-                    Utils.RaportOfProducts(listOfProducts);
+                    ReportMethods.RaportOfProducts(listOfProducts);
                     break;
 
                 default:
