@@ -17,7 +17,7 @@ internal class Program
             do
             {
                 Console.Clear();
-                Console.WriteLine("1. Add product\n2. Products report");
+                Console.WriteLine("1. Add product\n2. Removing product\n3.Reports");
                 Console.Write("Number: ");
                 correctNumber = int.TryParse(Console.ReadLine(), out number);
             } while (!correctNumber);
@@ -25,15 +25,16 @@ internal class Program
             switch (number)
             {
                 case 1:
-                    Utils.AddingProduct(ref listOfProducts);
+                    Utils.AddingProduct(ref listOfProducts, systemOperation);
                     Console.Clear();
                     break;
 
                 case 2:
-                    ReportMethods.RaportOfProducts(listOfProducts);
+                    Utils.RemovingRecord(ref listOfProducts, systemOperation);
                     break;
 
-                default:
+                case 3:
+                    ReportMethods.ReportOfProducts(listOfProducts,systemOperation);
                     break;
             }
 
