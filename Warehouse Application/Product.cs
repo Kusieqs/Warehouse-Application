@@ -10,6 +10,14 @@ public class Product
     private int quantity;
     public DateTime date { get; set; }
 
+    public Product()
+    {
+        name = "";
+        id = "";
+        price = 0;
+        quantity = 0;
+        date = DateTime.Now;
+    }
     public Product(string name, string id, double price, int quantity, DateTime date)
     {
         if (Regex.IsMatch((id), @"^[A-Za-z]{4}\d{5}$") && price > 0 && quantity >= 0 && name.Length > 0)

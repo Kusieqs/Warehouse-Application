@@ -4,20 +4,20 @@ namespace Warehouse_Application
 {
 	public static class ReportMethods
 	{
-        public static void RaportOfProducts(List<Product> products)
+        public static void ReportOfProducts(List<Product> products,string systemOp)
         {
             bool endOfRaport = false;
             do
             {
                 Console.Clear();
-                Console.WriteLine("RAPORTS:");
+                Console.WriteLine("REPORTS:");
                 Console.WriteLine("1.All Products\n2.Searching by id\n3.Sort by values\n4.Exit");
                 string answer = Console.ReadLine();
                 Console.Clear();
                 switch (answer)
                 {
                     case "1":
-                        AllProductRaport(products);
+                        AllProductReport(ref products,systemOp);
                         break;
                     case "2":
                         SearchingByInformation(products);
@@ -32,22 +32,50 @@ namespace Warehouse_Application
                         break;
 
                 }
-                Console.Clear();
             } while (!endOfRaport);
         }
-        private static void AllProductRaport(List<Product> products)
+        private static void AllProductReport(ref List<Product> products,string systemOp)
         {
-            Console.WriteLine("REPORTS");
-            Console.WriteLine("- - - - - - - - -");
-            foreach (var product in products)
+            bool endOfReport = false;
+            do
             {
-                Console.WriteLine($"Name: {product.Name}");
-                Console.WriteLine($"Price: {product.Price}");
-                Console.WriteLine($"Quantity: {product.Quantity}");
-                Console.WriteLine($"Id: {product.Id}");
-                Console.WriteLine($"Date: {product.date}");
-                Console.WriteLine("- - - - - - - - - - - -");
-            }
+                string report = "";
+                Console.WriteLine("REPORTS");
+                Console.WriteLine("- - - - - - - - -");
+                foreach (var product in products)
+                {
+                    report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n - - - - - - - - \n";
+                    Console.WriteLine($"Name: {product.Name}");
+                    Console.WriteLine($"Price: {product.Price}");
+                    Console.WriteLine($"Quantity: {product.Quantity}");
+                    Console.WriteLine($"Id: {product.Id}");
+                    Console.WriteLine($"Date: {product.date}");
+                    Console.WriteLine("- - - - - - - - - - - -");
+                }
+                Console.WriteLine("\n\n");
+                Console.WriteLine("1.Record to txt file\n2.Remove product\n3.Exit");
+
+                Console.Write($"Number: ");
+                string answer = Console.ReadLine();
+
+                switch(answer)
+                {
+                    case "1":
+                        Utils.RecordingTxtFile(systemOp, report);
+                        break;
+                    case "2":
+                        Utils.RemovingRecord(ref products,systemOp);
+                        break;
+                    case "3":
+                        endOfReport = true;
+                        break;
+                    default:
+                        break;
+
+
+                }
+            } while (!endOfReport);
+
         }
         private static void SearchingByInformation(List<Product> products)
         {
