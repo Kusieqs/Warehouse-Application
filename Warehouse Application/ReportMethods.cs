@@ -128,8 +128,21 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.Write("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Show Raport\n5.Exit\n\nNumber: ");
                     sortingBy = Console.ReadLine();
-                    if (sortingBy == "Price" || sortingBy == "Quantity" || sortingBy == "Date")
-                        attempt = true;
+                    switch(sortingBy)
+                    {
+                        case "1": sortingBy = "Price";
+                            attempt = true;
+                            break;
+                        case "2": sortingBy = "Quantity";
+                            attempt = true;
+                            break;
+                        case "3": sortingBy = "Date";
+                            attempt = true;
+                            break;
+                        default:
+                            break;
+                    }
+
                 } while (!attempt);
                 attempt = false;
                 do
@@ -160,7 +173,6 @@ namespace Warehouse_Application
                                     if (daysInMonth >= day)
                                     {
                                         dateSorting = new DateTime(year, month, day);
-                                        attempt = true;
                                     }
                                 }
                             }
@@ -168,6 +180,7 @@ namespace Warehouse_Application
                     }
                     else
                     {
+                        Console.Clear();
                         Console.Write("Value: ");
                         attempt = double.TryParse(Console.ReadLine(), out value);
                     }
@@ -184,8 +197,12 @@ namespace Warehouse_Application
                         if (operatorSort == operators[i])
                             attempt = true;
                     }
+
                 } while (!attempt);
+
                 attempt = false;
+
+                List<Product> products1 = products.Where(x => x.Price > 9).ToList();
 
                 //// here to continue; ()
 
@@ -211,30 +228,21 @@ namespace Warehouse_Application
                     break;
             }
         }
-        private static void EngingeSorting(string report,string sortBy)
-        {
-            bool endOfEngineSorting = false;
-            do
-            {
-                Console.Clear();
-                Console.WriteLine($"Sorting by: {sortBy}");
-                Console.Write("choose one of this operators { == , != , > , < , >= , <= }: ");
-                string answer = Console.ReadLine();
-
-                Func<Product, bool> whichOperator = null;
-                switch(answer)
-                {
-                    case "==":
-                        whichOperator = x => GetValue(x, sortBy) == Get
-                        break;
-                }
-            }while(!endOfEngineSorting)
-        }
         private static object GetValue(Product product, string propertyName)
         {
-
+            switch(propertyName)
+            {
+                case "Quantity":
+                    return product.Quantity;
+                case "Date":
+                    return product.date;
+                case "Price":
+                    return product.Price;
+                default:
+                    break;
+            }
+            return 0;
         }
-        
     }
 }
 
