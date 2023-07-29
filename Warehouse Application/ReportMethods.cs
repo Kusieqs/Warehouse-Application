@@ -1,29 +1,32 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.Reflection;
 namespace Warehouse_Application
 {
-	public static class ReportMethods
-	{
-        public static void ReportOfProducts(List<Product> products,string systemOp)
+    public static class ReportMethods
+    {
+        public static void ReportOfProducts(List<Product> products, string systemOp)
         {
             bool endOfRaport = false;
             do
             {
                 Console.Clear();
                 Console.WriteLine("REPORTS:");
-                Console.WriteLine("1.All Products\n2.Searching by id\n3.Sort by values\n4.Exit");
+                Console.WriteLine("1.All Products\n2.Search by id\n3.Sort by values\n4.Exit");
                 string answer = Console.ReadLine();
                 Console.Clear();
                 switch (answer)
                 {
                     case "1":
-                        AllProductReport(ref products,systemOp);
+                        AllProductReport(ref products, systemOp);
                         break;
                     case "2":
-                        SearchingByInformation(products);
+                        SearchingById(products, systemOp);
                         break;
                     case "3":
-                        SortingByValue(products);
+                        SortingByValue(products, systemOp);
                         break;
                     case "4":
                         endOfRaport = true;
@@ -34,7 +37,7 @@ namespace Warehouse_Application
                 }
             } while (!endOfRaport);
         }
-        private static void AllProductReport(ref List<Product> products,string systemOp)
+        private static void AllProductReport(ref List<Product> products, string systemOp)
         {
             bool endOfReport = false;
             do
@@ -53,31 +56,11 @@ namespace Warehouse_Application
                     Console.WriteLine("- - - - - - - - - - - -");
                 }
                 Console.WriteLine("\n\n");
-                Console.WriteLine("1.Record to txt file\n2.Remove product\n3.Exit");
-
-                Console.Write($"Number: ");
-                string answer = Console.ReadLine();
-
-                switch(answer)
-                {
-                    case "1":
-                        Utils.RecordingTxtFile(systemOp, report);
-                        break;
-                    case "2":
-                        Utils.RemovingRecord(ref products,systemOp);
-                        break;
-                    case "3":
-                        endOfReport = true;
-                        break;
-                    default:
-                        break;
-
-
-                }
+                ReportMenu(systemOp, report, ref endOfReport);
             } while (!endOfReport);
 
         }
-        private static void SearchingByInformation(List<Product> products)
+        private static void SearchingById(List<Product> products, string systemOp)
         {
 
             bool endSearching = false;
@@ -89,11 +72,13 @@ namespace Warehouse_Application
                 if (Regex.IsMatch((idSearching), @"^[A-Za-z]{4}\d{5}&"))
                 {
                     copyList = copyList.Where(x => x.Id == idSearching).ToList();
-                    if(copyList.Count == 0)
+                    if (copyList.Count == 0)
                     {
+                        string report = "";
                         Console.WriteLine("Product\n");
                         foreach (var product in copyList)
                         {
+                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n - - - - - - - - \n";
                             Console.WriteLine("Name: " + product.Name);
                             Console.WriteLine("Price: " + product.Price);
                             Console.WriteLine("Quantity: " + product.Quantity);
@@ -103,13 +88,16 @@ namespace Warehouse_Application
                             Console.ReadKey();
                             endSearching = true;
                         }
+                        Console.WriteLine("\n\n");
+                        ReportMenu(systemOp, report, ref endSearching);
+
                     }
                     else
                     {
                         Console.WriteLine("Id is not in the database\nClick enter to continue or 0 to exit");
                         string exitOrNot = Console.ReadLine();
                         if (exitOrNot == "0")
-                            endSearching = true;
+                            endSearching = false;
                     }
                 }
                 else
@@ -117,37 +105,229 @@ namespace Warehouse_Application
                     Console.WriteLine("Wrong id (4 Letters and 5 numbers, example: Abcd12345)\nClick enter to continue or 0 to exit");
                     string exitOrNot = Console.ReadLine();
                     if (exitOrNot == "0")
-                        endSearching = true;
+                        endSearching = false;
                 }
-                
+
             } while (!endSearching);
         }
-        private static void SortingByValue(List<Product> products)
+        private static void SortingByValue(List<Product> products, string systemOp)
         {
-            bool endOfSort = false;
+            List<Product> copyList = new List<Product>();
+            List<Product> sortList = new List<Product>();
+            bool endOfSort = false, attempt = false;
+            object test = null;
+            string property = null;
+            string report, sortingBy, operatorSort;
+            DateTime dateSorting;
+            string value = "";
+            int year, month, day;
+            bool yearBool = false, monthBool = false, dayBool = false;
             do
             {
-                List<Product> copyList = products.ToList();
-                Console.Clear();
-                Console.WriteLine("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Show Raport");
-                string answer = Console.ReadLine();
-                Console.Clear();
-                switch (answer)
+                do
                 {
-                    case "1":
-                        break;
-                    case "2":
-                        break;
-                    case "3":
-                        break;
-                    case "4":
-                        endOfSort = true;
-                        break;
-                    default:
-                        break;
+                    Console.Clear();
+                    Console.Write("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Show Raport\n5.Exit\n\nNumber: ");
+                    sortingBy = Console.ReadLine();
+                    switch (sortingBy)
+                    {
+                        case "1": sortingBy = "Price";
+                            attempt = true;
+                            break;
+                        case "2": sortingBy = "Quantity";
+                            attempt = true;
+                            break;
+                        case "3": sortingBy = "Date";
+                            attempt = true;
+                            break;
+                        default:
+                            break;
+                    }
+
+                } while (!attempt);
+                attempt = false;
+                do
+                {
+                    Console.Clear();
+                    if (sortingBy == "Date")
+                    {
+                        do
+                        {
+                            Console.Clear();
+                            Console.Write("Year: ");
+                            yearBool = int.TryParse(Console.ReadLine(), out year);
+                            Console.Write("Month: ");
+                            monthBool = int.TryParse(Console.ReadLine(), out month);
+                            Console.Write("Day: ");
+                            dayBool = int.TryParse(Console.ReadLine(), out day);
+                            if (yearBool && monthBool && dayBool)
+                            {
+                                if ((year < 1 || month < 1 || month > 12 || day < 1))
+                                {
+                                    int daysInMonth = DateTime.DaysInMonth(year, month);
+                                    Console.WriteLine("Wrong Date\nClick enter to continue");
+                                    Console.ReadKey();
+                                }
+                                else
+                                {
+                                    int daysInMonth = DateTime.DaysInMonth(year, month);
+                                    if (daysInMonth >= day)
+                                    {
+                                        dateSorting = new DateTime(year,month,day);
+                                        value = dateSorting.ToString();
+                                        attempt = true;
+                                    }
+                                }
+                            }
+                        } while (!attempt);
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.Write("Value: ");
+                        attempt = double.TryParse(Console.ReadLine(), out double x);
+                        value = x.ToString();
+                        
+                    }
+                } while (!attempt);
+                attempt = false;
+                do
+                {
+                    Console.Clear();
+                    Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= ) x [operator] {value}: ");
+                    operatorSort = Console.ReadLine();
+                    string[] operators = new string[] { "=", "!=", ">", "<", ">=", "<=" };
+                    for (int i = 0; i < operators.Length; i++)
+                    {
+                        if (operatorSort == operators[i])
+                            attempt = true;
+                    }
+
+                } while (!attempt);
+
+                attempt = false;
+
+                PropertyInfo property1 = typeof(Product).GetProperty(sortingBy);
+
+                if (property1 != null)
+                {
+                    Func<Product, bool> filter = CreateFilter(property1, operatorSort, value);
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("1.Condition to sorted list\n2.Condition to main list");
+                        string answer = Console.ReadLine();
+                        switch (answer)
+                        {
+                            case "1":
+                                attempt = true;
+                                if (!copyList.Any())
+                                {
+                                    sortList = products.Where(filter).ToList();
+                                }
+                                else
+                                {
+                                    sortList = sortList.Where(filter).ToList();
+                                }
+                                sortList = sortList.Distinct().ToList();
+                                break;
+                            case "2":
+                                copyList = products.Where(filter).ToList();
+                                sortList = sortList.Concat(copyList).ToList();
+                                attempt = true;
+                                break;
+                            default:
+                                break;
+                        }
+
+                    } while (!attempt);
+                    attempt = false;
                 }
-                endOfSort = true;
-            } while (!endOfSort); /// UNION etc. 
+                bool endOfReport = false;
+
+                do
+                {
+                    string sortedListString = "";
+                    Console.Clear();
+                    foreach (var product in sortList)
+                    {
+                        sortedListString += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n- - - - - - - - - - -\n";
+                        Console.WriteLine($"Name: {product.Name}");
+                        Console.WriteLine($"Price: {product.Price}");
+                        Console.WriteLine($"Quantity: {product.Quantity}");
+                        Console.WriteLine($"Id: {product.Id}");
+                        Console.WriteLine($"Date: {product.date}");
+                        Console.WriteLine("- - - - - - - - - - - -");
+                    }
+                    Console.WriteLine("1.Report to txt\n2.Antoher term condition\n3.Exit");
+                    string answer = Console.ReadLine();
+                    switch(answer)
+                    {
+                        case "1":
+                            ReportMenu(systemOp, sortedListString, ref endOfReport);
+                            endOfSort = true;
+                            break;
+                        case "2":
+                            endOfReport = true;
+                            break;
+                        case "3":
+                            endOfReport = true;
+                            endOfSort = true;
+                            break;
+                        default:
+                            break;
+                    }
+                } while (!endOfReport);
+
+
+            } while (!endOfSort); 
+        }
+        private static void ReportMenu(string systemOp, string report, ref bool endOfReport)
+        {
+            Console.WriteLine("1.Record to txt file\n2.Exit\n");
+
+            Console.Write($"Number: ");
+            string answer = Console.ReadLine();
+
+            switch (answer)
+            {
+                case "1":
+                    Utils.RecordingTxtFile(systemOp, report);
+                    break;
+                case "2":
+                    endOfReport = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        private static Func<Product, bool> CreateFilter(PropertyInfo property, string filter, string value)
+        {
+            var parameter = Expression.Parameter(typeof(Product), "x");
+            var propertyAccess = Expression.Property(parameter, property);
+            var convertedFilterValue = Expression.Constant(Convert.ChangeType(value, property.PropertyType));
+            var comparison = GetComparisonExpression(propertyAccess,filter, convertedFilterValue);
+            return Expression.Lambda<Func<Product, bool>>(comparison, parameter).Compile();
+        }
+        private static Expression GetComparisonExpression(Expression left, string filter, Expression right)
+        {
+            switch(filter)
+            {
+                case ">":
+                    return Expression.GreaterThan(left, right);
+                case "<":
+                    return Expression.LessThan(left, right);
+                case "=":
+                    return Expression.Equal(left, right);
+                case "!=":
+                    return Expression.NotEqual(left, right);
+                case "<=":
+                    return Expression.LessThanOrEqual(left, right);
+                case ">=":
+                    return Expression.GreaterThanOrEqual(left, right);
+                default:
+                    throw new FormatException("Critical Error");
+            }
         }
     }
 }
