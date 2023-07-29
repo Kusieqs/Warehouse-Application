@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using System.Reflection;
 namespace Warehouse_Application
 {
     public static class ReportMethods
@@ -118,7 +119,7 @@ namespace Warehouse_Application
             string property = null;
             string report, sortingBy, operatorSort;
             DateTime dateSorting;
-            double value = 0;
+            string value = "";
             int year, month, day;
             bool yearBool = false, monthBool = false, dayBool = false;
             do
@@ -128,7 +129,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.Write("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Show Raport\n5.Exit\n\nNumber: ");
                     sortingBy = Console.ReadLine();
-                    switch(sortingBy)
+                    switch (sortingBy)
                     {
                         case "1": sortingBy = "Price";
                             attempt = true;
@@ -148,7 +149,7 @@ namespace Warehouse_Application
                 do
                 {
                     Console.Clear();
-                    if(sortingBy == "Date")
+                    if (sortingBy == "Date")
                     {
                         do
                         {
@@ -161,7 +162,7 @@ namespace Warehouse_Application
                             dayBool = int.TryParse(Console.ReadLine(), out day);
                             if (yearBool && monthBool && dayBool)
                             {
-                                if((year < 1 || month < 1 || month > 12 || day < 1))
+                                if ((year < 1 || month < 1 || month > 12 || day < 1))
                                 {
                                     int daysInMonth = DateTime.DaysInMonth(year, month);
                                     Console.WriteLine("Wrong Date\nClick enter to continue");
@@ -172,7 +173,9 @@ namespace Warehouse_Application
                                     int daysInMonth = DateTime.DaysInMonth(year, month);
                                     if (daysInMonth >= day)
                                     {
-                                        dateSorting = new DateTime(year, month, day);
+                                        dateSorting = new DateTime(year,month,day);
+                                        value = dateSorting.ToString();
+                                        attempt = true;
                                     }
                                 }
                             }
@@ -182,16 +185,18 @@ namespace Warehouse_Application
                     {
                         Console.Clear();
                         Console.Write("Value: ");
-                        attempt = double.TryParse(Console.ReadLine(), out value);
+                        attempt = double.TryParse(Console.ReadLine(), out double x);
+                        value = x.ToString();
+                        
                     }
                 } while (!attempt);
                 attempt = false;
                 do
                 {
                     Console.Clear();
-                    Console.Write($"Choose one of this operators ({value} == , != , > , < , >= , <= ): ");
+                    Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= ) x [operator] {value}: ");
                     operatorSort = Console.ReadLine();
-                    string[] operators = new string[] { "==", "!=", ">", "<", ">=", "<=" };
+                    string[] operators = new string[] { "=", "!=", ">", "<", ">=", "<=" };
                     for (int i = 0; i < operators.Length; i++)
                     {
                         if (operatorSort == operators[i])
@@ -202,12 +207,80 @@ namespace Warehouse_Application
 
                 attempt = false;
 
-                List<Product> products1 = products.Where(x => x.Price > 9).ToList();
+                PropertyInfo property1 = typeof(Product).GetProperty(sortingBy);
 
-                //// here to continue; ()
+                if (property1 != null)
+                {
+                    Func<Product, bool> filter = CreateFilter(property1, operatorSort, value);
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("1.Condition to sorted list\n2.Condition to main list");
+                        string answer = Console.ReadLine();
+                        switch (answer)
+                        {
+                            case "1":
+                                attempt = true;
+                                if (!copyList.Any())
+                                {
+                                    sortList = products.Where(filter).ToList();
+                                }
+                                else
+                                {
+                                    sortList = sortList.Where(filter).ToList();
+                                }
+                                sortList = sortList.Distinct().ToList();
+                                break;
+                            case "2":
+                                copyList = products.Where(filter).ToList();
+                                sortList = sortList.Concat(copyList).ToList();
+                                attempt = true;
+                                break;
+                            default:
+                                break;
+                        }
 
-            } while (!endOfSort); /// UNION etc.
-            /// show
+                    } while (!attempt);
+                    attempt = false;
+                }
+                bool endOfReport = false;
+
+                do
+                {
+                    string sortedListString = "";
+                    Console.Clear();
+                    foreach (var product in sortList)
+                    {
+                        sortedListString += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n- - - - - - - - - - -\n";
+                        Console.WriteLine($"Name: {product.Name}");
+                        Console.WriteLine($"Price: {product.Price}");
+                        Console.WriteLine($"Quantity: {product.Quantity}");
+                        Console.WriteLine($"Id: {product.Id}");
+                        Console.WriteLine($"Date: {product.date}");
+                        Console.WriteLine("- - - - - - - - - - - -");
+                    }
+                    Console.WriteLine("1.Report to txt\n2.Antoher term condition\n3.Exit");
+                    string answer = Console.ReadLine();
+                    switch(answer)
+                    {
+                        case "1":
+                            ReportMenu(systemOp, sortedListString, ref endOfReport);
+                            endOfSort = true;
+                            break;
+                        case "2":
+                            endOfReport = true;
+                            break;
+                        case "3":
+                            endOfReport = true;
+                            endOfSort = true;
+                            break;
+                        default:
+                            break;
+                    }
+                } while (!endOfReport);
+
+
+            } while (!endOfSort); 
         }
         private static void ReportMenu(string systemOp, string report, ref bool endOfReport)
         {
@@ -228,20 +301,33 @@ namespace Warehouse_Application
                     break;
             }
         }
-        private static object GetValue(Product product, string propertyName)
+        private static Func<Product, bool> CreateFilter(PropertyInfo property, string filter, string value)
         {
-            switch(propertyName)
+            var parameter = Expression.Parameter(typeof(Product), "x");
+            var propertyAccess = Expression.Property(parameter, property);
+            var convertedFilterValue = Expression.Constant(Convert.ChangeType(value, property.PropertyType));
+            var comparison = GetComparisonExpression(propertyAccess,filter, convertedFilterValue);
+            return Expression.Lambda<Func<Product, bool>>(comparison, parameter).Compile();
+        }
+        private static Expression GetComparisonExpression(Expression left, string filter, Expression right)
+        {
+            switch(filter)
             {
-                case "Quantity":
-                    return product.Quantity;
-                case "Date":
-                    return product.date;
-                case "Price":
-                    return product.Price;
+                case ">":
+                    return Expression.GreaterThan(left, right);
+                case "<":
+                    return Expression.LessThan(left, right);
+                case "=":
+                    return Expression.Equal(left, right);
+                case "!=":
+                    return Expression.NotEqual(left, right);
+                case "<=":
+                    return Expression.LessThanOrEqual(left, right);
+                case ">=":
+                    return Expression.GreaterThanOrEqual(left, right);
                 default:
-                    break;
+                    throw new FormatException("Critical Error");
             }
-            return 0;
         }
     }
 }
