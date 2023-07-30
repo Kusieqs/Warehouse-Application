@@ -41,45 +41,47 @@ namespace Warehouse_Application
 				Console.Write("\nQuantity of product: ");
 				correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
 
-				Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345 )");
+				Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
 				id = Console.ReadLine().Trim();
 
-				if(correctPrice && correctQuantity)
-				{
-					try
-					{
-						string jsonCreator;
-						Product p1 = new Product(name, id, price, quantity, date);
-						correctData = true;
-						if(string.IsNullOrEmpty(File.ReadAllText(systemOp)))
-						{
-							List<Product> products1Copy = new List<Product>();
-							products1Copy.Add(p1);
-							jsonCreator = JsonConvert.SerializeObject(products1Copy);
-							File.WriteAllText(systemOp, jsonCreator);
-						}
-						else
-						{
-                            products.Add(p1);
-							jsonCreator = JsonConvert.SerializeObject(products);
-							File.WriteAllText(systemOp, jsonCreator);
 
-                        }
-                        correctData = true;
+                try
+                {
+                    string jsonCreator;
+                    Product p1 = new Product(name, id, price, quantity, date);
+                    correctData = true;
+                    if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
+                    {
+                        List<Product> products1Copy = new List<Product>();
+                        products1Copy.Add(p1);
+                        jsonCreator = JsonConvert.SerializeObject(products1Copy);
+                        File.WriteAllText(systemOp, jsonCreator);
                     }
-					catch(FormatException e)
-					{
-						Console.WriteLine(e.Message);
-					}
-					finally
-					{
-						Console.WriteLine("Click enter to continue");
-						Console.ReadKey();
+                    else
+                    {
+                        products.Add(p1);
+                        jsonCreator = JsonConvert.SerializeObject(products);
+                        File.WriteAllText(systemOp, jsonCreator);
+
                     }
-				}
-				else
-					Console.WriteLine("Test");
-			} while (!correctData);
+                    correctData = true;
+                }
+                catch (FormatException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"\n{e.Message}");
+                    Console.ResetColor();
+                    Console.WriteLine("Click enter to continue");
+                    Console.ReadKey();
+                }
+
+            } while (!correctData);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Product added to list");
+            Console.ResetColor();
+            Console.WriteLine("Click enter to continue");
+            Console.ReadKey();
 
 			string jsonWriter = File.ReadAllText(systemOp);
 			products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
@@ -106,87 +108,98 @@ namespace Warehouse_Application
 		public static void RemovingRecord(ref List<Product> products, string systemOp)
 		{
 			bool endRemovingRecord = false;
-			do
+			if(products.Count == 0)
 			{
-				Console.Clear();
-				int count = 0;
-				foreach (var product in products)
-				{
-					count++;
-					Console.ForegroundColor = ConsoleColor.Cyan;
-					Console.WriteLine("Number: " + count);
-					Console.ResetColor();
-					Console.WriteLine($"Name: {product.Name}");
-					Console.WriteLine($"Price: {product.Price}");
-					Console.WriteLine($"Quantity: {product.Quantity}");
-					Console.WriteLine($"Id: {product.Id}");
-					Console.WriteLine($"Date: {product.date}");
-					Console.WriteLine("- - - - - - - - - - - -");
-				}
+                Console.WriteLine("List is empty!\nClick enter to continue");
+                Console.ReadKey();
+			}
+			else
+			{
+                do
+                {
+                    Console.Clear();
+                    int count = 0;
+                    foreach (var product in products)
+                    {
+                        count++;
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("Number: " + count);
+                        Console.ResetColor();
+                        Console.WriteLine($"Name: {product.Name}");
+                        Console.WriteLine($"Price: {product.Price}");
+                        Console.WriteLine($"Quantity: {product.Quantity}");
+                        Console.WriteLine($"Id: {product.Id}");
+                        Console.WriteLine($"Date: {product.date}");
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.WriteLine("\n                    \n");
+                        Console.ResetColor();
+                    }
 
-				Product p1 = new Product();
-				Console.Write("Write number of product or Id (4 Letters and 5 numbers) to remove product or 0 to exit\nNumber or id: ");
-				string removingRecord = Console.ReadLine();
-				bool correctNumber = int.TryParse(removingRecord, out int number);
-				Console.Clear();
-				bool itIsNumber;
+                    Product p1 = new Product();
+                    Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers) to remove product (0 to exit)\nNumber or id: ");
+                    string removingRecord = Console.ReadLine();
+                    bool correctNumber = int.TryParse(removingRecord, out int number);
+                    Console.Clear();
+                    bool itIsNumber;
 
-				if (correctNumber && number <= products.Count && number > 0)
-				{
-					p1 = products[number - 1];
-					itIsNumber = true;
-                }
-				else if (Regex.IsMatch(removingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == removingRecord))
-				{
-					p1 = products.Find(x => x.Id == removingRecord);
-					itIsNumber = false;
-                }
-				else if(correctNumber && number == 0)
-				{
-					break;
-				}
-				else
-				{
-                    Console.WriteLine("Wrong number or id\nClick enter to continue");
-                    Console.ReadKey();
-                    continue;
-                }
-				Console.Clear();
-				bool choosingCorrect = false;
-				do
-				{
-                    Console.WriteLine($"Name: {p1.Name}");
-                    Console.WriteLine($"Price: {p1.Price}");
-                    Console.WriteLine($"Quantity: {p1.Quantity}");
-                    Console.WriteLine($"Id: {p1.Id}");
-                    Console.WriteLine($"Date: {p1.date}");
-                    Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
+                    if (correctNumber && number <= products.Count && number > 0)
+                    {
+                        p1 = products[number - 1];
+                        itIsNumber = true;
+                    }
+                    else if (Regex.IsMatch(removingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == removingRecord))
+                    {
+                        p1 = products.Find(x => x.Id == removingRecord);
+                        itIsNumber = false;
+                    }
+                    else if (correctNumber && number == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong number or id\nClick enter to continue");
+                        Console.ReadKey();
+                        continue;
+                    }
+                    Console.Clear();
+                    bool choosingCorrect = false;
+                    do
+                    {
+                        Console.WriteLine($"Name: {p1.Name}");
+                        Console.WriteLine($"Price: {p1.Price}");
+                        Console.WriteLine($"Quantity: {p1.Quantity}");
+                        Console.WriteLine($"Id: {p1.Id}");
+                        Console.WriteLine($"Date: {p1.date}");
+                        Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
+                        Console.Write("Number: ");
+                        string choosingYesNo = Console.ReadLine();
 
-                    string choosingYesNo = Console.ReadLine();
+                        if (choosingYesNo == "1")
+                        {
+                            choosingCorrect = true;
+                            if (itIsNumber)
+                                products.RemoveAt(number - 1);
+                            else
+                                products.Remove(p1);
 
-					if (choosingYesNo == "1")
-					{
-						choosingCorrect = true;
-						if (itIsNumber)
-							products.RemoveAt(number - 1);
-						else
-							products.Remove(p1);
+                            string jsonCreator = JsonConvert.SerializeObject(products);
+                            File.WriteAllText(systemOp, jsonCreator);
 
-						string jsonCreator = JsonConvert.SerializeObject(products);
-						File.WriteAllText(systemOp, jsonCreator);
+                            string jsonWriter = File.ReadAllText(systemOp);
+                            products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
 
-						string jsonWriter = File.ReadAllText(systemOp);
-						products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
-
-					}
-					else if (choosingYesNo == "2")
-						choosingCorrect = true;
+                        }
+                        else if (choosingYesNo == "2")
+                            choosingCorrect = true;
 
 
-                } while (!choosingCorrect);
+                    } while (!choosingCorrect);
 
-            } while (!endRemovingRecord);
-		}
+                } while (!endRemovingRecord);
+
+            }
+        }
 	}
 }
 

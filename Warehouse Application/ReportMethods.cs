@@ -14,7 +14,7 @@ namespace Warehouse_Application
             {
                 Console.Clear();
                 Console.WriteLine("REPORTS:");
-                Console.WriteLine("1.All Products\n2.Search by id\n3.Sort by values\n4.Exit");
+                Console.Write("1.All Products\n2.Search by id\n3.Sort by values\n4.Exit\n\nNumber: ");
                 string answer = Console.ReadLine();
                 Console.Clear();
                 switch (answer)
@@ -66,16 +66,17 @@ namespace Warehouse_Application
             bool endSearching = false;
             do
             {
+                Console.Clear();
                 List<Product> copyList = products.ToList();
                 Console.Write("Id: ");
                 string idSearching = Console.ReadLine();
-                if (Regex.IsMatch((idSearching), @"^[A-Za-z]{4}\d{5}&"))
+                if (Regex.IsMatch((idSearching), @"^[A-Za-z]{4}\d{5}$"))
                 {
                     copyList = copyList.Where(x => x.Id == idSearching).ToList();
-                    if (copyList.Count == 0)
+                    if (copyList.Count > 0)
                     {
+                        Console.Clear();
                         string report = "";
-                        Console.WriteLine("Product\n");
                         foreach (var product in copyList)
                         {
                             report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n - - - - - - - - \n";
@@ -84,8 +85,6 @@ namespace Warehouse_Application
                             Console.WriteLine("Quantity: " + product.Quantity);
                             Console.WriteLine("Id: " + product.Id);
                             Console.WriteLine("Date: " + product.date);
-                            Console.WriteLine("\nClick enter to continue");
-                            Console.ReadKey();
                             endSearching = true;
                         }
                         Console.WriteLine("\n\n");
@@ -94,18 +93,18 @@ namespace Warehouse_Application
                     }
                     else
                     {
-                        Console.WriteLine("Id is not in the database\nClick enter to continue or 0 to exit");
+                        Console.WriteLine("\nId is not in the database\nClick enter to continue or 0 to exit");
                         string exitOrNot = Console.ReadLine();
                         if (exitOrNot == "0")
-                            endSearching = false;
+                            endSearching = true;
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Wrong id (4 Letters and 5 numbers, example: Abcd12345)\nClick enter to continue or 0 to exit");
+                    Console.WriteLine("\nWrong id (4 Letters and 5 numbers, example: Abcd12345)\nClick enter to continue or 0 to exit");
                     string exitOrNot = Console.ReadLine();
                     if (exitOrNot == "0")
-                        endSearching = false;
+                        endSearching = true;
                 }
 
             } while (!endSearching);
@@ -115,19 +114,16 @@ namespace Warehouse_Application
             List<Product> copyList = new List<Product>();
             List<Product> sortList = new List<Product>();
             bool endOfSort = false, attempt = false;
-            object test = null;
-            string property = null;
-            string report, sortingBy, operatorSort;
+            string sortingBy, operatorSort;
             DateTime dateSorting;
             string value = "";
             int year, month, day;
-            bool yearBool = false, monthBool = false, dayBool = false;
             do
             {
                 do
                 {
                     Console.Clear();
-                    Console.Write("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Show Raport\n5.Exit\n\nNumber: ");
+                    Console.Write("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Exit\n\nNumber: ");
                     sortingBy = Console.ReadLine();
                     switch (sortingBy)
                     {
@@ -140,6 +136,8 @@ namespace Warehouse_Application
                         case "3": sortingBy = "Date";
                             attempt = true;
                             break;
+                        case "4":
+                            return;
                         default:
                             break;
                     }
@@ -153,6 +151,8 @@ namespace Warehouse_Application
                     {
                         do
                         {
+                            bool yearBool = false, monthBool = false, dayBool = false;
+
                             Console.Clear();
                             Console.Write("Year: ");
                             yearBool = int.TryParse(Console.ReadLine(), out year);
@@ -194,7 +194,7 @@ namespace Warehouse_Application
                 do
                 {
                     Console.Clear();
-                    Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= ) x [operator] {value}: ");
+                    Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= )\n {sortingBy} [operator] {value}: ");
                     operatorSort = Console.ReadLine();
                     string[] operators = new string[] { "=", "!=", ">", "<", ">=", "<=" };
                     for (int i = 0; i < operators.Length; i++)
@@ -215,7 +215,7 @@ namespace Warehouse_Application
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1.Condition to sorted list\n2.Condition to main list");
+                        Console.WriteLine("1.Condition to sorted list (All products in sorted list)\n2.Condition to main list (All products)");
                         string answer = Console.ReadLine();
                         switch (answer)
                         {
@@ -247,11 +247,11 @@ namespace Warehouse_Application
 
                 do
                 {
-                    string sortedListString = "";
+                    string report = "";
                     Console.Clear();
                     foreach (var product in sortList)
                     {
-                        sortedListString += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n- - - - - - - - - - -\n";
+                        report+= $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n- - - - - - - - - - -\n";
                         Console.WriteLine($"Name: {product.Name}");
                         Console.WriteLine($"Price: {product.Price}");
                         Console.WriteLine($"Quantity: {product.Quantity}");
@@ -259,12 +259,12 @@ namespace Warehouse_Application
                         Console.WriteLine($"Date: {product.date}");
                         Console.WriteLine("- - - - - - - - - - - -");
                     }
-                    Console.WriteLine("1.Report to txt\n2.Antoher term condition\n3.Exit");
+                    Console.Write("\n\n1.Report to txt\n2.Antoher term condition\n3.Exit\nNumber: ");
                     string answer = Console.ReadLine();
                     switch(answer)
                     {
                         case "1":
-                            ReportMenu(systemOp, sortedListString, ref endOfReport);
+                            ReportMenu(systemOp, report, ref endOfReport);
                             endOfSort = true;
                             break;
                         case "2":
