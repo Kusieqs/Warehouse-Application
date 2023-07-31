@@ -45,7 +45,6 @@ internal class Program
                     break;
             }
 
-
         } while (!closeProgram);
     }
 }

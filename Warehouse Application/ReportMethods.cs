@@ -10,6 +10,13 @@ namespace Warehouse_Application
         public static void ReportOfProducts(List<Product> products, string systemOp)
         {
             bool endOfRaport = false;
+            if(products.Count == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("List is empty\nClick enter to continue");
+                Console.ReadKey();
+                return;
+            }
             do
             {
                 Console.Clear();
@@ -43,8 +50,8 @@ namespace Warehouse_Application
             do
             {
                 string report = "";
-                Console.WriteLine("REPORTS");
-                Console.WriteLine("- - - - - - - - -");
+                Console.WriteLine("REPORTS\n\n");
+                Console.WriteLine("- - - - - - - - - - - -");
                 foreach (var product in products)
                 {
                     report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n - - - - - - - - \n";
@@ -133,7 +140,7 @@ namespace Warehouse_Application
                         case "2": sortingBy = "Quantity";
                             attempt = true;
                             break;
-                        case "3": sortingBy = "Date";
+                        case "3": sortingBy = "date"; ///.sprobowac sortowania po przez nie date tylko dni albo miesiace albo rok date.Day
                             attempt = true;
                             break;
                         case "4":
@@ -147,7 +154,7 @@ namespace Warehouse_Application
                 do
                 {
                     Console.Clear();
-                    if (sortingBy == "Date")
+                    if (sortingBy == "date")
                     {
                         do
                         {
@@ -194,7 +201,7 @@ namespace Warehouse_Application
                 do
                 {
                     Console.Clear();
-                    Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= )\n {sortingBy} [operator] {value}: ");
+                    Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= )\n\n{sortingBy} [operator] {value}: ");
                     operatorSort = Console.ReadLine();
                     string[] operators = new string[] { "=", "!=", ">", "<", ">=", "<=" };
                     for (int i = 0; i < operators.Length; i++)
@@ -248,16 +255,23 @@ namespace Warehouse_Application
                 do
                 {
                     string report = "";
-                    Console.Clear();
-                    foreach (var product in sortList)
+                    if(sortList.Count == 0)
                     {
-                        report+= $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n- - - - - - - - - - -\n";
-                        Console.WriteLine($"Name: {product.Name}");
-                        Console.WriteLine($"Price: {product.Price}");
-                        Console.WriteLine($"Quantity: {product.Quantity}");
-                        Console.WriteLine($"Id: {product.Id}");
-                        Console.WriteLine($"Date: {product.date}");
-                        Console.WriteLine("- - - - - - - - - - - -");
+                        Console.WriteLine("List is empty");
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        foreach (var product in sortList)
+                        {
+                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n- - - - - - - - - - -\n";
+                            Console.WriteLine($"Name: {product.Name}");
+                            Console.WriteLine($"Price: {product.Price}");
+                            Console.WriteLine($"Quantity: {product.Quantity}");
+                            Console.WriteLine($"Id: {product.Id}");
+                            Console.WriteLine($"Date: {product.date}");
+                            Console.WriteLine("- - - - - - - - - - - -");
+                        }
                     }
                     Console.Write("\n\n1.Report to txt\n2.Antoher term condition\n3.Exit\nNumber: ");
                     string answer = Console.ReadLine();

@@ -16,7 +16,8 @@ public class Product
         id = "";
         price = 0;
         quantity = 0;
-        date = DateTime.Now;
+        DateTime dateCopy = DateTime.Now;
+        date = dateCopy.Date;
     }
     public Product(string name, string id, double price, int quantity, DateTime date)
     {

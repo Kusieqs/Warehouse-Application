@@ -7,7 +7,19 @@ namespace Warehouse_Application
 	{
 		public static void FirstTimeUsing(ref List<Product> products,ref string systemOperation)
 		{
-			systemOperation = Path.Combine(systemOperation, "Products.json");
+            if (File.Exists(systemOperation) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation, "Products.json"))))
+            {
+                try
+                {
+                    File.Delete(systemOperation);
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("Wystapil blad podczas usówania pliku: " + e);
+                }
+            }
+
+            systemOperation = Path.Combine(systemOperation, "Products.json");
 
 			if (!File.Exists(systemOperation))
 			{
@@ -27,7 +39,9 @@ namespace Warehouse_Application
 			string name, id;
 			int quantity;
 			double price;
-			DateTime date = DateTime.Now;
+            DateTime copyDate = DateTime.Now;
+            DateTime date = copyDate.Date;
+
 
 			do
 			{
@@ -47,8 +61,9 @@ namespace Warehouse_Application
 
                 try
                 {
-                    string jsonCreator;
                     Product p1 = new Product(name, id, price, quantity, date);
+
+                    string jsonCreator;
                     correctData = true;
                     if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
                     {
@@ -78,7 +93,7 @@ namespace Warehouse_Application
             } while (!correctData);
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Product added to list");
+            Console.WriteLine("\nProduct added to list");
             Console.ResetColor();
             Console.WriteLine("Click enter to continue");
             Console.ReadKey();
@@ -110,6 +125,7 @@ namespace Warehouse_Application
 			bool endRemovingRecord = false;
 			if(products.Count == 0)
 			{
+                Console.Clear();
                 Console.WriteLine("List is empty!\nClick enter to continue");
                 Console.ReadKey();
 			}
