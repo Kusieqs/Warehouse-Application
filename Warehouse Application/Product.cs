@@ -16,20 +16,21 @@ public class Product
         id = "";
         price = 0;
         quantity = 0;
-        date = DateTime.Now;
+        DateTime dateCopy = DateTime.Now;
+        date = dateCopy.Date;
     }
     public Product(string name, string id, double price, int quantity, DateTime date)
     {
-        if (Regex.IsMatch((id), @"^[A-Za-z]{4}\d{5}$") && price > 0 && quantity >= 0 && name.Length > 0)
+        if (Regex.IsMatch((id.Trim()), @"^[A-Za-z]{4}\d{5}$") && price > 0 && quantity >= 0 && name.Length > 0)
         {
             this.id = id.Trim();
             this.price = price;
             this.quantity = quantity;
+            this.name = name.Trim();
         }
         else
             throw new FormatException("Informations about product are not correct");
 
-        this.name = name.Trim();
         this.date = date;
     }
     public string Name
@@ -40,7 +41,12 @@ public class Product
         }
         set
         {
-            name = value.Trim();
+            if (value.Length > 0)
+            {
+                name = value.Trim();
+            }
+            else
+                throw new FormatException("Name is not correct");
         }
     }
     public string Id

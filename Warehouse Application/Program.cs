@@ -17,7 +17,7 @@ internal class Program
             do
             {
                 Console.Clear();
-                Console.WriteLine("1. Add product\n2. Removing product\n3.Reports");
+                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Exit");
                 Console.Write("Number: ");
                 correctNumber = int.TryParse(Console.ReadLine(), out number);
             } while (!correctNumber);
@@ -36,8 +36,14 @@ internal class Program
                 case 3:
                     ReportMethods.ReportOfProducts(listOfProducts,systemOperation);
                     break;
-            }
 
+                case 4:
+                    closeProgram = true;
+                    break;
+
+                default:
+                    break;
+            }
 
         } while (!closeProgram);
     }
