@@ -149,12 +149,38 @@ namespace Warehouse_Application
             Console.Clear();
 
         }
+        private static void AcceptingModify(Product p1, out bool accpet)
+        {
+            bool infinity = false;
+            do
+            {
+                Console.WriteLine($"Name: {p1.Name}");
+                Console.WriteLine($"Price: {p1.Price}");
+                Console.WriteLine($"Quantity: {p1.Quantity}");
+                Console.WriteLine($"Id: {p1.Id}");
+                Console.WriteLine($"Date: {p1.date}");
+                Console.WriteLine("\nDo you want to accept this modify?\n1.Yes\n2.No");
+                string answer = Console.ReadLine();
+                if(answer == "1")
+                {
+                    accpet = true;
+                    return;
+                }
+                else if(answer == "2")
+                {
+                    accpet = false;
+                    return;
+                }
+            } while (!infinity);
+            accpet = false;
+
+        }
         public static void ModifyingProduct(ref List<Product> products)
         {
             Product p1 = new Product();
             string modifyingRecord;
             int number;
-            bool itIsNumber, correctNumber, correctModifying = false;
+            bool itIsNumber, correctNumber, correctModifying = false, accept;
             bool endRemovingRecord = false;
 
             if (products.Count == 0)
@@ -175,7 +201,7 @@ namespace Warehouse_Application
                         do
                         {
                             Console.Clear();
-                            Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. \nNumber: ");
+                            Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. Exit \nNumber: ");
                             string answer = Console.ReadLine();
                             switch (answer)
                             {
@@ -197,7 +223,7 @@ namespace Warehouse_Application
                                 case "6":
                                     return;
                                 default:
-                                    break;
+                                    continue;
                             }
                             if (property == "date")
                             {
@@ -226,24 +252,47 @@ namespace Warehouse_Application
                                         if (daysInMonth >= day)
                                         {
                                             date = new DateTime(year, month, day);
-                                            products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], date);
-                                            correctModifying = true;
+                                            p1 = new Product(products[number - 1].Name, products[number - 1].Id, products[number - 1].Price, products[number - 1].Quantity, products[number - 1].date);
+                                            p1.GetType().GetProperty(property).SetValue(p1, date);
+
+                                            AcceptingModify(p1,out accept);
+                                            if(accept)
+                                            {
+                                                products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], date);
+                                                correctModifying = true;
+
+                                            }
                                         }
                                     }
                                 }
-
                             }
                             else 
                             {
-                                
-                                products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], );
+                                string value = null;
+                                Console.Write($"Changing {property}: ");
+                                switch(property)
+                                {
+                                    case "Name":
+                                        value = Console.ReadLine();
+                                        break;
+                                    case "Price":
+                                        bool coorectPrice = double.TryParse(Console.ReadLine(), out value); ///?????
+                                        break;
+                                    /// zrobic try catch
+                                }
+
+
+                                p1 = new Product(products[number - 1].Name, products[number - 1].Id, products[number - 1].Price, products[number - 1].Quantity, products[number - 1].date);
+                                p1.GetType().GetProperty(property).SetValue(p1, value);
+                                AcceptingModify(p1,out accept);
+                                if(accept)
+                                {
+                                    products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], value);
+                                    correctModifying = true;
+                                }
                             }
-                        } while (correctModifying);
 
-
-
-                        /// na wlasciwosciach zmienainiei porownywanie 
-
+                        } while (!correctModifying);
 
                     }
                     else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
@@ -251,9 +300,9 @@ namespace Warehouse_Application
                         p1 = products.Find(x => x.Id == modifyingRecord);
                         itIsNumber = false;
                     }
-                    else if (correctNumber && number == 0)
+                    else if(number == 0 && correctNumber)
                     {
-                        break;
+                        return;
                     }
                     else
                     {
@@ -267,8 +316,6 @@ namespace Warehouse_Application
 
                         /////
 
-            products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], "Nowa wartosc");
-                    
 
 
             }
