@@ -124,8 +124,9 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
         }
-        private static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number)
+        private static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
         {
+            graphic = true;
             Console.Clear();
             int count = 0;
             foreach (var product in products)
@@ -177,11 +178,12 @@ namespace Warehouse_Application
         }
         public static void ModifyingProduct(ref List<Product> products)
         {
-            Product p1 = new Product();
+            Product copy = null;
             string modifyingRecord;
+            string property = string.Empty;
+            string value = "";
             int number;
-            bool itIsNumber, correctNumber, correctModifying = false, accept;
-            bool endRemovingRecord = false;
+            bool correctNumber, correctModifying = false, accept, graphic = false;
 
             if (products.Count == 0)
             {
@@ -191,17 +193,50 @@ namespace Warehouse_Application
             }
             else
             {
-                string property = "";
+
                 do
                 {
-                    GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number);
-
-                    if (correctNumber && number <= products.Count && number > 0)
+                    GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number,ref graphic);
+                    do
                     {
+
+                        if (correctNumber && number > 0 && number <= products.Count)
+                        {
+                            copy = new Product(products[number - 1]);
+                        }
+                        else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
+                        {
+                            copy = new Product(products.Find(x => x.Id == modifyingRecord));
+                        }
+                        else if (number == 0 && correctNumber)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Wrong number or id\nClick enter to continue");
+                            Console.ReadKey();
+                            break;
+                        }
+
+                        Console.Clear();
                         do
                         {
                             Console.Clear();
-                            Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. Exit \nNumber: ");
+                            Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. Exit");
+                            Console.SetCursorPosition(25, 1);
+                            Console.WriteLine($"Name: {copy.Name}");
+                            Console.SetCursorPosition(25, 2);
+                            Console.WriteLine($"Price: {copy.Price}");
+                            Console.SetCursorPosition(25, 3);
+                            Console.WriteLine($"Quantity: {copy.Quantity}");
+                            Console.SetCursorPosition(25, 4);
+                            Console.WriteLine($"Id: {copy.Id}");
+                            Console.SetCursorPosition(25, 5);
+                            Console.WriteLine($"Date: {copy.date}");
+                            Console.SetCursorPosition(0, 10);
+                            Console.Write("Number: ");
+
                             string answer = Console.ReadLine();
                             switch (answer)
                             {
@@ -223,101 +258,72 @@ namespace Warehouse_Application
                                 case "6":
                                     return;
                                 default:
-                                    continue;
+                                    break;
                             }
-                            if (property == "date")
-                            {
-                                DateTime date;
-                                int year, month, day;
-                                bool yearBool = false, monthBool = false, dayBool = false;
+                        } while (string.IsNullOrEmpty(property));
 
-                                Console.Clear();
-                                Console.Write("Year: ");
-                                yearBool = int.TryParse(Console.ReadLine(), out year);
-                                Console.Write("Month: ");
-                                monthBool = int.TryParse(Console.ReadLine(), out month);
-                                Console.Write("Day: ");
-                                dayBool = int.TryParse(Console.ReadLine(), out day);
-                                if (yearBool && monthBool && dayBool)
-                                {
-                                    if ((year < 1 || month < 1 || month > 12 || day < 1))
-                                    {
-                                        int daysInMonth = DateTime.DaysInMonth(year, month);
-                                        Console.WriteLine("Wrong Date\nClick enter to continue");
-                                        Console.ReadKey();
-                                    }
-                                    else
-                                    {
-                                        int daysInMonth = DateTime.DaysInMonth(year, month);
-                                        if (daysInMonth >= day)
-                                        {
-                                            date = new DateTime(year, month, day);
-                                            p1 = new Product(products[number - 1].Name, products[number - 1].Id, products[number - 1].Price, products[number - 1].Quantity, products[number - 1].date);
-                                            p1.GetType().GetProperty(property).SetValue(p1, date);
-
-                                            AcceptingModify(p1,out accept);
-                                            if(accept)
-                                            {
-                                                products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], date);
-                                                correctModifying = true;
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else 
-                            {
-                                string value = null;
-                                Console.Write($"Changing {property}: ");
-                                switch(property)
-                                {
-                                    case "Name":
-                                        value = Console.ReadLine();
-                                        break;
-                                    case "Price":
-                                        bool coorectPrice = double.TryParse(Console.ReadLine(), out value); ///?????
-                                        break;
-                                    /// zrobic try catch
-                                }
-
-
-                                p1 = new Product(products[number - 1].Name, products[number - 1].Id, products[number - 1].Price, products[number - 1].Quantity, products[number - 1].date);
-                                p1.GetType().GetProperty(property).SetValue(p1, value);
-                                AcceptingModify(p1,out accept);
-                                if(accept)
-                                {
-                                    products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], value);
-                                    correctModifying = true;
-                                }
-                            }
-
-                        } while (!correctModifying);
-
-                    }
-                    else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
-                    {
-                        p1 = products.Find(x => x.Id == modifyingRecord);
-                        itIsNumber = false;
-                    }
-                    else if(number == 0 && correctNumber)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Wrong number or id\nClick enter to continue");
-                        Console.ReadKey();
-                        continue;
-                    }
+                        if (property == "date")
+                        {
+                            DateTime date;
+                            int year, month, day;
+                            bool yearBool = false, monthBool = false, dayBool = false;
                             Console.Clear();
+                            Console.Write("Year: ");
+                            yearBool = int.TryParse(Console.ReadLine(), out year);
+                            Console.Write("Month: ");
+                            monthBool = int.TryParse(Console.ReadLine(), out month);
+                            Console.Write("Day: ");
+                            dayBool = int.TryParse(Console.ReadLine(), out day);
+                            if (yearBool && monthBool && dayBool)
+                            {
+                                if ((year < 1 || month < 1 || month > 12 || day < 1))
+                                {
+                                    Console.WriteLine("Wrong Date\nClick enter to continue");
+                                    Console.ReadKey();
+                                    continue;
+                                }
+                                else
+                                {
+                                    int daysInMonth = DateTime.DaysInMonth(year, month);
+                                    if (daysInMonth >= day)
+                                    {
+                                        date = new DateTime(year, month, day);
+                                        value = date.ToString();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Wrong Date\nClick enter to continue");
+                                Console.ReadKey();
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            Console.Write($"Changing {property}: ");
+                            value = Console.ReadLine();
+                        }
 
-                } while (!endRemovingRecord);
+                        PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
+                        object parsedValue = ParseValue(value, propertyInfo.PropertyType);
+                        copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
+                        Console.Clear(); ////
+                        AcceptingModify(copy, out accept);
+                        if(accept)
+                        {
+                            if (correctNumber && number <= products.Count && number > 0)
+                            {
+                                products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
 
-                        /////
-
-
-
+                            }
+                            else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
+                            {
+                                products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
+                            }
+                        }
+                    } while (!correctModifying);
+                } while (!correctModifying);
             }
         }
         public static void RemovingRecord(ref List<Product> products, string systemOp)
@@ -325,7 +331,7 @@ namespace Warehouse_Application
                 Product p1 = new Product();
                 string removingRecord;
                 int number;
-                bool itIsNumber, correctNumber;
+            bool itIsNumber, correctNumber, graphic = false;
                 bool endRemovingRecord = false;
                 if (products.Count == 0)
                 {
@@ -337,7 +343,7 @@ namespace Warehouse_Application
                 {
                     do
                     {
-                        GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
+                        GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number, ref graphic);
 
                         if (correctNumber && number <= products.Count && number > 0)
                         {
@@ -397,6 +403,35 @@ namespace Warehouse_Application
 
                 }
             }
+        private static object ParseValue(string input, Type targetType)
+        {
+            if (targetType == typeof(int))
+            {
+                if (int.TryParse(input, out int x))
+                {
+                    return x;
+                }
+            }
+            else if (targetType == typeof(double))
+            {
+                if(double.TryParse(input, out double x))
+                {
+                    return x;
+                }
+            }
+            else if (targetType == typeof(string))
+            {
+                return input;
+            }
+            else if(targetType == typeof(DateTime))
+            {
+                if(DateTime.TryParse(input, out DateTime x))
+                {
+                    return x;
+                }
+            }
+            throw new FormatException("Error with target type");
+        }
         
     }
 }
