@@ -3,11 +3,13 @@ using System.Text.RegularExpressions;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Reflection;
+using Newtonsoft.Json;
+
 namespace Warehouse_Application
 {
     public static class ReportMethods
     {
-        public static void ReportOfProducts(List<Product> products, string systemOp)
+        public static void ReportOfProducts(ref List<Product> products, string systemOp)
         {
             bool endOfRaport = false;
             if(products.Count == 0)
@@ -21,13 +23,13 @@ namespace Warehouse_Application
             {
                 Console.Clear();
                 Console.WriteLine("REPORTS:");
-                Console.Write("1.All Products\n2.Search by id\n3.Sort by values\n4.Exit\n\nNumber: ");
+                Console.Write("1.All Products\n2.Search by id\n3.Sort by values\n4.ModifyingReport\n5.Exit\n\nNumber: ");
                 string answer = Console.ReadLine();
                 Console.Clear();
                 switch (answer)
                 {
                     case "1":
-                        AllProductReport(ref products, systemOp);
+                        AllProductReport(products, systemOp);
                         break;
                     case "2":
                         SearchingById(products, systemOp);
@@ -36,6 +38,9 @@ namespace Warehouse_Application
                         SortingByValue(products, systemOp);
                         break;
                     case "4":
+                        ModifyingReport(ref products);
+                        break;
+                    case "5":
                         endOfRaport = true;
                         break;
                     default:
@@ -44,7 +49,7 @@ namespace Warehouse_Application
                 }
             } while (!endOfRaport);
         }
-        private static void AllProductReport(ref List<Product> products, string systemOp)
+        private static void AllProductReport(List<Product> products, string systemOp)
         {
             bool endOfReport = false;
             do
@@ -306,7 +311,7 @@ namespace Warehouse_Application
             switch (answer)
             {
                 case "1":
-                    Utils.RecordingTxtFile(systemOp, report);
+                    RecordingTxtFile(systemOp, report);
                     break;
                 case "2":
                     endOfReport = true;
@@ -341,6 +346,79 @@ namespace Warehouse_Application
                     return Expression.GreaterThanOrEqual(left, right);
                 default:
                     throw new FormatException("Critical Error");
+            }
+        }
+        private static void ModifyingReport(ref List<Product> listOfProducts)
+        {
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            systemOp = Path.Combine(systemOp, "Desktop", "History.json");
+            List<HistoryModifications> historyModifications = new List<HistoryModifications>();
+
+            if (!File.Exists(systemOp) || string.IsNullOrEmpty(File.ReadAllText(systemOp)))
+            {
+                Console.WriteLine("Lack of modifications\nClick enter to continue");
+                Console.ReadKey();
+                return;
+            }
+
+            string reader = File.ReadAllText(systemOp);
+            historyModifications = JsonConvert.DeserializeObject<List<HistoryModifications>>(reader);
+
+            int line = 5;
+            int count = 1;
+            Console.WriteLine("HISTORY");
+            Console.WriteLine("- - - - - - - - - - -");
+            foreach (var products in historyModifications)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(count);
+                count++;
+                Console.ResetColor();
+                Console.WriteLine($"DATE MODIFICATION: {products.date}\n");
+                Console.Write($"BEFORE\nName:{products.p1.Name}\nPrice:{products.p1.Price}\nQuantity:{products.p1.Quantity}\nId:{products.p1.Id}\nDate{products.p1.date}");
+                Console.SetCursorPosition(40,line);
+                Console.WriteLine("AFTER");
+                line++;
+                Console.SetCursorPosition(40, line);
+                Console.WriteLine($"Name:{products.p2.Name}");
+                line++;
+                Console.SetCursorPosition(40, line);
+                Console.WriteLine($"Price:{products.p2.Price}");
+                line++;
+                Console.SetCursorPosition(40, line);
+                Console.WriteLine($"Quantity:{products.p2.Quantity}");
+                line++;
+                Console.SetCursorPosition(40, line);
+                Console.WriteLine($"Id:{products.p2.Id}");
+                line++;
+                Console.SetCursorPosition(40, line);
+                Console.WriteLine($"Date:{products.p2.date}");
+                line++;
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine(" - - - - - - ");
+                Console.ResetColor();
+                line += 4;
+            }
+            Console.ReadKey();
+            /// Dalsza czesc kodu z modifukacjami (switch)
+
+        }
+        private static void RecordingTxtFile(string systemOp, string report)
+        {
+            if (!string.IsNullOrEmpty(systemOp))
+            {
+                Console.Clear();
+                Console.Write("File Name: ");
+                string fileName = Console.ReadLine() + ".txt";
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                path = Path.Combine(path, "Desktop", fileName);
+                File.WriteAllText(path, report);
+                Console.WriteLine("File is complete!");
+            }
+            else
+            {
+                Console.WriteLine("File is empty!\nClick enter to continue");
+                Console.ReadKey();
             }
         }
     }

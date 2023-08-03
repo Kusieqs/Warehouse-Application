@@ -34,10 +34,17 @@ internal class Program
                     break;
 
                 case 3:
-                    ReportMethods.ReportOfProducts(listOfProducts,systemOperation);
+                    ReportMethods.ReportOfProducts(ref listOfProducts,systemOperation);
                     break;
 
                 case 4:
+<<<<<<< Updated upstream
+=======
+                    Utils.ModifyingProduct(ref listOfProducts,systemOperation);
+                    break;
+
+                case 5:
+>>>>>>> Stashed changes
                     closeProgram = true;
                     break;
 
