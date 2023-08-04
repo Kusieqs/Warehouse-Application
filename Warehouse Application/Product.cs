@@ -9,7 +9,14 @@ public class Product
     private double price;
     private int quantity;
     public DateTime date { get; set; }
-
+    public Product(Product p1)
+    {
+        this.name = p1.name;
+        this.id = p1.id;
+        this.price = p1.price;
+        this.quantity = p1.quantity;
+        this.date = p1.date;
+    }
     public Product()
     {
         name = "";
@@ -96,6 +103,10 @@ public class Product
             else
                 throw new FormatException("Quantity is not correct");
         }
+    }
+    public static void ReturningProduct(Product p1)
+    {
+
     }
 
 }

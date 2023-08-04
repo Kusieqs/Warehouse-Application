@@ -17,7 +17,7 @@ internal class Program
             do
             {
                 Console.Clear();
-                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Exit");
+                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Produc (History)\n5. Exit");
                 Console.Write("Number: ");
                 correctNumber = int.TryParse(Console.ReadLine(), out number);
             } while (!correctNumber);
@@ -38,13 +38,10 @@ internal class Program
                     break;
 
                 case 4:
-<<<<<<< Updated upstream
-=======
                     Utils.ModifyingProduct(ref listOfProducts,systemOperation);
                     break;
 
                 case 5:
->>>>>>> Stashed changes
                     closeProgram = true;
                     break;
 

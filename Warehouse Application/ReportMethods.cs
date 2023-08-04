@@ -38,7 +38,7 @@ namespace Warehouse_Application
                         SortingByValue(products, systemOp);
                         break;
                     case "4":
-                        ModifyingReport(ref products);
+                        ModifyingReportHistory(ref products);
                         break;
                     case "5":
                         endOfRaport = true;
@@ -348,7 +348,7 @@ namespace Warehouse_Application
                     throw new FormatException("Critical Error");
             }
         }
-        private static void ModifyingReport(ref List<Product> listOfProducts)
+        private static void ModifyingReportHistory(ref List<Product> listOfProducts)
         {
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             systemOp = Path.Combine(systemOp, "Desktop", "History.json");
@@ -399,8 +399,29 @@ namespace Warehouse_Application
                 Console.ResetColor();
                 line += 4;
             }
-            Console.ReadKey();
-            /// Dalsza czesc kodu z modifukacjami (switch)
+            Console.Write("\n\nWrite 0 to exit or Id/Number of product to undoing modifications\nNumber: ");
+            string answer = Console.ReadLine();
+            bool correctNumber = int.TryParse(answer, out int x);
+
+            if (answer == "0")
+            {
+                return;
+            }
+            else if (Regex.IsMatch(answer, @"^[A-Za-z]{4}\d{5}$") && listOfProducts.Any(x => x.Id == answer))
+            {
+                HistoryModifications w1 = historyModifications.Find(x => x.p2.Id == answer);
+                Product p1 = w1.p1;
+                int findIndex = listOfProducts.FindIndex(x => x.Id == answer);
+                listOfProducts[findIndex] = p1;
+            }
+            else if (correctNumber && x - 1 >= 0 && x <= historyModifications.Count)
+            {
+                HistoryModifications w1 = historyModifications.Find(x => x.p2.Id == answer);
+                Product p1 = w1.p1;
+                listOfProducts[x - 1] = p1;
+            }
+
+            ///dodac nadpisywanie zmian i dodac do while/ Bool
 
         }
         private static void RecordingTxtFile(string systemOp, string report)

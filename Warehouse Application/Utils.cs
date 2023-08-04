@@ -1,12 +1,9 @@
 ﻿using System;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
-<<<<<<< Updated upstream
-=======
 using System.Reflection;
 using Newtonsoft.Json.Linq;
 
->>>>>>> Stashed changes
 namespace Warehouse_Application
 {
 	public static class Utils
@@ -107,7 +104,6 @@ namespace Warehouse_Application
 			string jsonWriter = File.ReadAllText(systemOp);
 			products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
 
-<<<<<<< Updated upstream
 		}
 		public static void RecordingTxtFile(string systemOp, string report)
 		{
@@ -126,13 +122,6 @@ namespace Warehouse_Application
                 Console.WriteLine("File is empty!\nClick enter to continue");
                 Console.ReadKey();
             }
-        }
-		public static void RemovingRecord(ref List<Product> products, string systemOp)
-		{
-			bool endRemovingRecord = false;
-			if(products.Count == 0)
-			{
-=======
         }
         private static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
         {
@@ -197,7 +186,6 @@ namespace Warehouse_Application
 
             if (products.Count == 0)
             {
->>>>>>> Stashed changes
                 Console.Clear();
                 Console.WriteLine("List is empty!\nClick enter to continue");
                 Console.ReadKey();
@@ -206,7 +194,6 @@ namespace Warehouse_Application
 			{
                 do
                 {
-<<<<<<< Updated upstream
                     Console.Clear();
                     int count = 0;
                     foreach (var product in products)
@@ -228,7 +215,7 @@ namespace Warehouse_Application
                     Product p1 = new Product();
                     Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers) to remove product (0 to exit)\nNumber or id: ");
                     string removingRecord = Console.ReadLine();
-                    bool correctNumber = int.TryParse(removingRecord, out int number);
+                    correctNumber = int.TryParse(removingRecord, out number);
                     Console.Clear();
                     bool itIsNumber;
 
@@ -253,7 +240,6 @@ namespace Warehouse_Application
                         continue;
                     }
                     Console.Clear();
-=======
                     GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number, ref graphic);
                     do
                     {
@@ -432,7 +418,6 @@ namespace Warehouse_Application
                         continue;
                     }
                     Console.Clear();
->>>>>>> Stashed changes
                     bool choosingCorrect = false;
                     do
                     {
@@ -469,10 +454,8 @@ namespace Warehouse_Application
                 } while (!endRemovingRecord);
 
             }
-<<<<<<< Updated upstream
-        }
-	}
-=======
+        
+	
         }
         private static object ParseValue(string input, Type targetType)
         {
@@ -523,6 +506,5 @@ namespace Warehouse_Application
         }
 
     }
->>>>>>> Stashed changes
 }
 
