@@ -1,7 +1,5 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Linq.Expressions;
-using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
 
@@ -23,7 +21,7 @@ namespace Warehouse_Application
             {
                 Console.Clear();
                 Console.WriteLine("REPORTS:");
-                Console.Write("1.All Products\n2.Search by id\n3.Sort by values\n4.ModifyingReport\n5.Exit\n\nNumber: ");
+                Console.Write("1.All Products\n2.Search by id\n3.Sort by values\n4.Exit\n\nNumber: ");
                 string answer = Console.ReadLine();
                 Console.Clear();
                 switch (answer)
@@ -38,9 +36,6 @@ namespace Warehouse_Application
                         SortingByValue(products, systemOp);
                         break;
                     case "4":
-                        ModifyingReportHistory(ref products);
-                        break;
-                    case "5":
                         endOfRaport = true;
                         break;
                     default:
@@ -163,7 +158,7 @@ namespace Warehouse_Application
                     {
                         do
                         {
-                            bool yearBool = false, monthBool = false, dayBool = false;
+                            bool yearBool, monthBool, dayBool;
 
                             Console.Clear();
                             Console.Write("Year: ");
@@ -347,82 +342,6 @@ namespace Warehouse_Application
                 default:
                     throw new FormatException("Critical Error");
             }
-        }
-        private static void ModifyingReportHistory(ref List<Product> listOfProducts)
-        {
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            systemOp = Path.Combine(systemOp, "Desktop", "History.json");
-            List<HistoryModifications> historyModifications = new List<HistoryModifications>();
-
-            if (!File.Exists(systemOp) || string.IsNullOrEmpty(File.ReadAllText(systemOp)))
-            {
-                Console.WriteLine("Lack of modifications\nClick enter to continue");
-                Console.ReadKey();
-                return;
-            }
-
-            string reader = File.ReadAllText(systemOp);
-            historyModifications = JsonConvert.DeserializeObject<List<HistoryModifications>>(reader);
-
-            int line = 5;
-            int count = 1;
-            Console.WriteLine("HISTORY");
-            Console.WriteLine("- - - - - - - - - - -");
-            foreach (var products in historyModifications)
-            {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(count);
-                count++;
-                Console.ResetColor();
-                Console.WriteLine($"DATE MODIFICATION: {products.date}\n");
-                Console.Write($"BEFORE\nName:{products.p1.Name}\nPrice:{products.p1.Price}\nQuantity:{products.p1.Quantity}\nId:{products.p1.Id}\nDate{products.p1.date}");
-                Console.SetCursorPosition(40,line);
-                Console.WriteLine("AFTER");
-                line++;
-                Console.SetCursorPosition(40, line);
-                Console.WriteLine($"Name:{products.p2.Name}");
-                line++;
-                Console.SetCursorPosition(40, line);
-                Console.WriteLine($"Price:{products.p2.Price}");
-                line++;
-                Console.SetCursorPosition(40, line);
-                Console.WriteLine($"Quantity:{products.p2.Quantity}");
-                line++;
-                Console.SetCursorPosition(40, line);
-                Console.WriteLine($"Id:{products.p2.Id}");
-                line++;
-                Console.SetCursorPosition(40, line);
-                Console.WriteLine($"Date:{products.p2.date}");
-                line++;
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(" - - - - - - ");
-                Console.ResetColor();
-                line += 4;
-            }
-            Console.Write("\n\nWrite 0 to exit or Id/Number of product to undoing modifications\nNumber: ");
-            string answer = Console.ReadLine();
-            bool correctNumber = int.TryParse(answer, out int x);
-
-            if (answer == "0")
-            {
-                return;
-            }
-            else if (Regex.IsMatch(answer, @"^[A-Za-z]{4}\d{5}$") && listOfProducts.Any(x => x.Id == answer))
-            {
-                HistoryModifications w1 = historyModifications.Find(x => x.p2.Id == answer);
-                Product p1 = w1.p1;
-                int findIndex = listOfProducts.FindIndex(x => x.Id == answer);
-                listOfProducts[findIndex] = p1;
-            }
-            else if (correctNumber && x - 1 >= 0 && x <= historyModifications.Count)
-            {
-                HistoryModifications w1 = historyModifications.Find(x => x.p2.Id == answer);
-                Product p1 = w1.p1;
-                listOfProducts[x - 1] = p1;
-            }
-
-            ///dodac nadpisywanie zmian i dodac do while/ Bool
-
         }
         private static void RecordingTxtFile(string systemOp, string report)
         {

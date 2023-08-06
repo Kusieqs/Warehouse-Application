@@ -1,5 +1,7 @@
-﻿using Warehouse_Application;
-using System.Text.RegularExpressions;
+﻿using System;
+using Newtonsoft.Json;
+
+namespace Warehouse_Application;
 internal class Program
 {
     private static void Main(string[] args)
@@ -17,7 +19,7 @@ internal class Program
             do
             {
                 Console.Clear();
-                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Produc (History)\n5. Exit");
+                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Exit");
                 Console.Write("Number: ");
                 correctNumber = int.TryParse(Console.ReadLine(), out number);
             } while (!correctNumber);
@@ -38,10 +40,14 @@ internal class Program
                     break;
 
                 case 4:
-                    Utils.ModifyingProduct(ref listOfProducts,systemOperation);
+                    ModificationsAndHistory.ModifyingProduct(ref listOfProducts,systemOperation);
                     break;
 
                 case 5:
+                    ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts);
+                    break;
+
+                case 6:
                     closeProgram = true;
                     break;
 
@@ -50,5 +56,14 @@ internal class Program
             }
 
         } while (!closeProgram);
+        JsonFile(ref listOfProducts, systemOperation);
+    }
+    public static void JsonFile(ref List<Product> p1, string systemOp)
+    {
+        string jsonCreator = JsonConvert.SerializeObject(p1);
+        File.WriteAllText(systemOp, jsonCreator);
+
+        string jsonWriter = File.ReadAllText(systemOp);
+        p1 = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
     }
 }

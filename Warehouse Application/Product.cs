@@ -1,7 +1,5 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 namespace Warehouse_Application;
-
 public class Product
 {
     private string name;
@@ -104,11 +102,6 @@ public class Product
                 throw new FormatException("Quantity is not correct");
         }
     }
-    public static void ReturningProduct(Product p1)
-    {
-
-    }
-
 }
 
 
