@@ -2,6 +2,7 @@
 namespace Warehouse_Application;
 public class Product
 {
+    List<HistoryModifications> list = new List<HistoryModifications>();
     private string name;
     private string id;
     private double price;
@@ -101,6 +102,10 @@ public class Product
             else
                 throw new FormatException("Quantity is not correct");
         }
+    }
+    public void HistoryOfProduct(HistoryModifications p1)
+    {
+        list.Add(p1);
     }
 }
 

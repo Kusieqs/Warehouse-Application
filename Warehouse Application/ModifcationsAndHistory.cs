@@ -132,7 +132,7 @@ namespace Warehouse_Application
                         Console.Write($"Changing {property}: ");
                         value = Console.ReadLine();
                     }
-
+                    DateTime d1 = DateTime.Now;
                     PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
                     object parsedValue = ParseValue(value, propertyInfo.PropertyType);
                     copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
@@ -145,105 +145,56 @@ namespace Warehouse_Application
                         {
                             jsonBefore = new Product(products[number - 1]);
                             products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
-
+                            products[number - 1].HistoryOfProduct(new HistoryModifications(jsonBefore, copy, d1));
                         }
                         else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
                         {
                             jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
                             products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
+                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(jsonBefore, copy, d1));
                         }
-
-                        FileOverwriting(jsonBefore, copy);
-
                         Program.JsonFile(ref products, systemOp);
-
                     }
                 } while (!correctModifying);
             }
         }
-        private static void FileOverwriting(Product before, Product after)
+        public static void ModifyingReportHistory(ref List<Product> listOfProducts,string systemOp)
         {
-
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            systemOp = Path.Combine(systemOp, "Desktop", "History.Json");
-            DateTime d1 = DateTime.Now;
-            List<HistoryModifications> listOfModifications = new List<HistoryModifications>();
-
-            if (File.Exists(systemOp))
-            {
-                string jsonReader = File.ReadAllText(systemOp);
-                listOfModifications = JsonConvert.DeserializeObject<List<HistoryModifications>>(jsonReader);
-            }
-            HistoryModifications h1 = new HistoryModifications(before, after, d1);
-            listOfModifications.Add(h1);
-
-            string jsonWriter = JsonConvert.SerializeObject(listOfModifications);
-            File.WriteAllText(systemOp, jsonWriter);
-
-        }
-        public static void ModifyingReportHistory(ref List<Product> listOfProducts)
-        {
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            systemOp = Path.Combine(systemOp, "Desktop", "History.json");
-
-            List<HistoryModifications> historyModifications = new List<HistoryModifications>();
-
             if (!File.Exists(systemOp) || string.IsNullOrEmpty(File.ReadAllText(systemOp)))
             {
                 Console.Clear();
-                Console.WriteLine("Lack of modifications\nClick enter to continue");
+                Console.WriteLine("Lack of Products with modifications\nClick enter to continue");
                 Console.ReadKey();
                 return;
             }
 
-            bool endModifcations = false;
-            HistoryModifications w1 = new HistoryModifications();
-            Product p1 = new Product(), p2 = null;
-
+            bool endOfModifications = false;
             do
             {
+                Product productToChange = new Product();
+                int number;
+                bool correctNumber, garph = false;
+                string answer;
                 Console.Clear();
-                string reader = File.ReadAllText(systemOp);
-                historyModifications = JsonConvert.DeserializeObject<List<HistoryModifications>>(reader);
-
-                int line = 5;
-                int count = 1;
-                Console.WriteLine("HISTORY");
-                Console.WriteLine("- - - - - - - - - - -");
-                foreach (var products in historyModifications)
+                int count = 0;
+                foreach (var product in listOfProducts)
                 {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(count);
                     count++;
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("Number: " + count);
                     Console.ResetColor();
-                    Console.WriteLine($"DATE MODIFICATION: {products.date}\n");
-                    Console.Write($"BEFORE\nName:{products.p1.Name}\nPrice:{products.p1.Price}\nQuantity:{products.p1.Quantity}\nId:{products.p1.Id}\nDate{products.p1.date}");
-                    Console.SetCursorPosition(40, line);
-                    Console.WriteLine("AFTER");
-                    line++;
-                    Console.SetCursorPosition(40, line);
-                    Console.WriteLine($"Name:{products.p2.Name}");
-                    line++;
-                    Console.SetCursorPosition(40, line);
-                    Console.WriteLine($"Price:{products.p2.Price}");
-                    line++;
-                    Console.SetCursorPosition(40, line);
-                    Console.WriteLine($"Quantity:{products.p2.Quantity}");
-                    line++;
-                    Console.SetCursorPosition(40, line);
-                    Console.WriteLine($"Id:{products.p2.Id}");
-                    line++;
-                    Console.SetCursorPosition(40, line);
-                    Console.WriteLine($"Date:{products.p2.date}");
-                    line++;
+                    Console.WriteLine($"Name: {product.Name}");
+                    Console.WriteLine($"Id: {product.Id}");
+                    Console.WriteLine($"CHANGES: {product.list.Count}");
                     Console.BackgroundColor = ConsoleColor.White;
-                    Console.WriteLine(" - - - - - - ");
+                    Console.WriteLine("\n                    \n");
                     Console.ResetColor();
-                    line += 4;
                 }
-                Console.Write("\n\nWrite 0 to exit or Id/Number of product to undoing modifications\nNumber: ");
-                string answer = Console.ReadLine();
-                bool correctNumber = int.TryParse(answer, out int index);
+                Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");
+                answer = Console.ReadLine();
+                correctNumber = int.TryParse(answer, out number);
+                Console.Clear();
+
 
                 if (answer == "0")
                 {
@@ -251,33 +202,24 @@ namespace Warehouse_Application
                 }
                 else if (Regex.IsMatch(answer, @"^[A-Za-z]{4}\d{5}$") && listOfProducts.Any(x => x.Id == answer))
                 {
-                    w1 = historyModifications.Find(x => x.p2.Id == answer);
-
-
-                    int findIndex = listOfProducts.FindIndex(x => x.Id == w1.p2.Id);
-
-                    p1 = listOfProducts[findIndex];
-
-
-                    listOfProducts[findIndex] = w1.p1;
-
-
-                    FileOverwriting(p1, listOfProducts[findIndex]);
+                    productToChange = listOfProducts.Find(x => x.Id == answer);
                 }
-                else if (correctNumber && index > 0 && index <= historyModifications.Count+1)
+                else if (correctNumber && number > 0 && number <= listOfProducts.Count+1)
                 {
-                    w1 = historyModifications[index - 1];
-
-                    int findIndex = listOfProducts.FindIndex(x => x == w1.p2);
-
-                    p1 = listOfProducts[findIndex];
-
-                    listOfProducts[findIndex] = w1.p1;
-
-                    FileOverwriting(p1, listOfProducts[findIndex]);
+                    productToChange = listOfProducts[number - 1];
                 }
 
-            } while (!endModifcations);
+                if(productToChange.list.Count <= 0)
+                {
+                    Console.WriteLine("Lack of modifications\nClick neter to continue");
+                    Console.ReadKey();
+                }
+                else
+                {
+
+                }
+
+            } while (!endOfModifications);
 
         }
         private static object ParseValue(string input, Type targetType)

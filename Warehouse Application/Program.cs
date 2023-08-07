@@ -44,8 +44,8 @@ internal class Program
                     break;
 
                 case 5:
-                    ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts);
-                    JsonFile(ref listOfProducts, "Products.json");
+                    ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts,systemOperation);
+                    JsonFile(ref listOfProducts, systemOperation);
                     break;
 
                 case 6:
@@ -58,13 +58,10 @@ internal class Program
 
         } while (!closeProgram);
 
-        JsonFile(ref listOfProducts, "Products.json");
+        JsonFile(ref listOfProducts, systemOperation);
     }
-    public static void JsonFile(ref List<Product> p1, string name)
+    public static void JsonFile(ref List<Product> p1, string systemOp)
     {
-
-        string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        systemOp = Path.Combine(systemOp, "Desktop",name);
 
         string jsonCreator = JsonConvert.SerializeObject(p1);
         File.WriteAllText(systemOp, jsonCreator);
