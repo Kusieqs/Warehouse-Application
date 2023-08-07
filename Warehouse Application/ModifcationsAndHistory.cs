@@ -5,8 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace Warehouse_Application
 {
-	public static class ModificationsAndHistory
-	{
+    public static class ModificationsAndHistory
+    {
         public static void ModifyingProduct(ref List<Product> products, string systemOp)
         {
             Product copy = null;
@@ -24,189 +24,140 @@ namespace Warehouse_Application
             }
             else
             {
+                Utils.GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number, ref graphic);
                 do
                 {
-                    Console.Clear();
-                    int count = 0;
-                    foreach (var product in products)
-                    {
-                        count++;
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("Number: " + count);
-                        Console.ResetColor();
-                        Console.WriteLine($"Name: {product.Name}");
-                        Console.WriteLine($"Price: {product.Price}");
-                        Console.WriteLine($"Quantity: {product.Quantity}");
-                        Console.WriteLine($"Id: {product.Id}");
-                        Console.WriteLine($"Date: {product.date}");
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.WriteLine("\n                    \n");
-                        Console.ResetColor();
-                    }
 
-                    Product p1 = new Product();
-                    Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");
-                    string removingRecord = Console.ReadLine();
-                    correctNumber = int.TryParse(removingRecord, out number);
-                    Console.Clear();
-                    bool itIsNumber;
-
-                    if (correctNumber && number <= products.Count && number > 0)
+                    if (correctNumber && number > 0 && number <= products.Count)
                     {
-                        p1 = products[number - 1];
-                        itIsNumber = true;
+                        copy = new Product(products[number - 1]);
                     }
-                    else if (Regex.IsMatch(removingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == removingRecord))
+                    else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
                     {
-                        p1 = products.Find(x => x.Id == removingRecord);
-                        itIsNumber = false;
+                        copy = new Product(products.Find(x => x.Id == modifyingRecord));
                     }
-                    else if (correctNumber && number == 0)
+                    else if (number == 0 && correctNumber)
                     {
-                        break;
+                        return;
                     }
                     else
                     {
                         Console.WriteLine("Wrong number or id\nClick enter to continue");
                         Console.ReadKey();
-                        continue;
+                        break;
                     }
-                    Console.Clear(); /// podwojenie ogarnac
-                    Utils.GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number, ref graphic);
+
+                    Console.Clear();
                     do
                     {
-
-                        if (correctNumber && number > 0 && number <= products.Count)
-                        {
-                            copy = new Product(products[number - 1]);
-                        }
-                        else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
-                        {
-                            copy = new Product(products.Find(x => x.Id == modifyingRecord));
-                        }
-                        else if (number == 0 && correctNumber)
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Wrong number or id\nClick enter to continue");
-                            Console.ReadKey();
-                            break;
-                        }
-
                         Console.Clear();
-                        do
-                        {
-                            Console.Clear();
-                            Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. Exit");
-                            Console.SetCursorPosition(25, 1);
-                            Console.WriteLine($"Name: {copy.Name}");
-                            Console.SetCursorPosition(25, 2);
-                            Console.WriteLine($"Price: {copy.Price}");
-                            Console.SetCursorPosition(25, 3);
-                            Console.WriteLine($"Quantity: {copy.Quantity}");
-                            Console.SetCursorPosition(25, 4);
-                            Console.WriteLine($"Id: {copy.Id}");
-                            Console.SetCursorPosition(25, 5);
-                            Console.WriteLine($"Date: {copy.date}");
-                            Console.SetCursorPosition(0, 10);
-                            Console.Write("Number: ");
+                        Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. Exit");
+                        Console.SetCursorPosition(25, 1);
+                        Console.WriteLine($"Name: {copy.Name}");
+                        Console.SetCursorPosition(25, 2);
+                        Console.WriteLine($"Price: {copy.Price}");
+                        Console.SetCursorPosition(25, 3);
+                        Console.WriteLine($"Quantity: {copy.Quantity}");
+                        Console.SetCursorPosition(25, 4);
+                        Console.WriteLine($"Id: {copy.Id}");
+                        Console.SetCursorPosition(25, 5);
+                        Console.WriteLine($"Date: {copy.date}");
+                        Console.SetCursorPosition(0, 10);
+                        Console.Write("Number: ");
 
-                            string answer = Console.ReadLine();
-                            switch (answer)
-                            {
-                                case "1":
-                                    property = "Name";
-                                    break;
-                                case "2":
-                                    property = "Price";
-                                    break;
-                                case "3":
-                                    property = "Quantity";
-                                    break;
-                                case "4":
-                                    property = "Id";
-                                    break;
-                                case "5":
-                                    property = "date";
-                                    break;
-                                case "6":
-                                    return;
-                                default:
-                                    break;
-                            }
-                        } while (string.IsNullOrEmpty(property));
-
-                        if (property == "date")
+                        string answer = Console.ReadLine();
+                        switch (answer)
                         {
-                            DateTime date;
-                            int year, month, day;
-                            bool yearBool = false, monthBool = false, dayBool = false;
-                            Console.Clear();
-                            Console.Write("Year: ");
-                            yearBool = int.TryParse(Console.ReadLine(), out year);
-                            Console.Write("Month: ");
-                            monthBool = int.TryParse(Console.ReadLine(), out month);
-                            Console.Write("Day: ");
-                            dayBool = int.TryParse(Console.ReadLine(), out day);
-                            if (yearBool && monthBool && dayBool)
-                            {
-                                if ((year < 1 || month < 1 || month > 12 || day < 1))
-                                {
-                                    Console.WriteLine("Wrong Date\nClick enter to continue");
-                                    Console.ReadKey();
-                                    continue;
-                                }
-                                else
-                                {
-                                    int daysInMonth = DateTime.DaysInMonth(year, month);
-                                    if (daysInMonth >= day)
-                                    {
-                                        date = new DateTime(year, month, day);
-                                        value = date.ToString();
-                                    }
-                                }
-                            }
-                            else
+                            case "1":
+                                property = "Name";
+                                break;
+                            case "2":
+                                property = "Price";
+                                break;
+                            case "3":
+                                property = "Quantity";
+                                break;
+                            case "4":
+                                property = "Id";
+                                break;
+                            case "5":
+                                property = "date";
+                                break;
+                            case "6":
+                                return;
+                            default:
+                                break;
+                        }
+                    } while (string.IsNullOrEmpty(property));
+
+                    if (property == "date")
+                    {
+                        DateTime date;
+                        int year, month, day;
+                        bool yearBool = false, monthBool = false, dayBool = false;
+                        Console.Clear();
+                        Console.Write("Year: ");
+                        yearBool = int.TryParse(Console.ReadLine(), out year);
+                        Console.Write("Month: ");
+                        monthBool = int.TryParse(Console.ReadLine(), out month);
+                        Console.Write("Day: ");
+                        dayBool = int.TryParse(Console.ReadLine(), out day);
+                        if (yearBool && monthBool && dayBool)
+                        {
+                            if ((year < 1 || month < 1 || month > 12 || day < 1))
                             {
                                 Console.WriteLine("Wrong Date\nClick enter to continue");
                                 Console.ReadKey();
                                 continue;
                             }
+                            else
+                            {
+                                int daysInMonth = DateTime.DaysInMonth(year, month);
+                                if (daysInMonth >= day)
+                                {
+                                    date = new DateTime(year, month, day);
+                                    value = date.ToString();
+                                }
+                            }
                         }
                         else
                         {
-                            Console.Write($"Changing {property}: ");
-                            value = Console.ReadLine();
+                            Console.WriteLine("Wrong Date\nClick enter to continue");
+                            Console.ReadKey();
+                            continue;
                         }
+                    }
+                    else
+                    {
+                        Console.Write($"Changing {property}: ");
+                        value = Console.ReadLine();
+                    }
 
-                        PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
-                        object parsedValue = ParseValue(value, propertyInfo.PropertyType);
-                        copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
-                        Console.Clear();
-                        AcceptingModify(copy, out accept);
-                        if (accept)
+                    PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
+                    object parsedValue = ParseValue(value, propertyInfo.PropertyType);
+                    copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
+                    Console.Clear();
+                    AcceptingModify(copy, out accept);
+                    if (accept)
+                    {
+                        Product jsonBefore = null;
+                        if (correctNumber && number <= products.Count && number > 0)
                         {
-                            Product jsonBefore = null;
-                            if (correctNumber && number <= products.Count && number > 0)
-                            {
-                                jsonBefore = new Product(products[number - 1]);
-                                products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
-
-                            }
-                            else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
-                            {
-                                jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
-                                products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
-                            }
-
-                            FileOverwriting(jsonBefore, copy);
-
-                            Program.JsonFile(ref products, systemOp);
+                            jsonBefore = new Product(products[number - 1]);
+                            products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
 
                         }
-                    } while (!correctModifying);
+                        else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
+                        {
+                            jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
+                            products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
+                        }
+
+                        FileOverwriting(jsonBefore, copy);
+
+                        Program.JsonFile(ref products, systemOp);
+
+                    }
                 } while (!correctModifying);
             }
         }
@@ -217,6 +168,7 @@ namespace Warehouse_Application
             systemOp = Path.Combine(systemOp, "Desktop", "History.Json");
             DateTime d1 = DateTime.Now;
             List<HistoryModifications> listOfModifications = new List<HistoryModifications>();
+
             if (File.Exists(systemOp))
             {
                 string jsonReader = File.ReadAllText(systemOp);
@@ -233,18 +185,20 @@ namespace Warehouse_Application
         {
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             systemOp = Path.Combine(systemOp, "Desktop", "History.json");
+
             List<HistoryModifications> historyModifications = new List<HistoryModifications>();
 
             if (!File.Exists(systemOp) || string.IsNullOrEmpty(File.ReadAllText(systemOp)))
             {
+                Console.Clear();
                 Console.WriteLine("Lack of modifications\nClick enter to continue");
                 Console.ReadKey();
                 return;
             }
 
             bool endModifcations = false;
-            HistoryModifications w1;
-            Product p1 = null, p2 = null;
+            HistoryModifications w1 = new HistoryModifications();
+            Product p1 = new Product(), p2 = null;
 
             do
             {
@@ -289,30 +243,41 @@ namespace Warehouse_Application
                 }
                 Console.Write("\n\nWrite 0 to exit or Id/Number of product to undoing modifications\nNumber: ");
                 string answer = Console.ReadLine();
-                bool correctNumber = int.TryParse(answer, out int x);
+                bool correctNumber = int.TryParse(answer, out int index);
 
                 if (answer == "0")
                 {
-                    endModifcations = true;   
+                    return;
                 }
                 else if (Regex.IsMatch(answer, @"^[A-Za-z]{4}\d{5}$") && listOfProducts.Any(x => x.Id == answer))
                 {
                     w1 = historyModifications.Find(x => x.p2.Id == answer);
-                    int findIndex = listOfProducts.FindIndex(x => x.Id == answer);
+
+
+                    int findIndex = listOfProducts.FindIndex(x => x.Id == w1.p2.Id);
+
                     p1 = listOfProducts[findIndex];
+
+
                     listOfProducts[findIndex] = w1.p1;
+
+
                     FileOverwriting(p1, listOfProducts[findIndex]);
                 }
-                else if (correctNumber && x - 1 >= 0 && x <= historyModifications.Count)
+                else if (correctNumber && index > 0 && index <= historyModifications.Count+1)
                 {
-                    w1 = historyModifications.Find(x => x.p2.Id == answer);
-                    p1 = listOfProducts[x - 1];
-                    listOfProducts[x - 1] = w1.p1;
-                    FileOverwriting(p1, listOfProducts[x - 1]);
-                }
-            } while (!endModifcations);
+                    w1 = historyModifications[index - 1];
 
-            Program.JsonFile(ref listOfProducts, systemOp);
+                    int findIndex = listOfProducts.FindIndex(x => x == w1.p2);
+
+                    p1 = listOfProducts[findIndex];
+
+                    listOfProducts[findIndex] = w1.p1;
+
+                    FileOverwriting(p1, listOfProducts[findIndex]);
+                }
+
+            } while (!endModifcations);
 
         }
         private static object ParseValue(string input, Type targetType)

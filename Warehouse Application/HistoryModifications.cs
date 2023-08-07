@@ -13,6 +13,7 @@ namespace Warehouse_Application
             this.p1 = p1;
             this.p2 = p2;
         }
+        public HistoryModifications() { }
     }
 }
 
