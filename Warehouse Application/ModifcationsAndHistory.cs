@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace Warehouse_Application
 {
@@ -194,7 +195,7 @@ namespace Warehouse_Application
                 answer = Console.ReadLine();
                 correctNumber = int.TryParse(answer, out number);
                 Console.Clear();
-
+                int index;
 
                 if (answer == "0")
                 {
@@ -202,21 +203,85 @@ namespace Warehouse_Application
                 }
                 else if (Regex.IsMatch(answer, @"^[A-Za-z]{4}\d{5}$") && listOfProducts.Any(x => x.Id == answer))
                 {
+                    index = listOfProducts.FindIndex(x => x.Id == answer);
                     productToChange = listOfProducts.Find(x => x.Id == answer);
                 }
                 else if (correctNumber && number > 0 && number <= listOfProducts.Count+1)
                 {
-                    productToChange = listOfProducts[number - 1];
+                    index = number - 1;
+                    productToChange = listOfProducts[index];
                 }
-
                 if(productToChange.list.Count <= 0)
                 {
                     Console.WriteLine("Lack of modifications\nClick neter to continue");
                     Console.ReadKey();
                 }
-                else
+                else if(productToChange.list.Count > 0)
                 {
+                    int line = 2;
+                    foreach (var history in productToChange.list)
+                    {
+                        
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine($"DATE MODIFICATION: {history.date}\n");
+                        Console.ResetColor();
+                        Console.Write($"BEFORE\nName:{history.before.Name}\nPrice:{history.before.Price}\nQuantity:{history.before.Quantity}\nId:{history.before.Id}\nDate{history.before.date}");
+                        Console.SetCursorPosition(40, line);
+                        Console.WriteLine("AFTER");
+                        line++;
+                        Console.SetCursorPosition(40, line);
+                        Console.WriteLine($"Name:{history.after.Name}");
+                        line++;
+                        Console.SetCursorPosition(40, line);
+                        Console.WriteLine($"Price:{history.after.Price}");
+                        line++;
+                        Console.SetCursorPosition(40, line);
+                        Console.WriteLine($"Quantity:{history.after.Quantity}");
+                        line++;
+                        Console.SetCursorPosition(40, line);
+                        Console.WriteLine($"Id:{history.after.Id}");
+                        line++;
+                        Console.SetCursorPosition(40, line);
+                        Console.WriteLine($"Date:{history.after.date}");
+                        line+=5;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.WriteLine(" - - - - - - - - - - - - - - - - - - - - - - \n");
+                        Console.ResetColor();
+                    }
+                    int year, month, day;
+                    bool yearBool, monthBool, dayBool;
+                    Console.WriteLine("\n\nWrite a date to undoing modifications");
+                    do
+                    {
 
+                    
+                        Console.Write("Year: ");
+                        yearBool = int.TryParse(Console.ReadLine(), out year);
+                        Console.Write("Month: ");
+                        monthBool = int.TryParse(Console.ReadLine(), out month);
+                        Console.Write("Day: ");
+                        dayBool = int.TryParse(Console.ReadLine(), out day);
+                        if (yearBool && monthBool && dayBool)
+                        {
+                            if ((year < 1 || month < 1 || month > 12 || day < 1))
+                            {
+                                int daysInMonth = DateTime.DaysInMonth(year, month);
+                                Console.WriteLine("Wrong Date\nClick enter to continue");
+                                Console.ReadKey();
+                            }
+                            else
+                            {
+                                int daysInMonth = DateTime.DaysInMonth(year, month);
+                                if (daysInMonth >= day)
+                                {
+                                    dateSorting = new DateTime(year, month, day);
+                                    value = dateSorting.ToString();
+                                    attempt = true;
+                                }
+                            }
+                        }
+                    } while (!attempt);
+                    ///do zmieninia
                 }
 
             } while (!endOfModifications);

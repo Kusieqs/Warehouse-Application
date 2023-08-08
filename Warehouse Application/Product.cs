@@ -2,7 +2,7 @@
 namespace Warehouse_Application;
 public class Product
 {
-    List<HistoryModifications> list = new List<HistoryModifications>();
+    public List<HistoryModifications> list = new List<HistoryModifications>();
     private string name;
     private string id;
     private double price;
