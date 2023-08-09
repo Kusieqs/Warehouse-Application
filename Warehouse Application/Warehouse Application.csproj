@@ -10,8 +10,18 @@
 
   <ItemGroup>
     <None Remove="Newtonsoft.Json" />
+    <None Remove="PdfSharp" />
+    <None Remove="Microsoft.ReportViewer.Common" />
+    <None Remove="Microsoft.ReportViewer.WebForms" />
+    <None Remove="Aspose.PDF" />
+    <None Remove="PdfSharpCore" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="PdfSharp" Version="1.50.5147" />
+    <PackageReference Include="Microsoft.ReportViewer.Common" Version="10.0.40219.1" />
+    <PackageReference Include="Microsoft.ReportViewer.WebForms" Version="10.0.40219.1" />
+    <PackageReference Include="Aspose.PDF" Version="23.7.0" />
+    <PackageReference Include="PdfSharpCore" Version="1.3.57" />
   </ItemGroup>
 </Project>
