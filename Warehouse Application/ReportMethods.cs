@@ -1,7 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using System.Linq.Expressions;
 using System.Reflection;
-using Newtonsoft.Json;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Drawing;
+
 
 namespace Warehouse_Application
 {
@@ -298,7 +300,7 @@ namespace Warehouse_Application
         }
         private static void ReportMenu(string systemOp, string report, ref bool endOfReport)
         {
-            Console.WriteLine("1.Record to txt file\n2.Exit\n");
+            Console.WriteLine("1.Record to txt file\n2.Record to pdf\n3.Exit\n");
 
             Console.Write($"Number: ");
             string answer = Console.ReadLine();
@@ -309,8 +311,12 @@ namespace Warehouse_Application
                     RecordingTxtFile(systemOp, report);
                     break;
                 case "2":
+                    PdfCreater(report, systemOp);
+                    break;
+                case "3":
                     endOfReport = true;
                     break;
+
                 default:
                     break;
             }
@@ -345,7 +351,7 @@ namespace Warehouse_Application
         }
         private static void RecordingTxtFile(string systemOp, string report)
         {
-            if (!string.IsNullOrEmpty(systemOp))
+            if (!string.IsNullOrEmpty(report))
             {
                 Console.Clear();
                 Console.Write("File Name: ");
@@ -360,6 +366,45 @@ namespace Warehouse_Application
                 Console.WriteLine("File is empty!\nClick enter to continue");
                 Console.ReadKey();
             }
+        }
+        private static void PdfCreater(string report, string systemOp)
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+            if(!string.IsNullOrEmpty(report))
+            {
+                Console.Clear();
+                Console.Write("File Name: ");
+                string fileName = Console.ReadLine() + ".pdf";
+                string[] text = report.Split('\n');
+
+                PdfDocument document = new PdfDocument();
+                PdfPage page = document.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                XFont font = new XFont("Arial", 12,XFontStyle.Regular);
+                int y = 30;
+                int x = 10;
+                int lineHeight = 24;
+
+                foreach (var item in text)
+                {
+                    if(y+lineHeight > page.Height.Point - 25)
+                    {
+                        page = document.AddPage();
+                        gfx = XGraphics.FromPdfPage(page);
+                        y = 30;
+                    }
+                    gfx.DrawString(item, font, XBrushes.Black, x, y);
+                    y += lineHeight;
+                }
+                document.Save(Path.Combine(path,"Desktop", fileName));
+            }
+            else
+            {
+                Console.WriteLine("File is empty!\nClick enter to continue");
+                Console.ReadKey();
+            }
+            Console.Clear();
         }
     }
 }
