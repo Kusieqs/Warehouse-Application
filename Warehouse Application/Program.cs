@@ -1,10 +1,11 @@
-﻿using Warehouse_Application;
-using System.Text.RegularExpressions;
+﻿using System;
+using Newtonsoft.Json;
+
+namespace Warehouse_Application;
 internal class Program
 {
     private static void Main(string[] args)
     {
-
         int number;
         bool closeProgram = false, correctNumber;
         string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -17,7 +18,7 @@ internal class Program
             do
             {
                 Console.Clear();
-                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying the product\n5. Exit");
+                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Exit");
                 Console.Write("Number: ");
                 correctNumber = int.TryParse(Console.ReadLine(), out number);
             } while (!correctNumber);
@@ -34,15 +35,20 @@ internal class Program
                     break;
 
                 case 3:
-                    ReportMethods.ReportOfProducts(listOfProducts,systemOperation);
+                    ReportMethods.ReportOfProducts(ref listOfProducts,systemOperation);
                     break;
 
                 case 4:
-                    Utils.ModifyingProduct(ref listOfProducts);
+                    ModificationsAndHistory.ModifyingProduct(ref listOfProducts,systemOperation);   
                     break;
 
                 case 5:
-                    closeProgram = true;
+                    ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts,systemOperation);
+                    JsonFileRecord(ref listOfProducts, systemOperation);
+                    break;
+
+                case 6:
+                    Utils.ModifyingProduct(ref listOfProducts);
                     break;
 
                 default:
@@ -50,5 +56,15 @@ internal class Program
             }
 
         } while (!closeProgram);
+        JsonFileRecord(ref listOfProducts, systemOperation);
+
+    }
+    public static void JsonFileRecord(ref List<Product> products, string systemOp)
+    {
+        string jsonWriter = JsonConvert.SerializeObject(products);
+        File.WriteAllText(systemOp, jsonWriter);
+
+        string jsonReader = File.ReadAllText(systemOp);
+        products = JsonConvert.DeserializeObject<List<Product>>(jsonReader).ToList();
     }
 }

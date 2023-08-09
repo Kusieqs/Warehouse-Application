@@ -1,13 +1,13 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Linq.Expressions;
-using System.Collections.Generic;
 using System.Reflection;
+using Newtonsoft.Json;
+
 namespace Warehouse_Application
 {
     public static class ReportMethods
     {
-        public static void ReportOfProducts(List<Product> products, string systemOp)
+        public static void ReportOfProducts(ref List<Product> products, string systemOp)
         {
             bool endOfRaport = false;
             if(products.Count == 0)
@@ -27,7 +27,7 @@ namespace Warehouse_Application
                 switch (answer)
                 {
                     case "1":
-                        AllProductReport(ref products, systemOp);
+                        AllProductReport(products, systemOp);
                         break;
                     case "2":
                         SearchingById(products, systemOp);
@@ -44,7 +44,7 @@ namespace Warehouse_Application
                 }
             } while (!endOfRaport);
         }
-        private static void AllProductReport(ref List<Product> products, string systemOp)
+        private static void AllProductReport(List<Product> products, string systemOp)
         {
             bool endOfReport = false;
             do
@@ -158,7 +158,7 @@ namespace Warehouse_Application
                     {
                         do
                         {
-                            bool yearBool = false, monthBool = false, dayBool = false;
+                            bool yearBool, monthBool, dayBool;
 
                             Console.Clear();
                             Console.Write("Year: ");
@@ -306,7 +306,7 @@ namespace Warehouse_Application
             switch (answer)
             {
                 case "1":
-                    Utils.RecordingTxtFile(systemOp, report);
+                    RecordingTxtFile(systemOp, report);
                     break;
                 case "2":
                     endOfReport = true;
@@ -341,6 +341,24 @@ namespace Warehouse_Application
                     return Expression.GreaterThanOrEqual(left, right);
                 default:
                     throw new FormatException("Critical Error");
+            }
+        }
+        private static void RecordingTxtFile(string systemOp, string report)
+        {
+            if (!string.IsNullOrEmpty(systemOp))
+            {
+                Console.Clear();
+                Console.Write("File Name: ");
+                string fileName = Console.ReadLine() + ".txt";
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                path = Path.Combine(path, "Desktop", fileName);
+                File.WriteAllText(path, report);
+                Console.WriteLine("File is complete!");
+            }
+            else
+            {
+                Console.WriteLine("File is empty!\nClick enter to continue");
+                Console.ReadKey();
             }
         }
     }

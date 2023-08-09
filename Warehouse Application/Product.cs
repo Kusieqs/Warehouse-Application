@@ -1,14 +1,39 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 namespace Warehouse_Application;
-
 public class Product
 {
+    public List<HistoryModifications> list = new List<HistoryModifications>();
     private string name;
     private string id;
     private double price;
     private int quantity;
     public DateTime date { get; set; }
+    public Product(Product p1)
+    {
+        this.name = p1.name;
+        this.id = p1.id;
+        this.price = p1.price;
+        this.quantity = p1.quantity;
+        this.date = p1.date;
+        this.list = p1.list;
+    }
+    public Product(ProductHistory p1, List<HistoryModifications> list)
+    {
+        this.name = p1.name;
+        this.id = p1.id;
+        this.price = p1.price;
+        this.quantity = p1.quantity;
+        this.date = p1.date;
+        this.list = list.ToList();
+    }
+    public Product(ProductHistory p1)
+    {
+        this.name = p1.name;
+        this.id = p1.id;
+        this.price = p1.price;
+        this.quantity = p1.quantity;
+        this.date = p1.date;
+
 
     public Product(Product p1)
     {
@@ -105,7 +130,10 @@ public class Product
                 throw new FormatException("Quantity is not correct");
         }
     }
-
+    public void HistoryOfProduct(HistoryModifications p1)
+    {
+        list.Add(p1);
+    }
 }
 
 
