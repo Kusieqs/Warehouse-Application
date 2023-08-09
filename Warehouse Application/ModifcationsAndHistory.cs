@@ -271,11 +271,6 @@ namespace Warehouse_Application
                                 Program.JsonFileRecord(ref listOfProducts, systemOp);
 
                             }
-                            else
-                            {
-                                Console.WriteLine("Wrong id!\nClick enter to continue");
-                                Console.ReadKey();
-                            }
                         }
                         else if(secondAnswer =="1")
                         {

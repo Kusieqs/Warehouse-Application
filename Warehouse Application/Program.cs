@@ -56,6 +56,7 @@ internal class Program
             }
 
         } while (!closeProgram);
+        JsonFileRecord(ref listOfProducts, systemOperation);
 
     }
     public static void JsonFileRecord(ref List<Product> products, string systemOp)
