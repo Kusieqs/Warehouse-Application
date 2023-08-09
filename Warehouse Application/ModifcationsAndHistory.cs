@@ -141,20 +141,21 @@ namespace Warehouse_Application
                     AcceptingModify(copy, out accept);
                     if (accept)
                     {
+                        ProductHistory h1 = null, h2 = null;
                         Product jsonBefore = null;
                         if (correctNumber && number <= products.Count && number > 0)
                         {
                             jsonBefore = new Product(products[number - 1]);
                             products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
-                            products[number - 1].HistoryOfProduct(new HistoryModifications(jsonBefore, copy, d1));
+                            products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1));
                         }
                         else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
                         {
                             jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
                             products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
-                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(jsonBefore, copy, d1));
+                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy),d1));
                         }
-                        Program.JsonFile(ref products, systemOp);
+                        Program.JsonFileRecord(ref products, systemOp);
                     }
                 } while (!correctModifying);
             }
@@ -195,11 +196,10 @@ namespace Warehouse_Application
                 answer = Console.ReadLine();
                 correctNumber = int.TryParse(answer, out number);
                 Console.Clear();
-                int index;
-
+                int index = 0;
                 if (answer == "0")
                 {
-                    return;
+                    break;
                 }
                 else if (Regex.IsMatch(answer, @"^[A-Za-z]{4}\d{5}$") && listOfProducts.Any(x => x.Id == answer))
                 {
@@ -208,9 +208,10 @@ namespace Warehouse_Application
                 }
                 else if (correctNumber && number > 0 && number <= listOfProducts.Count+1)
                 {
-                    index = number - 1;
+                    index = number-1;
                     productToChange = listOfProducts[index];
                 }
+
                 if(productToChange.list.Count <= 0)
                 {
                     Console.WriteLine("Lack of modifications\nClick neter to continue");
@@ -218,72 +219,76 @@ namespace Warehouse_Application
                 }
                 else if(productToChange.list.Count > 0)
                 {
-                    int line = 2;
-                    foreach (var history in productToChange.list)
-                    {
-                        
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine($"DATE MODIFICATION: {history.date}\n");
-                        Console.ResetColor();
-                        Console.Write($"BEFORE\nName:{history.before.Name}\nPrice:{history.before.Price}\nQuantity:{history.before.Quantity}\nId:{history.before.Id}\nDate{history.before.date}");
-                        Console.SetCursorPosition(40, line);
-                        Console.WriteLine("AFTER");
-                        line++;
-                        Console.SetCursorPosition(40, line);
-                        Console.WriteLine($"Name:{history.after.Name}");
-                        line++;
-                        Console.SetCursorPosition(40, line);
-                        Console.WriteLine($"Price:{history.after.Price}");
-                        line++;
-                        Console.SetCursorPosition(40, line);
-                        Console.WriteLine($"Quantity:{history.after.Quantity}");
-                        line++;
-                        Console.SetCursorPosition(40, line);
-                        Console.WriteLine($"Id:{history.after.Id}");
-                        line++;
-                        Console.SetCursorPosition(40, line);
-                        Console.WriteLine($"Date:{history.after.date}");
-                        line+=5;
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.WriteLine(" - - - - - - - - - - - - - - - - - - - - - - \n");
-                        Console.ResetColor();
-                    }
-                    int year, month, day;
-                    bool yearBool, monthBool, dayBool;
-                    Console.WriteLine("\n\nWrite a date to undoing modifications");
+                    bool attempt = false;
                     do
                     {
-
-                    
-                        Console.Write("Year: ");
-                        yearBool = int.TryParse(Console.ReadLine(), out year);
-                        Console.Write("Month: ");
-                        monthBool = int.TryParse(Console.ReadLine(), out month);
-                        Console.Write("Day: ");
-                        dayBool = int.TryParse(Console.ReadLine(), out day);
-                        if (yearBool && monthBool && dayBool)
+                        Console.Clear();
+                        int line = 3;
+                        foreach (var history in productToChange.list)
                         {
-                            if ((year < 1 || month < 1 || month > 12 || day < 1))
+
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine($"DATE MODIFICATION: {history.date}\n");
+                            Console.WriteLine($"ID MODIFICATION: {history.idModofication}");
+                            Console.ResetColor();
+                            Console.Write($"BEFORE\nName:{history.before.name}\nPrice:{history.before.price}\nQuantity:{history.before.quantity}\nId:{history.before.id}\nDate{history.before.date}");
+                            Console.SetCursorPosition(40, line);
+                            Console.WriteLine("AFTER");
+                            line++;
+                            Console.SetCursorPosition(40, line);
+                            Console.WriteLine($"Name:{history.after.name}");
+                            line++;
+                            Console.SetCursorPosition(40, line);
+                            Console.WriteLine($"Price:{history.after.price}");
+                            line++;
+                            Console.SetCursorPosition(40, line);
+                            Console.WriteLine($"Quantity:{history.after.quantity}");
+                            line++;
+                            Console.SetCursorPosition(40, line);
+                            Console.WriteLine($"Id:{history.after.id}");
+                            line++;
+                            Console.SetCursorPosition(40, line);
+                            Console.WriteLine($"Date:{history.after.date}");
+                            line += 6;
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.WriteLine(" - - - - - - - - - - - - - - - - - - - - - - \n");
+                            Console.ResetColor();
+                        }
+                        Console.Write("\n\nWrite a ID of modiciation to undoing modification, 0 to exit or 1 to remove all history\nNumber: ");
+                        string secondAnswer = Console.ReadLine();
+
+                        if (Regex.IsMatch(secondAnswer, @"^[a-zA-Z0-9]{5}$"))
+                        {
+                            if (productToChange.list.Any(x => x.idModofication == secondAnswer))
                             {
-                                int daysInMonth = DateTime.DaysInMonth(year, month);
-                                Console.WriteLine("Wrong Date\nClick enter to continue");
-                                Console.ReadKey();
+                                DateTime d1 = DateTime.Now;
+
+                                HistoryModifications h1 = new HistoryModifications();
+                                h1 = productToChange.list.Find(x => x.idModofication == secondAnswer);
+                                productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory( new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1));
+                                listOfProducts[index] = new Product(h1.before,productToChange.list);
+                                attempt = true;
+                                Program.JsonFileRecord(ref listOfProducts, systemOp);
+
                             }
                             else
                             {
-                                int daysInMonth = DateTime.DaysInMonth(year, month);
-                                if (daysInMonth >= day)
-                                {
-                                    dateSorting = new DateTime(year, month, day);
-                                    value = dateSorting.ToString();
-                                    attempt = true;
-                                }
+                                Console.WriteLine("Wrong id!\nClick enter to continue");
+                                Console.ReadKey();
                             }
                         }
-                    } while (!attempt);
-                    ///do zmieninia
-                }
+                        else if(secondAnswer =="1")
+                        {
+                            productToChange.list.Clear();
+                            listOfProducts[index] = productToChange;
+                            attempt = true;
+                        }
+                        else if (secondAnswer == "0")
+                            attempt = true;
 
+                        Program.JsonFileRecord(ref listOfProducts, systemOp);
+                    } while (!attempt);
+                }
             } while (!endOfModifications);
 
         }

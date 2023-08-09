@@ -206,8 +206,7 @@ namespace Warehouse_Application
                                 products.RemoveAt(number - 1);
                             else
                                 products.Remove(p1);
-
-                            Program.JsonFile(ref products, systemOp);
+                            Program.JsonFileRecord(ref products, systemOp);
 
                         }
                         else if (choosingYesNo == "2")

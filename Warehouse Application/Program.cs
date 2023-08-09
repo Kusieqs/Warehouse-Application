@@ -6,7 +6,6 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-
         int number;
         bool closeProgram = false, correctNumber;
         string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -40,12 +39,12 @@ internal class Program
                     break;
 
                 case 4:
-                    ModificationsAndHistory.ModifyingProduct(ref listOfProducts,systemOperation);
+                    ModificationsAndHistory.ModifyingProduct(ref listOfProducts,systemOperation);   
                     break;
 
                 case 5:
                     ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts,systemOperation);
-                    JsonFile(ref listOfProducts, systemOperation);
+                    JsonFileRecord(ref listOfProducts, systemOperation);
                     break;
 
                 case 6:
@@ -58,15 +57,13 @@ internal class Program
 
         } while (!closeProgram);
 
-        JsonFile(ref listOfProducts, systemOperation);
     }
-    public static void JsonFile(ref List<Product> p1, string systemOp)
+    public static void JsonFileRecord(ref List<Product> products, string systemOp)
     {
+        string jsonWriter = JsonConvert.SerializeObject(products);
+        File.WriteAllText(systemOp, jsonWriter);
 
-        string jsonCreator = JsonConvert.SerializeObject(p1);
-        File.WriteAllText(systemOp, jsonCreator);
-
-        string jsonWriter = File.ReadAllText(systemOp);
-        p1 = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
+        string jsonReader = File.ReadAllText(systemOp);
+        products = JsonConvert.DeserializeObject<List<Product>>(jsonReader).ToList();
     }
 }

@@ -15,6 +15,24 @@ public class Product
         this.price = p1.price;
         this.quantity = p1.quantity;
         this.date = p1.date;
+        this.list = p1.list;
+    }
+    public Product(ProductHistory p1, List<HistoryModifications> list)
+    {
+        this.name = p1.name;
+        this.id = p1.id;
+        this.price = p1.price;
+        this.quantity = p1.quantity;
+        this.date = p1.date;
+        this.list = list.ToList();
+    }
+    public Product(ProductHistory p1)
+    {
+        this.name = p1.name;
+        this.id = p1.id;
+        this.price = p1.price;
+        this.quantity = p1.quantity;
+        this.date = p1.date;
     }
     public Product()
     {
