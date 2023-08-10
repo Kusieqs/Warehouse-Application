@@ -410,41 +410,52 @@ namespace Warehouse_Application
         }
         private static void ExcelCreater(List<Product> products)
         {
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            systemOp = Path.Combine(systemOp, "Desktop");
-
-            string fileName = Utils.NameFile();
-
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (var package = new ExcelPackage(new FileInfo(Path.Combine(systemOp,fileName+".xlsx"))))
+            if(products.Count == 0)
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Products");
-                worksheet.Cells[1, 1].Value = "Number";
-                worksheet.Cells[1, 2].Value = "Produt Name";
-                worksheet.Cells[1, 3].Value = "Id";
-                worksheet.Cells[1, 4].Value = "Price";
-                worksheet.Cells[1, 5].Value = "Quantity";
-                worksheet.Cells[1, 6].Value = "Date";
+                Console.WriteLine("List is empty!\nClick enter to continue");
+                Console.ReadKey();
+            }
+            else
+            {
+                string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                systemOp = Path.Combine(systemOp, "Desktop");
 
-                var range = worksheet.Cells["A1:F1"];
-                range.Style.Font.Bold = true;
-                range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                range.Style.Fill.BackgroundColor.SetColor(OfficeOpenXml.Style.ExcelIndexedColor.Indexed10);
-                range.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                range.Style.Border.Bottom.Color.SetColor(OfficeOpenXml.Drawing.eThemeSchemeColor.Accent3);
+                string fileName = Utils.NameFile();
 
-                for (int i = 0; i < products.Count; i++)
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using (var package = new ExcelPackage(new FileInfo(Path.Combine(systemOp, fileName + ".xlsx"))))
                 {
-                    worksheet.Cells[i + 3, 1].Value = i + 1;
-                    worksheet.Cells[i + 3, 2].Value = products[i].Name;
-                    worksheet.Cells[i + 3, 3].Value = products[i].Id;
-                    worksheet.Cells[i + 3, 4].Value = products[i].Price;
-                    worksheet.Cells[i + 3, 5].Value = products[i].Quantity;
-                    worksheet.Cells[i + 3, 6].Value = products[i].date;
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Products");
+                    worksheet.Cells[1, 1].Value = "Number";
+                    worksheet.Cells[1, 2].Value = "Produt Name";
+                    worksheet.Cells[1, 3].Value = "Id";
+                    worksheet.Cells[1, 4].Value = "Price";
+                    worksheet.Cells[1, 5].Value = "Quantity";
+                    worksheet.Cells[1, 6].Value = "Date";
+                    worksheet.Cells[1, 6].Style.Numberformat.Format = "yyyy-mm-dd";
+
+                    var range = worksheet.Cells["A1:F1"];
+                    range.Style.Font.Bold = true;
+                    range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(OfficeOpenXml.Style.ExcelIndexedColor.Indexed10);
+                    range.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Color.SetColor(OfficeOpenXml.Drawing.eThemeSchemeColor.Accent3);
+
+                    for (int i = 0; i < products.Count; i++)
+                    {
+                        worksheet.Cells[i + 3, 1].Value = i + 1 + ".";
+                        worksheet.Cells[i + 3, 2].Value = products[i].Name;
+                        worksheet.Cells[i + 3, 3].Value = products[i].Id;
+                        worksheet.Cells[i + 3, 4].Value = products[i].Price;
+                        worksheet.Cells[i + 3, 5].Value = products[i].Quantity;
+                        worksheet.Cells[i + 3, 6].Style.Numberformat.Format = "yyyy-mm-dd";
+                        worksheet.Cells[i + 3, 6].Value = products[i].date;
+                    }
+
+                    worksheet.Cells.AutoFitColumns();
+                    package.Save();
                 }
 
-                worksheet.Cells.AutoFitColumns();
-                package.Save();
             }
         }
     }
