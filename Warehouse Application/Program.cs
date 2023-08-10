@@ -18,7 +18,7 @@ internal class Program
             do
             {
                 Console.Clear();
-                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Exit");
+                Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Exit");
                 Console.Write("Number: ");
                 correctNumber = int.TryParse(Console.ReadLine(), out number);
             } while (!correctNumber);
@@ -48,6 +48,9 @@ internal class Program
                     break;
 
                 case 6:
+                    Utils.Statistics(listOfProducts);
+                    break;
+                case 7:
                     closeProgram = true;
                     break;
 
