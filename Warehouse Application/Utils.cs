@@ -241,6 +241,165 @@ namespace Warehouse_Application
 
           
         }
+        public static void Statistics(List<Product> products)
+        {
+            Console.Clear();
+            if(products.Count == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("List is empty\nClick enter to continue");
+                Console.ReadKey();
+            }
+            else
+            {
+                double y;
+                Console.WriteLine("PRICE");
+                Console.WriteLine();
+
+                y = products.Average(x => x.Price);
+                Console.WriteLine($"Average: {y}\n");
+                Console.WriteLine();
+
+                y = products.Sum(x => x.Price);
+                Console.WriteLine($"Sum: {y}\n");
+                Console.WriteLine();
+
+                y = products.Max(x => x.Price);
+                var p1 = products.Where(x => x.Price == y).ToList();
+                Console.WriteLine("Max: ");
+                foreach (var item in p1)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+                y = products.Min(x => x.Price);
+                var p2 = products.Where(x => x.Price == y).ToList();
+                Console.WriteLine("Min: ");
+                foreach (var item in p2)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("The most frequently occuring price: \n");
+                var p3 = products.Select(x => new
+                {
+                    x.Name, x.Id, x.Price
+                }).GroupBy(x => x.Price);
+                y = p3.Max(x => x.Count());
+                foreach (var item in p3)
+                {
+                    double d = item.Count();
+                    if(y == d)
+                    {
+                        foreach (var p in item)
+                        {
+                            Console.WriteLine($"Name: {p.Name}, ID: {p.Id}, Price: {p.Price}");
+                        }
+                        Console.WriteLine();
+                    }
+                    
+                }
+                Console.WriteLine();
+                Console.WriteLine("\n\nNext page click enter");
+                Console.ReadKey();
+                Console.Clear();
+
+                Console.WriteLine("QUANTITY\n\n");
+                y = products.Average(x => x.Quantity);
+                Console.WriteLine($"Average: {y}\n\n");
+                y = products.Sum(x => x.Quantity);
+                Console.WriteLine($"Sum: {y}\n\n");
+                y = products.Max(x => x.Quantity);
+                var p5 = products.Where(x => x.Quantity == y).ToList();
+                Console.WriteLine("Max: ");
+                foreach (var item in p5)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+                y = products.Min(x => x.Quantity);
+                var p6 = products.Where(x => x.Quantity == y).ToList();
+                Console.WriteLine("Min: ");
+                foreach (var item in p6)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("The most frequently occuring quantity: \n");
+
+                var p7 = products.Select(x => new
+                {
+                    x.Quantity,
+                    x.Name,
+                    x.Id
+                }).GroupBy(x => x.Quantity);
+                y = p7.Max(x => x.Count());
+
+                foreach (var item in p7)
+                {
+                    double d = item.Count();
+                    if(d == y)
+                    {
+                        foreach (var p in item)
+                        {
+                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Quantity: {p.Quantity}");
+                        }
+                        Console.WriteLine();
+                    }
+                }
+                Console.WriteLine();
+                Console.WriteLine("\n\nNext page click enter");
+                Console.ReadKey();
+                Console.Clear();
+
+                Console.WriteLine("DATE");
+                Console.WriteLine();
+
+                DateTime d1 = products.Min(x => x.date);
+                var p9 = products.Where(x => x.date == d1);
+                Console.WriteLine("The oldest");
+                foreach (var item in p9)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.date}");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("The newest");
+                d1 = products.Max(x => x.date);
+                var p10 = products.Where(x => x.date == d1);
+                foreach (var item in p10)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.date}");
+                }
+                Console.WriteLine();
+                Console.WriteLine("The most frequently occuring date: ");
+                var p11 = products.Select(x => new
+                {
+                    x.date,x.Name,x.Id
+                }).GroupBy(x => x.date);
+                y = p11.Max(x => x.Count());
+                foreach (var item in p11)
+                {
+                    double d = item.Count();
+                    if(d == y)
+                    {
+                        foreach (var p in item)
+                        {
+                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Date: {p.date}");
+                        }
+                        Console.WriteLine();
+                    }
+                }
+                Console.WriteLine();
+                Console.WriteLine("\n\nClick enter to continue");
+                Console.ReadKey();
+                Console.Clear();
+            }
+        }
     }
 }
 
