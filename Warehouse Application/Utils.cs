@@ -4,10 +4,10 @@ using System.Reflection;
 
 namespace Warehouse_Application
 {
-	public static class Utils
-	{
-		public static void FirstTimeUsing(ref List<Product> products,ref string systemOperation)
-		{
+    public static class Utils
+    {
+        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation)
+        {
             if (File.Exists(systemOperation) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation, "Products.json"))))
             {
                 try
@@ -22,42 +22,42 @@ namespace Warehouse_Application
 
             systemOperation = Path.Combine(systemOperation, "Products.json");
 
-			if (!File.Exists(systemOperation))
-			{
-				string jsonWriter = string.Empty;
-				File.WriteAllText(systemOperation, jsonWriter);
-			}
-			else
-			{
-				string jsonReader = File.ReadAllText(systemOperation);
-				products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
-			}
-		}
-		public static void AddingProduct(ref List<Product> products,string systemOp)
-		{
+            if (!File.Exists(systemOperation))
+            {
+                string jsonWriter = string.Empty;
+                File.WriteAllText(systemOperation, jsonWriter);
+            }
+            else
+            {
+                string jsonReader = File.ReadAllText(systemOperation);
+                products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
+            }
+        }
+        public static void AddingProduct(ref List<Product> products, string systemOp)
+        {
 
-			bool correctPrice, correctQuantity, correctData = false;
-			string name, id;
-			int quantity;
-			double price;
+            bool correctPrice, correctQuantity, correctData = false;
+            string name, id;
+            int quantity;
+            double price;
             DateTime copyDate = DateTime.Now;
             DateTime date = copyDate.Date;
 
 
-			do
-			{
-				Console.Clear();
-				Console.Write("Name of product: ");
-				name = Console.ReadLine().Trim();
+            do
+            {
+                Console.Clear();
+                Console.Write("Name of product: ");
+                name = Console.ReadLine().Trim();
 
-				Console.Write("\nPrice of product: ");
-				correctPrice = double.TryParse(Console.ReadLine(), out price);
+                Console.Write("\nPrice of product: ");
+                correctPrice = double.TryParse(Console.ReadLine(), out price);
 
-				Console.Write("\nQuantity of product: ");
-				correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
+                Console.Write("\nQuantity of product: ");
+                correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
 
-				Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
-				id = Console.ReadLine().Trim();
+                Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
+                id = Console.ReadLine().Trim();
 
 
                 try
@@ -99,12 +99,12 @@ namespace Warehouse_Application
             Console.WriteLine("Click enter to continue");
             Console.ReadKey();
 
-			string jsonWriter = File.ReadAllText(systemOp);
-			products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
+            string jsonWriter = File.ReadAllText(systemOp);
+            products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
 
-		}
-		public static void RecordingTxtFile(string systemOp, string report)
-		{
+        }
+        public static void RecordingTxtFile(string systemOp, string report)
+        {
             if (!string.IsNullOrEmpty(systemOp))
             {
                 Console.Clear();
@@ -121,6 +121,7 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
         }
+
         public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
         {
             graphic = true;
@@ -147,6 +148,7 @@ namespace Warehouse_Application
             Console.Clear();
 
         }
+
         public static void RemovingRecord(ref List<Product> products, string systemOp)
         {
             Product p1 = new Product();
@@ -218,6 +220,8 @@ namespace Warehouse_Application
                 } while (!endRemovingRecord);
 
             }
+
+          
        
         }
         public static string NameFile()
@@ -234,6 +238,8 @@ namespace Warehouse_Application
 
             } while (!attempt);
             return x;
+
+          
         }
     }
 }

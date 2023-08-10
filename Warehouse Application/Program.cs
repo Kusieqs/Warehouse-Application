@@ -48,7 +48,7 @@ internal class Program
                     break;
 
                 case 6:
-                    closeProgram = true;
+                    Utils.ModifyingProduct(ref listOfProducts);
                     break;
 
                 default:
