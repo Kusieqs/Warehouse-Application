@@ -358,11 +358,9 @@ namespace Warehouse_Application
         {
             if (!string.IsNullOrEmpty(report))
             {
-                Console.Clear();
-                Console.Write("File Name: ");
-                string fileName = Console.ReadLine() + ".txt";
+                string fileName = Utils.NameFile();
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                path = Path.Combine(path, "Desktop", fileName);
+                path = Path.Combine(path, "Desktop", fileName + ".txt");
                 File.WriteAllText(path, report);
                 Console.WriteLine("File is complete!");
             }
@@ -378,9 +376,8 @@ namespace Warehouse_Application
 
             if(!string.IsNullOrEmpty(report))
             {
-                Console.Clear();
-                Console.Write("File Name: ");
-                string fileName = Console.ReadLine() + ".pdf";
+                string fileName = Utils.NameFile();
+
                 string[] text = report.Split('\n');
 
                 PdfDocument document = new PdfDocument();
@@ -402,7 +399,7 @@ namespace Warehouse_Application
                     gfx.DrawString(item, font, XBrushes.Black, x, y);
                     y += lineHeight;
                 }
-                document.Save(Path.Combine(path,"Desktop", fileName));
+                document.Save(Path.Combine(path,"Desktop", fileName+".pdf"));
             }
             else
             {
@@ -413,12 +410,13 @@ namespace Warehouse_Application
         }
         private static void ExcelCreater(List<Product> products)
         {
-            
-            Console.Clear();
-            Console.Write("File Name: ");
-            string fileName = Console.ReadLine() + ".xlsx";
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            systemOp = Path.Combine(systemOp, "Desktop");
+
+            string fileName = Utils.NameFile();
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (var package = new ExcelPackage(new FileInfo(fileName)))
+            using (var package = new ExcelPackage(new FileInfo(Path.Combine(systemOp,fileName+".xlsx"))))
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Products");
                 worksheet.Cells[1, 1].Value = "Number";
@@ -437,12 +435,12 @@ namespace Warehouse_Application
 
                 for (int i = 0; i < products.Count; i++)
                 {
-                    worksheet.Cells[i + 2, 1].Value = i + 1;
-                    worksheet.Cells[i + 2, 2].Value = products[i].Name;
-                    worksheet.Cells[i + 2, 3].Value = products[i].Id;
-                    worksheet.Cells[i + 2, 4].Value = products[i].Price;
-                    worksheet.Cells[i + 2, 5].Value = products[i].Quantity;
-                    worksheet.Cells[i + 2, 6].Value = products[i].date;
+                    worksheet.Cells[i + 3, 1].Value = i + 1;
+                    worksheet.Cells[i + 3, 2].Value = products[i].Name;
+                    worksheet.Cells[i + 3, 3].Value = products[i].Id;
+                    worksheet.Cells[i + 3, 4].Value = products[i].Price;
+                    worksheet.Cells[i + 3, 5].Value = products[i].Quantity;
+                    worksheet.Cells[i + 3, 6].Value = products[i].date;
                 }
 
                 worksheet.Cells.AutoFitColumns();
