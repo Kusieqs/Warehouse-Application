@@ -33,6 +33,15 @@ public class Product
         this.price = p1.price;
         this.quantity = p1.quantity;
         this.date = p1.date;
+
+
+    public Product(Product p1)
+    {
+        name = p1.name;
+        id = p1.id;
+        price = p1.price;
+        quantity = p1.quantity;
+        date = p1.date;
     }
     public Product()
     {
