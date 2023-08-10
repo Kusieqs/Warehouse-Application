@@ -221,6 +221,25 @@ namespace Warehouse_Application
 
             }
 
+          
+       
+        }
+        public static string NameFile()
+        {
+            string x = "";
+            bool attempt = false;
+            do
+            {
+                Console.Clear();
+                Console.Write("File Name: ");
+                x = Console.ReadLine();
+                if (x.Length > 0)
+                    attempt = true;
+
+            } while (!attempt);
+            return x;
+
+          
         }
     }
 }
