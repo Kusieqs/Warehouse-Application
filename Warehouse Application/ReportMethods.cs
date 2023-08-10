@@ -302,7 +302,7 @@ namespace Warehouse_Application
         }
         private static void ReportMenu(string systemOp, string report, ref bool endOfReport, List<Product> reportProducts)
         {
-            Console.WriteLine("1.Record to txt file\n2.Record to pdf\n3.Record to excel\n4.Exit\n");
+            Console.WriteLine("1.Record to txt file\n2.Record to pdf\n3.Record to excel\n4.Statistics of list\n5.Exit\n");
 
             Console.Write($"Number: ");
             string answer = Console.ReadLine();
@@ -310,7 +310,7 @@ namespace Warehouse_Application
             switch (answer)
             {
                 case "1":
-                    RecordingTxtFile(systemOp, report);
+                    RecordingTxtFile(report);
                     break;
                 case "2":
                     PdfCreater(report);
@@ -319,6 +319,9 @@ namespace Warehouse_Application
                     ExcelCreater(reportProducts);
                     break;
                 case "4":
+                    Utils.Statistics(reportProducts);
+                    break;
+                case "5":
                     endOfReport = true;
                     break;
 
@@ -354,7 +357,7 @@ namespace Warehouse_Application
                     throw new FormatException("Critical Error");
             }
         }
-        private static void RecordingTxtFile(string systemOp, string report)
+        private static void RecordingTxtFile(string report)
         {
             if (!string.IsNullOrEmpty(report))
             {
