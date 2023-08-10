@@ -3,6 +3,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
+using OfficeOpenXml;
+using System.IO;
 
 
 namespace Warehouse_Application
@@ -65,7 +67,7 @@ namespace Warehouse_Application
                     Console.WriteLine("- - - - - - - - - - - -");
                 }
                 Console.WriteLine("\n\n");
-                ReportMenu(systemOp, report, ref endOfReport);
+                ReportMenu(systemOp, report, ref endOfReport,products);
             } while (!endOfReport);
 
         }
@@ -97,7 +99,7 @@ namespace Warehouse_Application
                             endSearching = true;
                         }
                         Console.WriteLine("\n\n");
-                        ReportMenu(systemOp, report, ref endSearching);
+                        ReportMenu(systemOp, report, ref endSearching, copyList);
 
                     }
                     else
@@ -280,7 +282,7 @@ namespace Warehouse_Application
                     switch(answer)
                     {
                         case "1":
-                            ReportMenu(systemOp, report, ref endOfReport);
+                            ReportMenu(systemOp, report, ref endOfReport, sortList);
                             endOfSort = true;
                             break;
                         case "2":
@@ -298,9 +300,9 @@ namespace Warehouse_Application
 
             } while (!endOfSort); 
         }
-        private static void ReportMenu(string systemOp, string report, ref bool endOfReport)
+        private static void ReportMenu(string systemOp, string report, ref bool endOfReport, List<Product> reportProducts)
         {
-            Console.WriteLine("1.Record to txt file\n2.Record to pdf\n3.Exit\n");
+            Console.WriteLine("1.Record to txt file\n2.Record to pdf\n3.Record to excel\n4.Exit\n");
 
             Console.Write($"Number: ");
             string answer = Console.ReadLine();
@@ -311,9 +313,12 @@ namespace Warehouse_Application
                     RecordingTxtFile(systemOp, report);
                     break;
                 case "2":
-                    PdfCreater(report, systemOp);
+                    PdfCreater(report);
                     break;
                 case "3":
+                    ExcelCreater(reportProducts);
+                    break;
+                case "4":
                     endOfReport = true;
                     break;
 
@@ -367,7 +372,7 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
         }
-        private static void PdfCreater(string report, string systemOp)
+        private static void PdfCreater(string report)
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
@@ -405,6 +410,44 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
             Console.Clear();
+        }
+        private static void ExcelCreater(List<Product> products)
+        {
+            
+            Console.Clear();
+            Console.Write("File Name: ");
+            string fileName = Console.ReadLine() + ".xlsx";
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(new FileInfo(fileName)))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Products");
+                worksheet.Cells[1, 1].Value = "Number";
+                worksheet.Cells[1, 2].Value = "Produt Name";
+                worksheet.Cells[1, 3].Value = "Id";
+                worksheet.Cells[1, 4].Value = "Price";
+                worksheet.Cells[1, 5].Value = "Quantity";
+                worksheet.Cells[1, 6].Value = "Date";
+
+                var range = worksheet.Cells["A1:F1"];
+                range.Style.Font.Bold = true;
+                range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                range.Style.Fill.BackgroundColor.SetColor(OfficeOpenXml.Style.ExcelIndexedColor.Indexed10);
+                range.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                range.Style.Border.Bottom.Color.SetColor(OfficeOpenXml.Drawing.eThemeSchemeColor.Accent3);
+
+                for (int i = 0; i < products.Count; i++)
+                {
+                    worksheet.Cells[i + 2, 1].Value = i + 1;
+                    worksheet.Cells[i + 2, 2].Value = products[i].Name;
+                    worksheet.Cells[i + 2, 3].Value = products[i].Id;
+                    worksheet.Cells[i + 2, 4].Value = products[i].Price;
+                    worksheet.Cells[i + 2, 5].Value = products[i].Quantity;
+                    worksheet.Cells[i + 2, 6].Value = products[i].date;
+                }
+
+                worksheet.Cells.AutoFitColumns();
+                package.Save();
+            }
         }
     }
 }
