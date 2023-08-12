@@ -65,7 +65,13 @@ namespace Warehouse_Application
                     Product p1 = new Product(name, id, price, quantity, date);
 
                     string jsonCreator;
-                    correctData = true;
+                    correctData = false;
+
+                    if(products.Any(x => x.Id == id))
+                    {
+                        throw new FormatException("This id is already exist");
+                    }
+
                     if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
                     {
                         List<Product> products1Copy = new List<Product>();
@@ -87,8 +93,10 @@ namespace Warehouse_Application
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"\n{e.Message}");
                     Console.ResetColor();
-                    Console.WriteLine("Click enter to continue");
-                    Console.ReadKey();
+                    Console.WriteLine("Click enter to continue or 0 to exit");
+                    string answer = Console.ReadLine();
+                    if (answer == "0")
+                        return;
                 }
 
             } while (!correctData);
@@ -110,8 +118,8 @@ namespace Warehouse_Application
                 Console.Clear();
                 Console.Write("File Name: ");
                 string fileName = Console.ReadLine() + ".txt";
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                path = Path.Combine(path, "Desktop", fileName);
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                path = Path.Combine(path,fileName);
                 File.WriteAllText(path, report);
                 Console.WriteLine("File is complete!");
             }

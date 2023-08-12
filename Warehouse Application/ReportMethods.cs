@@ -96,7 +96,6 @@ namespace Warehouse_Application
                             Console.WriteLine("Quantity: " + product.Quantity);
                             Console.WriteLine("Id: " + product.Id);
                             Console.WriteLine("Date: " + product.date);
-                            endSearching = true;
                         }
                         Console.WriteLine("\n\n");
                         ReportMenu(systemOp, report, ref endSearching, copyList);
@@ -277,11 +276,12 @@ namespace Warehouse_Application
                             Console.WriteLine("- - - - - - - - - - - -");
                         }
                     }
-                    Console.Write("\n\n1.Report to txt\n2.Antoher term condition\n3.Exit\nNumber: ");
+                    Console.Write("\n\n1.Report\n2.Antoher term condition\n3.Exit\nNumber: ");
                     string answer = Console.ReadLine();
                     switch(answer)
                     {
                         case "1":
+                            Console.WriteLine();
                             ReportMenu(systemOp, report, ref endOfReport, sortList);
                             endOfSort = true;
                             break;
@@ -362,8 +362,8 @@ namespace Warehouse_Application
             if (!string.IsNullOrEmpty(report))
             {
                 string fileName = Utils.NameFile();
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                path = Path.Combine(path, "Desktop", fileName + ".txt");
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                path = Path.Combine(path, fileName + ".txt");
                 File.WriteAllText(path, report);
                 Console.WriteLine("File is complete!");
             }
@@ -375,7 +375,7 @@ namespace Warehouse_Application
         }
         private static void PdfCreater(string report)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
             if(!string.IsNullOrEmpty(report))
             {
@@ -402,7 +402,7 @@ namespace Warehouse_Application
                     gfx.DrawString(item, font, XBrushes.Black, x, y);
                     y += lineHeight;
                 }
-                document.Save(Path.Combine(path,"Desktop", fileName+".pdf"));
+                document.Save(Path.Combine(path, fileName+".pdf"));
             }
             else
             {
@@ -420,8 +420,7 @@ namespace Warehouse_Application
             }
             else
             {
-                string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                systemOp = Path.Combine(systemOp, "Desktop");
+                string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
                 string fileName = Utils.NameFile();
 

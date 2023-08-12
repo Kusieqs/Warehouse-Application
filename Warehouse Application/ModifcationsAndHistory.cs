@@ -138,6 +138,13 @@ namespace Warehouse_Application
                     object parsedValue = ParseValue(value, propertyInfo.PropertyType);
                     copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
                     Console.Clear();
+                    if(products.Any(x => x.Id == parsedValue))
+                    {
+                        Console.WriteLine("This id is already exist\nClick enter to continue!");
+                        Console.ReadKey();
+                        continue;
+                    }
+
                     AcceptingModify(copy, out accept);
                     if (accept)
                     {

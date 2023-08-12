@@ -8,8 +8,7 @@ internal class Program
     {
         int number;
         bool closeProgram = false, correctNumber;
-        string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        systemOperation = Path.Combine(systemOperation, "Desktop");
+        string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         List<Product> listOfProducts = new List<Product>();
         Utils.FirstTimeUsing(ref listOfProducts, ref systemOperation);
 
