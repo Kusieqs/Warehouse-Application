@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Text.RegularExpressions;
-using System.Reflection;
 
 namespace Warehouse_Application
 {
@@ -62,31 +61,33 @@ namespace Warehouse_Application
 
                 try
                 {
-                    Product p1 = new Product(name, id, price, quantity, date);
 
-                    string jsonCreator;
-                    correctData = false;
-
-                    if(products.Any(x => x.Id == id))
+                    if (correctPrice && correctQuantity && !products.Any(x => x.Id == id))
                     {
-                        throw new FormatException("This id is already exist");
-                    }
+                        Product p1 = new Product(name, id, price, quantity, date);
 
-                    if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
-                    {
-                        List<Product> products1Copy = new List<Product>();
-                        products1Copy.Add(p1);
-                        jsonCreator = JsonConvert.SerializeObject(products1Copy);
-                        File.WriteAllText(systemOp, jsonCreator);
+                        string jsonCreator;
+                        correctData = false;
+                        if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
+                        {
+                            List<Product> products1Copy = new List<Product>();
+                            products1Copy.Add(p1);
+                            jsonCreator = JsonConvert.SerializeObject(products1Copy);
+                            File.WriteAllText(systemOp, jsonCreator);
+                        }
+                        else
+                        {
+                            products.Add(p1);
+                            jsonCreator = JsonConvert.SerializeObject(products);
+                            File.WriteAllText(systemOp, jsonCreator);
+
+                        }
+                        correctData = true;
                     }
                     else
                     {
-                        products.Add(p1);
-                        jsonCreator = JsonConvert.SerializeObject(products);
-                        File.WriteAllText(systemOp, jsonCreator);
-
+                        throw new FormatException("Wrong data or Id already exist");
                     }
-                    correctData = true;
                 }
                 catch (FormatException e)
                 {
