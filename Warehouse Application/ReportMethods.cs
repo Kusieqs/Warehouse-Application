@@ -58,12 +58,12 @@ namespace Warehouse_Application
                 Console.WriteLine("- - - - - - - - - - - -");
                 foreach (var product in products)
                 {
-                    report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n - - - - - - - - \n";
+                    report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n - - - - - - - - \n";
                     Console.WriteLine($"Name: {product.Name}");
                     Console.WriteLine($"Price: {product.Price}");
                     Console.WriteLine($"Quantity: {product.Quantity}");
                     Console.WriteLine($"Id: {product.Id}");
-                    Console.WriteLine($"Date: {product.date}");
+                    Console.WriteLine($"Date: {product.Date}");
                     Console.WriteLine("- - - - - - - - - - - -");
                 }
                 Console.WriteLine("\n\n");
@@ -79,7 +79,7 @@ namespace Warehouse_Application
             {
                 Console.Clear();
                 List<Product> copyList = products.ToList();
-                Console.Write("Id: ");
+                Console.Write("Id (Write 0 to exit): ");
                 string idSearching = Console.ReadLine();
                 if (Regex.IsMatch((idSearching), @"^[A-Za-z]{4}\d{5}$"))
                 {
@@ -90,12 +90,12 @@ namespace Warehouse_Application
                         string report = "";
                         foreach (var product in copyList)
                         {
-                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n - - - - - - - - \n";
+                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n - - - - - - - - \n";
                             Console.WriteLine("Name: " + product.Name);
                             Console.WriteLine("Price: " + product.Price);
                             Console.WriteLine("Quantity: " + product.Quantity);
                             Console.WriteLine("Id: " + product.Id);
-                            Console.WriteLine("Date: " + product.date);
+                            Console.WriteLine("Date: " + product.Date);
                         }
                         Console.WriteLine("\n\n");
                         ReportMenu(report, ref endSearching, copyList);
@@ -109,12 +109,12 @@ namespace Warehouse_Application
                             endSearching = true;
                     }
                 }
+                else if (idSearching == "0")
+                    endSearching = true;
                 else
                 {
                     Console.WriteLine("\nWrong id (4 Letters and 5 numbers, example: Abcd12345)\nClick enter to continue or 0 to exit");
                     string exitOrNot = Console.ReadLine();
-                    if (exitOrNot == "0")
-                        endSearching = true;
                 }
 
             } while (!endSearching);
@@ -169,41 +169,38 @@ namespace Warehouse_Application
                         switch (answerDate)
                         {
                             case "1":
-                                sortingBy = "date.Day";
+                                sortingBy = "day";
                                 Console.Write("Day: ");
                                 dayBool = int.TryParse(Console.ReadLine(), out day);
                                 if (!dayBool)
                                 {
                                     break;
                                 }
-                                dateSorting = new DateTime(1, 1, day);
-                                value = dateSorting.ToString();
+                                value = day.ToString();
                                 attempt = true;
                                 break;
 
                             case "2":
-                                sortingBy = "date.Month";
+                                sortingBy = "month";
                                 Console.Write("Month: ");
                                 monthBool = int.TryParse(Console.ReadLine(), out month);
                                 if (!monthBool)
                                 {
                                     break;
                                 }
-                                dateSorting = new DateTime(1, month, 1);
-                                value = dateSorting.ToString();
+                                value = month.ToString();
                                 attempt = true;
                                 break;
 
                             case "3":
-                                sortingBy = "date.Year";
+                                sortingBy = "year";
                                 Console.Write("Year: ");
                                 yearBool = int.TryParse(Console.ReadLine(), out year);
                                 if (!yearBool)
                                 {
                                     break;
                                 }
-                                dateSorting = new DateTime(year, 1, 1);
-                                value = dateSorting.ToString();
+                                value = year.ToString();
                                 attempt = true;
                                 break;
 
@@ -318,12 +315,12 @@ namespace Warehouse_Application
                         Console.Clear();
                         foreach (var product in sortList)
                         {
-                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.date}\n- - - - - - - - - - -\n";
+                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n- - - - - - - - - - -\n";
                             Console.WriteLine($"Name: {product.Name}");
                             Console.WriteLine($"Price: {product.Price}");
                             Console.WriteLine($"Quantity: {product.Quantity}");
                             Console.WriteLine($"Id: {product.Id}");
-                            Console.WriteLine($"Date: {product.date}");
+                            Console.WriteLine($"Date: {product.Date}");
                             Console.WriteLine("- - - - - - - - - - - -");
                         }
                     }
@@ -502,7 +499,7 @@ namespace Warehouse_Application
                         worksheet.Cells[i + 3, 4].Value = products[i].Price;
                         worksheet.Cells[i + 3, 5].Value = products[i].Quantity;
                         worksheet.Cells[i + 3, 6].Style.Numberformat.Format = "yyyy-mm-dd";
-                        worksheet.Cells[i + 3, 6].Value = products[i].date;
+                        worksheet.Cells[i + 3, 6].Value = products[i].Date;
                     }
 
                     worksheet.Cells.AutoFitColumns();

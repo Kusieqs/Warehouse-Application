@@ -145,9 +145,7 @@ namespace Warehouse_Application
                 Console.WriteLine($"Price: {product.Price}");
                 Console.WriteLine($"Quantity: {product.Quantity}");
                 Console.WriteLine($"Id: {product.Id}");
-                Console.WriteLine($"Date: {product.date}");
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("\n                    \n");
+                Console.WriteLine($"Date: {product.Date}\n\n");
                 Console.ResetColor();
             }
             Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");
@@ -203,7 +201,7 @@ namespace Warehouse_Application
                         Console.WriteLine($"Price: {p1.Price}");
                         Console.WriteLine($"Quantity: {p1.Quantity}");
                         Console.WriteLine($"Id: {p1.Id}");
-                        Console.WriteLine($"Date: {p1.date}");
+                        Console.WriteLine($"Date: {p1.Date}");
                         Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
                         Console.Write("Number: ");
                         string choosingYesNo = Console.ReadLine();
@@ -349,7 +347,7 @@ namespace Warehouse_Application
                     {
                         foreach (var p in item)
                         {
-                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Quantity: {p.Quantity}");
+                            Console.WriteLine($"Name: {p.Name}, Quantity: {p.Quantity}, Id: {p.Id}");
                         }
                         Console.WriteLine();
                     }
@@ -359,31 +357,31 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 Console.Clear();
 
-                Console.WriteLine("DATE");
+                Console.WriteLine("DATE\n\n");
                 Console.WriteLine();
 
-                DateTime d1 = products.Min(x => x.date);
-                var p9 = products.Where(x => x.date == d1);
-                Console.WriteLine("The oldest");
+                DateTime d1 = products.Min(x => x.Date);
+                var p9 = products.Where(x => x.Date == d1);
+                Console.WriteLine("The oldest: \n");
                 foreach (var item in p9)
                 {
-                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.date}");
+                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("The newest");
-                d1 = products.Max(x => x.date);
-                var p10 = products.Where(x => x.date == d1);
+                Console.WriteLine("\n\nThe newest: \n");
+                d1 = products.Max(x => x.Date);
+                var p10 = products.Where(x => x.Date == d1);
                 foreach (var item in p10)
                 {
-                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.date}");
+                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
                 }
                 Console.WriteLine();
-                Console.WriteLine("The most frequently occuring date: ");
+                Console.WriteLine("\n\nThe most frequently occuring date: \n");
                 var p11 = products.Select(x => new
                 {
-                    x.date,x.Name,x.Id
-                }).GroupBy(x => x.date);
+                    x.Date,x.Name,x.Id
+                }).GroupBy(x => x.Date);
                 y = p11.Max(x => x.Count());
                 foreach (var item in p11)
                 {
@@ -392,7 +390,7 @@ namespace Warehouse_Application
                     {
                         foreach (var p in item)
                         {
-                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Date: {p.date}");
+                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Date: {p.Date}");
                         }
                         Console.WriteLine();
                     }

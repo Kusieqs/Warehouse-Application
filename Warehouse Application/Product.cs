@@ -7,7 +7,10 @@ public class Product
     private string id;
     private double price;
     private int quantity;
-    public DateTime date { get; set; }
+    private DateTime date { get; set; }
+    public int day { get; set; }
+    public int year { get; set; } /// No idea to a better sorting method 
+    public int month { get; set; }
     public Product(Product p1)
     {
         this.name = p1.name;
@@ -42,6 +45,10 @@ public class Product
         quantity = 0;
         DateTime dateCopy = DateTime.Now;
         date = dateCopy.Date;
+
+        day = date.Day;
+        month = date.Month;
+        year = date.Year;
     }
     public Product(string name, string id, double price, int quantity, DateTime date)
     {
@@ -56,6 +63,9 @@ public class Product
             throw new FormatException("Informations about product are not correct");
 
         this.date = date;
+        day = date.Day;
+        month = date.Month;
+        year = date.Year;
     }
     public string Name
     {
@@ -119,6 +129,24 @@ public class Product
             }
             else
                 throw new FormatException("Quantity is not correct");
+        }
+    }
+    public DateTime Date
+    {
+        get
+        {
+            return date;
+        }
+        set
+        {
+            int daysInMonth = DateTime.DaysInMonth(value.Year, value.Month);
+            if(daysInMonth>=value.Day && value.Month <=12 && value.Month>0 && value.Day > 0 && value.Year > 0)
+            {
+                date = value;
+                day = value.Day;
+                month = value.Month;
+                year = value.Year;
+            }
         }
     }
     public void HistoryOfProduct(HistoryModifications p1)
