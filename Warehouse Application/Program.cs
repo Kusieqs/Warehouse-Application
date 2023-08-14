@@ -9,6 +9,9 @@ internal class Program
         int number;
         bool closeProgram = false, correctNumber;
         string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        systemOperation = Path.Combine(systemOperation, "WareHouse");
+
+
         List<Product> listOfProducts = new List<Product>();
         Utils.FirstTimeUsing(ref listOfProducts, ref systemOperation);
 

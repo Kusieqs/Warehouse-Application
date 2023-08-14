@@ -7,30 +7,23 @@ namespace Warehouse_Application
     {
         public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation)
         {
-            if (File.Exists(systemOperation) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation, "Products.json"))))
-            {
-                try
-                {
-                    File.Delete(systemOperation);
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine("Wystapil blad podczas usówania pliku: " + e);
-                }
-            }
 
-            systemOperation = Path.Combine(systemOperation, "Products.json");
-
-            if (!File.Exists(systemOperation))
+            if(!Directory.Exists(systemOperation))
             {
+                Directory.CreateDirectory(systemOperation);
                 string jsonWriter = string.Empty;
-                File.WriteAllText(systemOperation, jsonWriter);
+                File.WriteAllText(Path.Combine(systemOperation,"Products.json"), jsonWriter);
+            }
+            else if(Directory.Exists(systemOperation) && File.Exists(Path.Combine(systemOperation,"Products.json")) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation,"Products.json"))))
+            {
+                File.Delete(Path.Combine(systemOperation, "Products.json"));
             }
             else
             {
-                string jsonReader = File.ReadAllText(systemOperation);
+                string jsonReader = File.ReadAllText(Path.Combine(systemOperation,"Products.json"));
                 products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
             }
+            systemOperation = Path.Combine(systemOperation, "Products.json");
         }
         public static void AddingProduct(ref List<Product> products, string systemOp)
         {
@@ -130,7 +123,6 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
         }
-
         public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
         {
             graphic = true;
@@ -155,7 +147,6 @@ namespace Warehouse_Application
             Console.Clear();
 
         }
-
         public static void RemovingRecord(ref List<Product> products, string systemOp)
         {
             Product p1 = new Product();

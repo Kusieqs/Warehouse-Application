@@ -238,7 +238,7 @@ namespace Warehouse_Application
                             Console.WriteLine($"DATE MODIFICATION: {history.date}\n");
                             Console.WriteLine($"ID MODIFICATION: {history.idModofication}");
                             Console.ResetColor();
-                            Console.Write($"BEFORE\nName:{history.before.name}\nPrice:{history.before.price}\nQuantity:{history.before.quantity}\nId:{history.before.id}\nDate{history.before.date}");
+                            Console.Write($"BEFORE\nName:{history.before.name}\nPrice:{history.before.price}\nQuantity:{history.before.quantity}\nId:{history.before.id}\nDate:{history.before.date}");
                             Console.SetCursorPosition(40, line);
                             Console.WriteLine("AFTER");
                             line++;
@@ -255,7 +255,7 @@ namespace Warehouse_Application
                             Console.WriteLine($"Id:{history.after.id}");
                             line++;
                             Console.SetCursorPosition(40, line);
-                            Console.WriteLine($"Date:{history.after.date}");
+                            Console.WriteLine($"Date:{history.after.date}\n\n");
                             line += 6;
                             Console.BackgroundColor = ConsoleColor.White;
                             Console.WriteLine(" - - - - - - - - - - - - - - - - - - - - - - \n");

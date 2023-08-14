@@ -11,6 +11,7 @@ public class Product
     public int day { get; set; }
     public int year { get; set; } /// No idea to a better sorting method 
     public int month { get; set; }
+    // Employee position
     public Product(Product p1)
     {
         this.name = p1.name;

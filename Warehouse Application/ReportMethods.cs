@@ -411,7 +411,7 @@ namespace Warehouse_Application
             {
                 string fileName = Utils.NameFile();
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                path = Path.Combine(path, fileName + ".txt");
+                path = Path.Combine(path,"WareHouse", fileName + ".txt");
                 File.WriteAllText(path, report);
                 Console.WriteLine("File is complete!");
             }
@@ -420,6 +420,7 @@ namespace Warehouse_Application
                 Console.WriteLine("File is empty!\nClick enter to continue");
                 Console.ReadKey();
             }
+            Console.Clear();
         }
         private static void PdfCreater(string report)
         {
@@ -450,7 +451,7 @@ namespace Warehouse_Application
                     gfx.DrawString(item, font, XBrushes.Black, x, y);
                     y += lineHeight;
                 }
-                document.Save(Path.Combine(path, fileName + ".pdf"));
+                document.Save(Path.Combine(path,"WareHouse" ,fileName + ".pdf"));
             }
             else
             {
@@ -473,7 +474,7 @@ namespace Warehouse_Application
                 string fileName = Utils.NameFile();
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                using (var package = new ExcelPackage(new FileInfo(Path.Combine(systemOp, fileName + ".xlsx"))))
+                using (var package = new ExcelPackage(new FileInfo(Path.Combine(systemOp,"WareHouse" ,fileName + ".xlsx"))))
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Products");
                     worksheet.Cells[1, 1].Value = "Number";
@@ -504,6 +505,7 @@ namespace Warehouse_Application
 
                     worksheet.Cells.AutoFitColumns();
                     package.Save();
+                    Console.Clear();
                 }
 
             }
