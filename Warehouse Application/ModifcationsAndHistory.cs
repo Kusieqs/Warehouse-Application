@@ -62,7 +62,7 @@ namespace Warehouse_Application
                         Console.SetCursorPosition(25, 4);
                         Console.WriteLine($"Id: {copy.Id}");
                         Console.SetCursorPosition(25, 5);
-                        Console.WriteLine($"Date: {copy.date}");
+                        Console.WriteLine($"Date: {copy.Date}");
                         Console.SetCursorPosition(0, 10);
                         Console.Write("Number: ");
 
@@ -82,7 +82,7 @@ namespace Warehouse_Application
                                 property = "Id";
                                 break;
                             case "5":
-                                property = "date";
+                                property = "Date";
                                 break;
                             case "6":
                                 return;
@@ -91,7 +91,7 @@ namespace Warehouse_Application
                         }
                     } while (string.IsNullOrEmpty(property));
 
-                    if (property == "date")
+                    if (property == "Date")
                     {
                         DateTime date;
                         int year, month, day;
@@ -138,6 +138,13 @@ namespace Warehouse_Application
                     object parsedValue = ParseValue(value, propertyInfo.PropertyType);
                     copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
                     Console.Clear();
+                    if(products.Any(x => x.Id == parsedValue))
+                    {
+                        Console.WriteLine("This id is already exist\nClick enter to continue!");
+                        Console.ReadKey();
+                        continue;
+                    }
+
                     AcceptingModify(copy, out accept);
                     if (accept)
                     {
@@ -325,7 +332,7 @@ namespace Warehouse_Application
                 Console.WriteLine($"Price: {p1.Price}");
                 Console.WriteLine($"Quantity: {p1.Quantity}");
                 Console.WriteLine($"Id: {p1.Id}");
-                Console.WriteLine($"Date: {p1.date}");
+                Console.WriteLine($"Date: {p1.Date}");
                 Console.WriteLine("\nDo you want to accept this modify?\n1.Yes\n2.No");
                 string answer = Console.ReadLine();
                 if (answer == "1")

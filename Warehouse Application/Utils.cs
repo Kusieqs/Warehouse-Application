@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Text.RegularExpressions;
-using System.Reflection;
 
 namespace Warehouse_Application
 {
@@ -62,33 +61,43 @@ namespace Warehouse_Application
 
                 try
                 {
-                    Product p1 = new Product(name, id, price, quantity, date);
 
-                    string jsonCreator;
-                    correctData = true;
-                    if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
+                    if (correctPrice && correctQuantity && !products.Any(x => x.Id == id))
                     {
-                        List<Product> products1Copy = new List<Product>();
-                        products1Copy.Add(p1);
-                        jsonCreator = JsonConvert.SerializeObject(products1Copy);
-                        File.WriteAllText(systemOp, jsonCreator);
+                        Product p1 = new Product(name, id, price, quantity, date);
+
+                        string jsonCreator;
+                        correctData = false;
+                        if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
+                        {
+                            List<Product> products1Copy = new List<Product>();
+                            products1Copy.Add(p1);
+                            jsonCreator = JsonConvert.SerializeObject(products1Copy);
+                            File.WriteAllText(systemOp, jsonCreator);
+                        }
+                        else
+                        {
+                            products.Add(p1);
+                            jsonCreator = JsonConvert.SerializeObject(products);
+                            File.WriteAllText(systemOp, jsonCreator);
+
+                        }
+                        correctData = true;
                     }
                     else
                     {
-                        products.Add(p1);
-                        jsonCreator = JsonConvert.SerializeObject(products);
-                        File.WriteAllText(systemOp, jsonCreator);
-
+                        throw new FormatException("Wrong data or Id already exist");
                     }
-                    correctData = true;
                 }
                 catch (FormatException e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"\n{e.Message}");
                     Console.ResetColor();
-                    Console.WriteLine("Click enter to continue");
-                    Console.ReadKey();
+                    Console.WriteLine("Click enter to continue or 0 to exit");
+                    string answer = Console.ReadLine();
+                    if (answer == "0")
+                        return;
                 }
 
             } while (!correctData);
@@ -110,8 +119,8 @@ namespace Warehouse_Application
                 Console.Clear();
                 Console.Write("File Name: ");
                 string fileName = Console.ReadLine() + ".txt";
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                path = Path.Combine(path, "Desktop", fileName);
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                path = Path.Combine(path,fileName);
                 File.WriteAllText(path, report);
                 Console.WriteLine("File is complete!");
             }
@@ -137,9 +146,7 @@ namespace Warehouse_Application
                 Console.WriteLine($"Price: {product.Price}");
                 Console.WriteLine($"Quantity: {product.Quantity}");
                 Console.WriteLine($"Id: {product.Id}");
-                Console.WriteLine($"Date: {product.date}");
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("\n                    \n");
+                Console.WriteLine($"Date: {product.Date}\n\n");
                 Console.ResetColor();
             }
             Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");
@@ -196,7 +203,7 @@ namespace Warehouse_Application
                         Console.WriteLine($"Price: {p1.Price}");
                         Console.WriteLine($"Quantity: {p1.Quantity}");
                         Console.WriteLine($"Id: {p1.Id}");
-                        Console.WriteLine($"Date: {p1.date}");
+                        Console.WriteLine($"Date: {p1.Date}");
                         Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
                         Console.Write("Number: ");
                         string choosingYesNo = Console.ReadLine();
@@ -346,7 +353,7 @@ namespace Warehouse_Application
                     {
                         foreach (var p in item)
                         {
-                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Quantity: {p.Quantity}");
+                            Console.WriteLine($"Name: {p.Name}, Quantity: {p.Quantity}, Id: {p.Id}");
                         }
                         Console.WriteLine();
                     }
@@ -356,31 +363,31 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 Console.Clear();
 
-                Console.WriteLine("DATE");
+                Console.WriteLine("DATE\n\n");
                 Console.WriteLine();
 
-                DateTime d1 = products.Min(x => x.date);
-                var p9 = products.Where(x => x.date == d1);
-                Console.WriteLine("The oldest");
+                DateTime d1 = products.Min(x => x.Date);
+                var p9 = products.Where(x => x.Date == d1);
+                Console.WriteLine("The oldest: \n");
                 foreach (var item in p9)
                 {
-                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.date}");
+                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("The newest");
-                d1 = products.Max(x => x.date);
-                var p10 = products.Where(x => x.date == d1);
+                Console.WriteLine("\n\nThe newest: \n");
+                d1 = products.Max(x => x.Date);
+                var p10 = products.Where(x => x.Date == d1);
                 foreach (var item in p10)
                 {
-                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.date}");
+                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
                 }
                 Console.WriteLine();
-                Console.WriteLine("The most frequently occuring date: ");
+                Console.WriteLine("\n\nThe most frequently occuring date: \n");
                 var p11 = products.Select(x => new
                 {
-                    x.date,x.Name,x.Id
-                }).GroupBy(x => x.date);
+                    x.Date,x.Name,x.Id
+                }).GroupBy(x => x.Date);
                 y = p11.Max(x => x.Count());
                 foreach (var item in p11)
                 {
@@ -389,7 +396,7 @@ namespace Warehouse_Application
                     {
                         foreach (var p in item)
                         {
-                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Date: {p.date}");
+                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Date: {p.Date}");
                         }
                         Console.WriteLine();
                     }
