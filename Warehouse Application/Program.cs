@@ -7,14 +7,19 @@ internal class Program
     private static void Main(string[] args)
     {
         int number;
-        bool closeProgram = false, correctNumber;
+        bool closeProgram = false, correctNumber, closeEmployee = false;
         string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         systemOperation = Path.Combine(systemOperation, "WareHouse");
 
-
+        List<Employee> employees = new List<Employee>();
         List<Product> listOfProducts = new List<Product>();
-        Utils.FirstTimeUsing(ref listOfProducts, ref systemOperation);
+        Utils.FirstTimeUsing(ref listOfProducts, ref systemOperation, ref employees);
 
+        Employee employee = null;
+
+        Utils.AddingEmployee(ref employees, out employee);
+
+        systemOperation = Path.Combine(systemOperation, "Products.json");
         do
         {
             do

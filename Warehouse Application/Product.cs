@@ -11,7 +11,9 @@ public class Product
     public int day { get; set; }
     public int year { get; set; } /// No idea to a better sorting method 
     public int month { get; set; }
-    // Employee position
+    private Employee addedBy;
+
+
     public Product(Product p1)
     {
         this.name = p1.name;
@@ -46,7 +48,7 @@ public class Product
         quantity = 0;
         DateTime dateCopy = DateTime.Now;
         date = dateCopy.Date;
-
+        
         day = date.Day;
         month = date.Month;
         year = date.Year;

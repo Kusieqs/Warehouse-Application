@@ -5,7 +5,7 @@ namespace Warehouse_Application
 {
     public static class Utils
     {
-        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation)
+        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation,ref List<Employee> employees)
         {
 
             if(!Directory.Exists(systemOperation))
@@ -13,17 +13,20 @@ namespace Warehouse_Application
                 Directory.CreateDirectory(systemOperation);
                 string jsonWriter = string.Empty;
                 File.WriteAllText(Path.Combine(systemOperation,"Products.json"), jsonWriter);
+                File.WriteAllText(Path.Combine(systemOperation, "Employee.json"), jsonWriter);
             }
-            else if(Directory.Exists(systemOperation) && File.Exists(Path.Combine(systemOperation,"Products.json")) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation,"Products.json"))))
+            else if(File.Exists(Path.Combine(systemOperation,"Products.json")) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation,"Products.json"))) && File.Exists(Path.Combine(systemOperation, "Employee.json"))&& string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation,"Employee.json"))))
             {
-                File.Delete(Path.Combine(systemOperation, "Products.json"));
+                Directory.Delete(systemOperation);
             }
             else
             {
+
                 string jsonReader = File.ReadAllText(Path.Combine(systemOperation,"Products.json"));
                 products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
+                jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee"));
+                employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
             }
-            systemOperation = Path.Combine(systemOperation, "Products.json");
         }
         public static void AddingProduct(ref List<Product> products, string systemOp)
         {
@@ -397,6 +400,40 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 Console.Clear();
             }
+        }
+        public static void AddingEmployee(ref List<Employee> employees, out Employee employee)
+        {
+            bool closeEmployee = false;
+            do
+            {
+                try
+                {
+                    if (employees.Count == 0)
+                    {
+
+                        Console.WriteLine("ADMIN INFROMATIONS\n\n");
+                        Console.Write("Name: ");
+                        Console.Write("Last name: ");
+                        Console.Write("Id (3 chars): ");
+                        Console.Write("Age: ");
+                        Console.Write("Login: ");
+                        Console.Write("Password");
+                        employee = new Employee();
+                    }
+                    else
+                    {
+
+                    }
+                }
+                catch(FormatException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(e);
+                    Console.ResetColor();
+                    Console.WriteLine("Click enter to continue");
+                    Console.ReadKey();
+                }
+            } while (!closeEmployee);
         }
     }
 }
