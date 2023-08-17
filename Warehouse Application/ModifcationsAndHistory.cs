@@ -138,7 +138,7 @@ namespace Warehouse_Application
                     object parsedValue = ParseValue(value, propertyInfo.PropertyType);
                     copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
                     Console.Clear();
-                    if(products.Any(x => x.Id == parsedValue))
+                    if(products.Any(x => x.Id == parsedValue) && property == "Id")
                     {
                         Console.WriteLine("This id is already exist\nClick enter to continue!");
                         Console.ReadKey();
@@ -294,7 +294,7 @@ namespace Warehouse_Application
             } while (!endOfModifications);
 
         }
-        private static object ParseValue(string input, Type targetType)
+        public static object ParseValue(string input, Type targetType)
         {
             if (targetType == typeof(int))
             {

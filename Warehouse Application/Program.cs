@@ -17,7 +17,7 @@ internal class Program
 
         Employee employee;
 
-        Utils.ChoosingEmployee(ref employees, out employee);
+        EmployeeMethods.ChoosingEmployee(ref employees, out employee);
 
         systemOperation = Path.Combine(systemOperation, "Products.json");
 
@@ -60,11 +60,12 @@ internal class Program
                                 break;
 
                             case 7:
-                                Utils.AddingEmployee(ref employees);
+                                EmployeeMethods.AddingEmployee(ref employees);
                                 break;
 
                             case 8:
-                                
+                                EmployeeMethods.EmployeeModifying(ref employees);
+                                break;
 
                             case 9:
                                 closeProgram = true;

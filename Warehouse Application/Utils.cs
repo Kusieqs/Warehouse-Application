@@ -5,24 +5,24 @@ namespace Warehouse_Application
 {
     public static class Utils
     {
-        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation,ref List<Employee> employees)
+        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation, ref List<Employee> employees)
         {
 
-            if(!Directory.Exists(systemOperation))
+            if (!Directory.Exists(systemOperation))
             {
                 Directory.CreateDirectory(systemOperation);
                 string jsonWriter = string.Empty;
-                File.WriteAllText(Path.Combine(systemOperation,"Products.json"), jsonWriter);
+                File.WriteAllText(Path.Combine(systemOperation, "Products.json"), jsonWriter);
                 File.WriteAllText(Path.Combine(systemOperation, "Employee.json"), jsonWriter);
             }
-            else if(File.Exists(Path.Combine(systemOperation,"Products.json")) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation,"Products.json"))) && File.Exists(Path.Combine(systemOperation, "Employee.json"))&& string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation,"Employee.json"))))
+            else if (File.Exists(Path.Combine(systemOperation, "Products.json")) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation, "Products.json"))) && File.Exists(Path.Combine(systemOperation, "Employee.json")) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation, "Employee.json"))))
             {
                 Directory.Delete(systemOperation);
             }
             else
             {
 
-                string jsonReader = File.ReadAllText(Path.Combine(systemOperation,"Products.json"));
+                string jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Products.json"));
                 products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
                 jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee"));
                 employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
@@ -116,7 +116,7 @@ namespace Warehouse_Application
                 Console.Write("File Name: ");
                 string fileName = Console.ReadLine() + ".txt";
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                path = Path.Combine(path,fileName);
+                path = Path.Combine(path, fileName);
                 File.WriteAllText(path, report);
                 Console.WriteLine("File is complete!");
             }
@@ -222,8 +222,8 @@ namespace Warehouse_Application
 
             }
 
-          
-       
+
+
         }
         public static string NameFile()
         {
@@ -240,12 +240,12 @@ namespace Warehouse_Application
             } while (!attempt);
             return x;
 
-          
+
         }
         public static void Statistics(List<Product> products)
         {
             Console.Clear();
-            if(products.Count == 0)
+            if (products.Count == 0)
             {
                 Console.Clear();
                 Console.WriteLine("List is empty\nClick enter to continue");
@@ -286,13 +286,15 @@ namespace Warehouse_Application
                 Console.WriteLine("The most frequently occuring price: \n");
                 var p3 = products.Select(x => new
                 {
-                    x.Name, x.Id, x.Price
+                    x.Name,
+                    x.Id,
+                    x.Price
                 }).GroupBy(x => x.Price);
                 y = p3.Max(x => x.Count());
                 foreach (var item in p3)
                 {
                     double d = item.Count();
-                    if(y == d)
+                    if (y == d)
                     {
                         foreach (var p in item)
                         {
@@ -300,7 +302,7 @@ namespace Warehouse_Application
                         }
                         Console.WriteLine();
                     }
-                    
+
                 }
                 Console.WriteLine();
                 Console.WriteLine("\n\nNext page click enter");
@@ -343,7 +345,7 @@ namespace Warehouse_Application
                 foreach (var item in p7)
                 {
                     double d = item.Count();
-                    if(d == y)
+                    if (d == y)
                     {
                         foreach (var p in item)
                         {
@@ -380,13 +382,15 @@ namespace Warehouse_Application
                 Console.WriteLine("\n\nThe most frequently occuring date: \n");
                 var p11 = products.Select(x => new
                 {
-                    x.Date,x.Name,x.Id
+                    x.Date,
+                    x.Name,
+                    x.Id
                 }).GroupBy(x => x.Date);
                 y = p11.Max(x => x.Count());
                 foreach (var item in p11)
                 {
                     double d = item.Count();
-                    if(d == y)
+                    if (d == y)
                     {
                         foreach (var p in item)
                         {
@@ -400,167 +404,6 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 Console.Clear();
             }
-        }
-        public static void ChoosingEmployee(ref List<Employee> employees, out Employee employee)
-        {
-            employee = new Employee();
-            bool closeEmployee = false;
-            do
-            {
-                try
-                {
-                    if (employees.Count == 0)
-                    {
-                        Console.WriteLine("ADMIN INFROMATIONS\n\n");
-                        employee.Position = PositionName.Admin;
-
-                        NewEmployeeInformation(employee, employees);
-                    }
-                    else if(employees.Count > 0)
-                    {
-                        Console.Clear();
-                        int count = 0;
-                        foreach (var worker in employees)
-                        {
-                            ++count;
-                            Console.WriteLine($"{count}. {worker.Name} {worker.LastName} {worker.Position}");
-                        }
-                        Console.WriteLine("0. Exit");
-                        Console.Write("\nNumber: ");
-                        bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
-
-                        if (!correctNumber || count > number)
-                            continue;
-                        else if (number == 0)
-                            break;
-
-                        employee = employees[number - 1];
-
-                        Console.Clear();
-
-                        Console.WriteLine("LOGIN");
-                        Console.Write("\n\nLogin: ");
-                        string login = Console.ReadLine();
-                        Console.Write("Password: ");
-                        string password = Console.ReadLine();
-                        if (employee.Login == login && employee.Password == password)
-                        {
-                            closeEmployee = true;
-                        }
-                        else
-                            throw new FormatException("Wrong login or password");
-
-                    }
-                }
-                catch(FormatException e)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(e);
-                    Console.ResetColor();
-                    Console.WriteLine("Click enter to continue");
-                    Console.ReadKey();
-                }
-            } while (!closeEmployee);
-        }
-        public static void AddingEmployee(ref List<Employee> employees)
-        {
-            Employee employee = new Employee();
-            bool choosingPosition = false;
-            do
-            {
-                try
-                {
-                    Console.Clear();
-                    Console.Write("Choose position of employee\n\n1.Admin\n2.Supplier\n3.Manager\n4.Employee\n0.Exit");
-                    string position = Console.ReadLine();
-                    switch (position)
-                    {
-                        case "1":
-                            employee.Position = PositionName.Admin;
-                            break;
-                        case "2":
-                            employee.Position = PositionName.Supplier;
-                            break;
-                        case "3":
-                            employee.Position = PositionName.Manager;
-                            break;
-                        case "4":
-                            employee.Position = PositionName.Employee;
-                            break;
-                        case "0":
-                            return;
-                        default:
-                            continue;
-                    }
-
-                    Console.Clear();
-                    Console.WriteLine($"Position: {employee.Position}");
-
-                    NewEmployeeInformation(employee, employees);
-
-                    choosingPosition = true;
-
-                }
-                catch(FormatException e)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(e);
-                    Console.ResetColor();
-                    Console.WriteLine("Click enter to continue");
-                    Console.ReadKey();
-                }
-            } while (!choosingPosition);
-
-            
-        }
-        private static void NewEmployeeInformation(Employee employee, List<Employee> employees)
-        {
-            Console.Write($"Name: ");
-            string name = Console.ReadLine();
-            employee.Name = name;
-
-            Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
-            employee.LastName = lastName;
-
-            Console.Write("Id (3 chars): ");
-            string id = Console.ReadLine();
-            employee.Id = id;
-
-            Console.Write("Age: ");
-            bool x = int.TryParse(Console.ReadLine(), out int age);
-            if (!x)
-                throw new FormatException("Wrong age");
-            employee.Age = age;
-
-            bool correctLogin = false;
-            string login = name.Substring(0, 3);
-            do
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    Random random = new Random();
-                    int p = random.Next(0, 10);
-                    login += p.ToString();
-                }
-                if (!employees.Any(x => x.Login == login))
-                    correctLogin = true;
-
-            } while (!correctLogin);
-
-            Console.WriteLine($"Login: {login}");
-            employee.Login = login;
-
-            Console.Write("Password: ");
-            string password = Console.ReadLine();
-            employee.Password = password;
-
-            employees.Add(employee);
-
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string json = JsonConvert.SerializeObject(employees);
-            File.WriteAllText(Path.Combine(systemOp, "Employee.json"), json);
-
         }
     }
 }
