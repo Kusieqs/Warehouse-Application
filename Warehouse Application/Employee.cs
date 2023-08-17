@@ -9,6 +9,8 @@ namespace Warehouse_Application
 		private string id;
 		private int age;
 		private PositionName position;
+		private string password;
+		private string login;
 		public Employee(string name, string lastName, string id, int age, PositionName position)
 		{
 			if (name.Length > 0 && lastName.Length > 0 && Regex.IsMatch(id, @"^[a-zA-Z0-9]{3}$") && age >= 18)
@@ -24,6 +26,8 @@ namespace Warehouse_Application
 				throw new FormatException("Input informations are not correct with guidelines");
 			}
 		}
+		public Employee()
+		{ }
 		public string Name
 		{
 			get
@@ -89,6 +93,31 @@ namespace Warehouse_Application
 			set
 			{
 				position = value;
+			}
+		}
+		public string Password
+		{
+			get
+			{
+				return password;
+			}
+			set
+			{
+				if (value.Length > 9)
+					password = value;
+				else
+					throw new FormatException("Password is to short");
+			}
+		}
+		public string Login
+		{
+			get
+			{
+				return login;
+			}
+			set
+			{
+				login = value;
 			}
 		}
 	}

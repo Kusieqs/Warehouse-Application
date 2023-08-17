@@ -401,8 +401,9 @@ namespace Warehouse_Application
                 Console.Clear();
             }
         }
-        public static void AddingEmployee(ref List<Employee> employees, out Employee employee)
+        public static void ChoosingEmployee(ref List<Employee> employees, out Employee employee)
         {
+            employee = new Employee();
             bool closeEmployee = false;
             do
             {
@@ -410,18 +411,88 @@ namespace Warehouse_Application
                 {
                     if (employees.Count == 0)
                     {
-
                         Console.WriteLine("ADMIN INFROMATIONS\n\n");
+                        employee.Position = PositionName.Admin;
+
                         Console.Write("Name: ");
+                        string name = Console.ReadLine();
+                        employee.Name = name;
+
                         Console.Write("Last name: ");
+                        string lastName = Console.ReadLine();
+                        employee.LastName = lastName;
+
                         Console.Write("Id (3 chars): ");
+                        string id = Console.ReadLine();
+                        employee.Id = id;
+
                         Console.Write("Age: ");
-                        Console.Write("Login: ");
-                        Console.Write("Password");
-                        employee = new Employee();
+                        bool x = int.TryParse(Console.ReadLine(), out int age);
+                        if (!x)
+                            throw new FormatException("Wrong age");
+                        employee.Age = age;
+
+                        bool correctLogin = false;
+                        string login = name.Substring(0, 3);
+                        do
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                Random random = new Random();
+                                int p = random.Next(0, 10);
+                                login += p.ToString();
+                            }
+                            if (!employees.Any(x => x.Login == login))
+                                correctLogin = true;
+
+                        } while (!correctLogin);
+
+                        Console.WriteLine($"Login: {login}"); 
+                        employee.Login = login;
+                        
+                        Console.Write("Password: ");
+                        string password = Console.ReadLine();
+                        employee.Password = password;
+
+                        employees.Add(employee);
+
+                        string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        string json = JsonConvert.SerializeObject(employees);
+                        File.WriteAllText(Path.Combine(systemOp, "Employee.json"), json);
                     }
-                    else
+                    else if(employees.Count > 0)
                     {
+                        Console.Clear();
+                        int count = 0;
+                        foreach (var worker in employees)
+                        {
+                            ++count;
+                            Console.WriteLine($"{count}. {worker.Name} {worker.LastName} {worker.Position}");
+                        }
+                        Console.WriteLine("0. Exit");
+                        Console.Write("\nNumber: ");
+                        bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
+
+                        if (!correctNumber || count > number)
+                            continue;
+                        else if (number == 0)
+                            break;
+
+                        employee = employees[number - 1];
+
+                        Console.Clear();
+
+                        Console.WriteLine("LOGIN");
+                        Console.Write("\n\nLogin: ");
+                        string login = Console.ReadLine();
+                        Console.Write("Password: ");
+                        string password = Console.ReadLine();
+                        if (employee.Login == login && employee.Password == password)
+                        {
+                            closeEmployee = true;
+                        }
+                        else
+                            throw new FormatException("Wrong login or password");
 
                     }
                 }
@@ -434,6 +505,9 @@ namespace Warehouse_Application
                     Console.ReadKey();
                 }
             } while (!closeEmployee);
+        }
+        public static void AddingEmployee(ref List<Employee> employees)
+        {
         }
     }
 }
