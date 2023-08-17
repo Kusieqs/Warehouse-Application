@@ -414,51 +414,7 @@ namespace Warehouse_Application
                         Console.WriteLine("ADMIN INFROMATIONS\n\n");
                         employee.Position = PositionName.Admin;
 
-                        Console.Write("Name: ");
-                        string name = Console.ReadLine();
-                        employee.Name = name;
-
-                        Console.Write("Last name: ");
-                        string lastName = Console.ReadLine();
-                        employee.LastName = lastName;
-
-                        Console.Write("Id (3 chars): ");
-                        string id = Console.ReadLine();
-                        employee.Id = id;
-
-                        Console.Write("Age: ");
-                        bool x = int.TryParse(Console.ReadLine(), out int age);
-                        if (!x)
-                            throw new FormatException("Wrong age");
-                        employee.Age = age;
-
-                        bool correctLogin = false;
-                        string login = name.Substring(0, 3);
-                        do
-                        {
-                            for (int i = 0; i < 3; i++)
-                            {
-                                Random random = new Random();
-                                int p = random.Next(0, 10);
-                                login += p.ToString();
-                            }
-                            if (!employees.Any(x => x.Login == login))
-                                correctLogin = true;
-
-                        } while (!correctLogin);
-
-                        Console.WriteLine($"Login: {login}"); 
-                        employee.Login = login;
-                        
-                        Console.Write("Password: ");
-                        string password = Console.ReadLine();
-                        employee.Password = password;
-
-                        employees.Add(employee);
-
-                        string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                        string json = JsonConvert.SerializeObject(employees);
-                        File.WriteAllText(Path.Combine(systemOp, "Employee.json"), json);
+                        NewEmployeeInformation(employee, employees);
                     }
                     else if(employees.Count > 0)
                     {
@@ -508,6 +464,103 @@ namespace Warehouse_Application
         }
         public static void AddingEmployee(ref List<Employee> employees)
         {
+            Employee employee = new Employee();
+            bool choosingPosition = false;
+            do
+            {
+                try
+                {
+                    Console.Clear();
+                    Console.Write("Choose position of employee\n\n1.Admin\n2.Supplier\n3.Manager\n4.Employee\n0.Exit");
+                    string position = Console.ReadLine();
+                    switch (position)
+                    {
+                        case "1":
+                            employee.Position = PositionName.Admin;
+                            break;
+                        case "2":
+                            employee.Position = PositionName.Supplier;
+                            break;
+                        case "3":
+                            employee.Position = PositionName.Manager;
+                            break;
+                        case "4":
+                            employee.Position = PositionName.Employee;
+                            break;
+                        case "0":
+                            return;
+                        default:
+                            continue;
+                    }
+
+                    Console.Clear();
+                    Console.WriteLine($"Position: {employee.Position}");
+
+                    NewEmployeeInformation(employee, employees);
+
+                    choosingPosition = true;
+
+                }
+                catch(FormatException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(e);
+                    Console.ResetColor();
+                    Console.WriteLine("Click enter to continue");
+                    Console.ReadKey();
+                }
+            } while (!choosingPosition);
+
+            
+        }
+        private static void NewEmployeeInformation(Employee employee, List<Employee> employees)
+        {
+            Console.Write($"Name: ");
+            string name = Console.ReadLine();
+            employee.Name = name;
+
+            Console.Write("Last name: ");
+            string lastName = Console.ReadLine();
+            employee.LastName = lastName;
+
+            Console.Write("Id (3 chars): ");
+            string id = Console.ReadLine();
+            employee.Id = id;
+
+            Console.Write("Age: ");
+            bool x = int.TryParse(Console.ReadLine(), out int age);
+            if (!x)
+                throw new FormatException("Wrong age");
+            employee.Age = age;
+
+            bool correctLogin = false;
+            string login = name.Substring(0, 3);
+            do
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    Random random = new Random();
+                    int p = random.Next(0, 10);
+                    login += p.ToString();
+                }
+                if (!employees.Any(x => x.Login == login))
+                    correctLogin = true;
+
+            } while (!correctLogin);
+
+            Console.WriteLine($"Login: {login}");
+            employee.Login = login;
+
+            Console.Write("Password: ");
+            string password = Console.ReadLine();
+            employee.Password = password;
+
+            employees.Add(employee);
+
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string json = JsonConvert.SerializeObject(employees);
+            File.WriteAllText(Path.Combine(systemOp, "Employee.json"), json);
+
         }
     }
 }

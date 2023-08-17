@@ -123,7 +123,7 @@ namespace Warehouse_Application
 	}
     public enum PositionName
     {
-        Admin, Employee, Deliver, Manager
+        Admin, Employee, Supplier, Manager
     }
 
 }
