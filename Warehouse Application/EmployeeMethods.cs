@@ -36,20 +36,24 @@ namespace Warehouse_Application
             accpet = false;
 
         }
-        public static void ChoosingEmployee(ref List<Employee> employees, out Employee employee)
+        public static void ChoosingEmployee(ref List<Employee> employees, ref Employee employee, bool firsTime)
         {
-            employee = new Employee();
             bool closeEmployee = false;
             do
             {
                 try
                 {
-                    if (employees.Count == 0)
+                    Console.Clear();
+                    if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"))))
                     {
-                        Console.WriteLine("ADMIN INFROMATIONS\n\n");
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                        Console.WriteLine("Welcome to warehouse app. Please provide information to the main admin");
+                        Console.ResetColor();
+
+                        Console.WriteLine("\n\nAdmin Information");
                         employee.Position = PositionName.Admin;
 
-                        NewEmployeeInformation(employee, employees);
+                        NewEmployeeInformation(employee, employees, firsTime);
                     }
                     else if (employees.Count > 0)
                     {
@@ -67,7 +71,7 @@ namespace Warehouse_Application
                         if (!correctNumber || count > number)
                             continue;
                         else if (number == 0)
-                            break;
+                            return;
 
                         employee = employees[number - 1];
 
@@ -90,14 +94,14 @@ namespace Warehouse_Application
                 catch (FormatException e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(e);
+                    Console.WriteLine("\n" + e.Message);
                     Console.ResetColor();
                     Console.WriteLine("Click enter to continue");
                     Console.ReadKey();
                 }
             } while (!closeEmployee);
         }
-        public static void AddingEmployee(ref List<Employee> employees)
+        public static void AddingEmployee(ref List<Employee> employees,bool firsTime)
         {
             Employee employee = new Employee();
             bool choosingPosition = false;
@@ -131,7 +135,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.WriteLine($"Position: {employee.Position}");
 
-                    NewEmployeeInformation(employee, employees);
+                    NewEmployeeInformation(employee, employees,firsTime);
 
                     choosingPosition = true;
 
@@ -148,7 +152,7 @@ namespace Warehouse_Application
 
 
         }
-        private static void NewEmployeeInformation(Employee employee, List<Employee> employees)
+        private static void NewEmployeeInformation(Employee employee, List<Employee> employees, bool firsTime)
         {
             Console.Write($"Name: ");
             string name = Console.ReadLine();
@@ -178,7 +182,12 @@ namespace Warehouse_Application
                     int p = random.Next(0, 10);
                     login += p.ToString();
                 }
-                if (!employees.Any(x => x.Login == login))
+                if (firsTime || string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"WareHouse","Employee.json"))))
+                {
+                    correctLogin = true;
+                    break;
+                }
+                else if (!employees.Any(x => x.Login == login))
                     correctLogin = true;
 
             } while (!correctLogin);
@@ -301,7 +310,7 @@ namespace Warehouse_Application
             do
             {
                 Console.Clear();
-                Console.WriteLine("Employee Modifications\n1.Name\n2.Last name\n3.Id\n4.Age\n5.Position\n6.Password\n7.Login\n8.Remove Employee\n9.Exit");
+                Console.WriteLine("Employee Modifications\n1.Name\n2.Last name\n3.Id\n4.Age\n5.Position\n6.Password\n7.Login\n8.Remove Employee\n9.Main account\n10.Exit");
                 Console.SetCursorPosition(25, 1);
                 Console.WriteLine($"Name: {employee.Name}");
                 Console.SetCursorPosition(25, 2);
@@ -316,7 +325,9 @@ namespace Warehouse_Application
                 Console.WriteLine($"Password: {employee.Password}");
                 Console.SetCursorPosition(25, 7);
                 Console.WriteLine($"Login: {employee.Login}");
-                Console.SetCursorPosition(0, 10);
+                Console.SetCursorPosition(25, 8);
+                Console.WriteLine($"Main account {employee.mainAccount}");
+                Console.SetCursorPosition(0, 11);
                 Console.Write("Number: ");
 
                 string answer = Console.ReadLine();
@@ -344,6 +355,9 @@ namespace Warehouse_Application
                         property = "Login";
                         break;
                     case "8":
+                        property = "mainAccount";
+                        break;
+                    case "9":
                         return;
                     default:
                         break;
@@ -363,16 +377,16 @@ namespace Warehouse_Application
                     switch(answer)
                     {
                         case "1":
-                            employee.Position = PositionName.Admin;
+                            copy.Position = PositionName.Admin;
                             break;
                         case "2":
-                            employee.Position = PositionName.Supplier;
+                            copy.Position = PositionName.Supplier;
                             break;
                         case "3":
-                            employee.Position = PositionName.Employee;
+                            copy.Position = PositionName.Employee;
                             break;
                         case "4":
-                            employee.Position = PositionName.Manager;
+                            copy.Position = PositionName.Manager;
                             break;
                         case "5":
                             return;
@@ -380,6 +394,31 @@ namespace Warehouse_Application
                             x = false;
                             break;
                             
+                    }
+                } while (!x);
+            }
+            else if(property == "mainAccount")
+            {
+                bool x = true;
+                do
+                {
+                    x = true;
+                    Console.Clear();
+                    Console.WriteLine("1.Main account (true)\n2.Main account (false)\n3.Exit");
+                    string answer = Console.ReadLine();
+                    switch(answer)
+                    {
+                        case "1":
+                            copy.mainAccount = true;
+                            break;
+                        case "2":
+                            copy.mainAccount = false;
+                            break;
+                        case "3":
+                            return;
+                        default:
+                            break;
+
                     }
                 } while (!x);
             }

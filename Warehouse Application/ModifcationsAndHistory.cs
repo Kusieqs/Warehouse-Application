@@ -8,7 +8,7 @@ namespace Warehouse_Application
 {
     public static class ModificationsAndHistory
     {
-        public static void ModifyingProduct(ref List<Product> products, string systemOp)
+        public static void ModifyingProduct(ref List<Product> products, string systemOp,Employee employee)
         {
             Product copy = null;
             string modifyingRecord;
@@ -154,20 +154,20 @@ namespace Warehouse_Application
                         {
                             jsonBefore = new Product(products[number - 1]);
                             products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
-                            products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1));
+                            products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1,employee));
                         }
                         else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
                         {
                             jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
                             products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
-                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy),d1));
+                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy),d1,employee));
                         }
                         Program.JsonFileRecord(ref products, systemOp);
                     }
                 } while (!correctModifying);
             }
         }
-        public static void ModifyingReportHistory(ref List<Product> listOfProducts,string systemOp)
+        public static void ModifyingReportHistory(ref List<Product> listOfProducts,string systemOp, Employee employee)
         {
             if (!File.Exists(systemOp) || string.IsNullOrEmpty(File.ReadAllText(systemOp)))
             {
@@ -272,7 +272,7 @@ namespace Warehouse_Application
 
                                 HistoryModifications h1 = new HistoryModifications();
                                 h1 = productToChange.list.Find(x => x.idModofication == secondAnswer);
-                                productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory( new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1));
+                                productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory( new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1, employee));
                                 listOfProducts[index] = new Product(h1.before,productToChange.list);
                                 attempt = true;
                                 Program.JsonFileRecord(ref listOfProducts, systemOp);

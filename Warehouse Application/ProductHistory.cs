@@ -11,6 +11,7 @@ namespace Warehouse_Application
         public int day { get; set; }
         public int month { get; set; }
         public int year { get; set; }
+        public Employee addedBy { get; set; }
         public ProductHistory(Product p1)
 		{
             name = p1.Name;
@@ -21,6 +22,7 @@ namespace Warehouse_Application
             day = p1.day;
             month = p1.month;
             year = p1.year;
+            this.addedBy = p1.addedBy;
 		}
         public ProductHistory()
         { }

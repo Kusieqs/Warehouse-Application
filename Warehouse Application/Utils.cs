@@ -5,7 +5,7 @@ namespace Warehouse_Application
 {
     public static class Utils
     {
-        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation, ref List<Employee> employees)
+        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation, ref List<Employee> employees,ref bool firstTime)
         {
 
             if (!Directory.Exists(systemOperation))
@@ -14,21 +14,15 @@ namespace Warehouse_Application
                 string jsonWriter = string.Empty;
                 File.WriteAllText(Path.Combine(systemOperation, "Products.json"), jsonWriter);
                 File.WriteAllText(Path.Combine(systemOperation, "Employee.json"), jsonWriter);
+                firstTime = true;
             }
-            else if (File.Exists(Path.Combine(systemOperation, "Products.json")) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation, "Products.json"))) && File.Exists(Path.Combine(systemOperation, "Employee.json")) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation, "Employee.json"))))
-            {
-                Directory.Delete(systemOperation);
-            }
-            else
-            {
 
-                string jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Products.json"));
-                products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
-                jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee"));
-                employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
-            }
+            string jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Products.json"));
+            products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
+            jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
+            employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
         }
-        public static void AddingProduct(ref List<Product> products, string systemOp)
+        public static void AddingProduct(ref List<Product> products, string systemOp, Employee employee)
         {
 
             bool correctPrice, correctQuantity, correctData = false;
@@ -60,7 +54,7 @@ namespace Warehouse_Application
 
                     if (correctPrice && correctQuantity && !products.Any(x => x.Id == id))
                     {
-                        Product p1 = new Product(name, id, price, quantity, date);
+                        Product p1 = new Product(name, id, price, quantity, date, employee);
 
                         string jsonCreator;
                         correctData = false;
