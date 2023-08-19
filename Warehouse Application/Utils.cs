@@ -16,6 +16,8 @@ namespace Warehouse_Application
                 File.WriteAllText(Path.Combine(systemOperation, "Employee.json"), jsonWriter);
                 firstTime = true;
             }
+            else
+                firstTime = false;
 
             string jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Products.json"));
             products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
@@ -52,7 +54,7 @@ namespace Warehouse_Application
                 try
                 {
 
-                    if (correctPrice && correctQuantity && !products.Any(x => x.Id == id))
+                    if (correctPrice && correctQuantity)
                     {
                         Product p1 = new Product(name, id, price, quantity, date, employee);
 
@@ -64,15 +66,18 @@ namespace Warehouse_Application
                             products1Copy.Add(p1);
                             jsonCreator = JsonConvert.SerializeObject(products1Copy);
                             File.WriteAllText(systemOp, jsonCreator);
+                            break;
                         }
-                        else
+                        else if (!products.Any(x => x.Id == id))
                         {
                             products.Add(p1);
                             jsonCreator = JsonConvert.SerializeObject(products);
                             File.WriteAllText(systemOp, jsonCreator);
+                            correctData = true;
 
                         }
-                        correctData = true;
+                        else
+                            throw new FormatException("Id is already exist!");
                     }
                     else
                     {
@@ -299,7 +304,7 @@ namespace Warehouse_Application
 
                 }
                 Console.WriteLine();
-                Console.WriteLine("\n\nNext page click enter");
+                Console.WriteLine("\n\nClick enter to continue");
                 Console.ReadKey();
                 Console.Clear();
 
@@ -349,7 +354,7 @@ namespace Warehouse_Application
                     }
                 }
                 Console.WriteLine();
-                Console.WriteLine("\n\nNext page click enter");
+                Console.WriteLine("\n\nClick enter to continue");
                 Console.ReadKey();
                 Console.Clear();
 

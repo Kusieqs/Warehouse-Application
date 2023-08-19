@@ -53,10 +53,10 @@ namespace Warehouse_Application
                         Console.WriteLine("\n\nAdmin Information");
                         employee.Position = PositionName.Admin;
 
-                        NewEmployeeInformation(employee, employees, firsTime);
+                        NewEmployeeInformation(employee,ref employees, firsTime);
                     }
-                    else if (employees.Count > 0)
-                    {
+                    
+
                         Console.Clear();
                         int count = 0;
                         foreach (var worker in employees)
@@ -68,10 +68,10 @@ namespace Warehouse_Application
                         Console.Write("\nNumber: ");
                         bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
-                        if (!correctNumber || count > number)
-                            continue;
-                        else if (number == 0)
-                            return;
+                    if (number == 0)
+                        Environment.Exit(0);
+                    else if (!correctNumber || count > number)
+                        continue;
 
                         employee = employees[number - 1];
 
@@ -89,7 +89,7 @@ namespace Warehouse_Application
                         else
                             throw new FormatException("Wrong login or password");
                         employee.mainAccount = true;
-                    }
+                    
                 }
                 catch (FormatException e)
                 {
@@ -110,7 +110,7 @@ namespace Warehouse_Application
                 try
                 {
                     Console.Clear();
-                    Console.Write("Choose position of employee\n\n1.Admin\n2.Supplier\n3.Manager\n4.Employee\n0.Exit");
+                    Console.Write("Choose position of employee\n\n1.Admin\n2.Supplier\n3.Manager\n4.Employee\n0.Exit\n\nNumber: ");
                     string position = Console.ReadLine();
                     switch (position)
                     {
@@ -135,7 +135,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.WriteLine($"Position: {employee.Position}");
 
-                    NewEmployeeInformation(employee, employees,firsTime);
+                    NewEmployeeInformation(employee,ref employees,firsTime);
 
                     choosingPosition = true;
 
@@ -143,7 +143,7 @@ namespace Warehouse_Application
                 catch (FormatException e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(e);
+                    Console.Write(e.Message);
                     Console.ResetColor();
                     Console.WriteLine("Click enter to continue");
                     Console.ReadKey();
@@ -152,7 +152,7 @@ namespace Warehouse_Application
 
 
         }
-        private static void NewEmployeeInformation(Employee employee, List<Employee> employees, bool firsTime)
+        private static void NewEmployeeInformation(Employee employee,ref List<Employee> employees, bool firsTime)
         {
             Console.Write($"Name: ");
             string name = Console.ReadLine();
@@ -184,11 +184,10 @@ namespace Warehouse_Application
                 }
                 if (firsTime || string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"WareHouse","Employee.json"))))
                 {
-                    correctLogin = true;
                     break;
                 }
                 else if (!employees.Any(x => x.Login == login))
-                    correctLogin = true;
+                    correctLogin = true; /// dodac throw bad login
 
             } while (!correctLogin);
 
@@ -199,11 +198,30 @@ namespace Warehouse_Application
             string password = Console.ReadLine();
             employee.Password = password;
             employee.mainAccount = false;
-            employees.Add(employee);
 
+            string json;
+            List<Employee> firsTimeList = new List<Employee>();
+
+            Console.Clear();
+            Console.WriteLine("WRITE DOWN THIS INFORMATION:");
+            Console.WriteLine($"Login: {employee.Login}\nPassword: {employee.Password}\n\nClick enter to continue");
+            Console.ReadKey();
+            if(firsTime)
+            {
+                firsTimeList.Add(employee);
+                json = JsonConvert.SerializeObject(firsTimeList);
+            }
+            else
+            {
+                employees.Add(employee);
+                json = JsonConvert.SerializeObject(employees);
+            }
+            ///
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string json = JsonConvert.SerializeObject(employees);
             File.WriteAllText(Path.Combine(systemOp,"WareHouse" ,"Employee.json"), json);
+
+            string jsonReader = File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"));
+            employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
 
         }
         public static void EmployeeModifying(ref List<Employee> listEmployees)

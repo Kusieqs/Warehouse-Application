@@ -350,7 +350,7 @@ namespace Warehouse_Application
         }
         private static void ReportMenu(string report, ref bool endOfReport, List<Product> reportProducts)
         {
-            Console.WriteLine("1.Record to txt file\n2.Record to pdf\n3.Record to excel\n4.Statistics of list\n5.Exit\n");
+            Console.WriteLine("1.Write down to txt file\n2.Write down to pdf\n3.Write down to excel\n4.Statistics of list\n5.Exit\n");
 
             Console.Write($"Number: ");
             string answer = Console.ReadLine();

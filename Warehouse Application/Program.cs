@@ -6,7 +6,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        bool firstTime = false;
+        bool firstTime = true; 
         int number;
         bool closeProgram = false, correctNumber, closeEmployee = false;
         string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -31,7 +31,7 @@ internal class Program
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7.Adding new employee\n8.Edit employee\n9.Change position\n0. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Edit employee\n9. Change position\n0. Exit");
                         Console.Write($"\n\nPosition: {employee.Position}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch (number)
@@ -53,9 +53,7 @@ internal class Program
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);
-                                JsonFileRecord(ref listOfProducts, systemOperation);
-                                break;
+                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);                                break;
 
                             case 6:
                                 Utils.Statistics(listOfProducts);
@@ -71,6 +69,7 @@ internal class Program
 
                             case 9:
                                 EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
+                                correctNumber = true;
                                 break;
 
                             case 0:
@@ -87,7 +86,7 @@ internal class Program
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Modifying Product\n4.Change position\n5. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Modifying Product\n4. Change position\n5. Exit");
                         Console.Write("Number: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
@@ -106,6 +105,7 @@ internal class Program
 
                             case 4:
                                 EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                correctNumber = true;
                                 break;
 
                             case 5:
@@ -123,7 +123,7 @@ internal class Program
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6.Change position\n7. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Change position\n7. Exit");
                         Console.Write("Number: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
@@ -146,11 +146,11 @@ internal class Program
 
                             case 5:
                                 ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);
-                                JsonFileRecord(ref listOfProducts, systemOperation);
                                 break;
 
                             case 6:
                                 EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                correctNumber = true;
                                 break;
 
                             case 7:
@@ -173,7 +173,6 @@ internal class Program
             
 
         } while (!closeProgram);
-        JsonFileRecord(ref listOfProducts, systemOperation);
 
     }
     public static void JsonFileRecord(ref List<Product> products, string systemOp)
@@ -181,7 +180,7 @@ internal class Program
         string jsonWriter = JsonConvert.SerializeObject(products);
         File.WriteAllText(systemOp, jsonWriter);
 
-        string jsonReader = File.ReadAllText(systemOp);
-        products = JsonConvert.DeserializeObject<List<Product>>(jsonReader).ToList();
+            string jsonReader = File.ReadAllText(systemOp);
+            products = JsonConvert.DeserializeObject<List<Product>>(jsonReader).ToList();
     }
 }
