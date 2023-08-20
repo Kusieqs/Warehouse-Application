@@ -171,7 +171,7 @@ internal class Program
                         switch (number)
                         {
                             case 1:
-
+                                ModificationsAndHistory.NewDelivery(ref listOfProducts, employee, systemOperation);
                                 break;
 
                             case 2:

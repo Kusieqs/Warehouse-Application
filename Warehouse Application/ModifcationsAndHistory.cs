@@ -366,7 +366,8 @@ namespace Warehouse_Application
                 }
                 else if (!products.Any(x => x.Id == id))
                 {
-                    Console.WriteLine("This id is not in our database\nAdd product with new ID\n\n");
+                    Console.WriteLine("This id is not in our database\nAdd product with new ID\nClick enter to continue\n");
+                    Console.ReadKey();
                     Utils.AddingProduct(ref products, systemOp, employee);
                     Program.JsonFileRecord(ref products,systemOp);
                 }
