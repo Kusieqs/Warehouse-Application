@@ -5,34 +5,26 @@ namespace Warehouse_Application
 {
     public static class Utils
     {
-        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation)
+        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation, ref List<Employee> employees,ref bool firstTime)
         {
-            if (File.Exists(systemOperation) && string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOperation, "Products.json"))))
-            {
-                try
-                {
-                    File.Delete(systemOperation);
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine("Wystapil blad podczas usówania pliku: " + e);
-                }
-            }
 
-            systemOperation = Path.Combine(systemOperation, "Products.json");
-
-            if (!File.Exists(systemOperation))
+            if (!Directory.Exists(systemOperation))
             {
+                Directory.CreateDirectory(systemOperation);
                 string jsonWriter = string.Empty;
-                File.WriteAllText(systemOperation, jsonWriter);
+                File.WriteAllText(Path.Combine(systemOperation, "Products.json"), jsonWriter);
+                File.WriteAllText(Path.Combine(systemOperation, "Employee.json"), jsonWriter);
+                firstTime = true;
             }
             else
-            {
-                string jsonReader = File.ReadAllText(systemOperation);
-                products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
-            }
+                firstTime = false;
+
+            string jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Products.json"));
+            products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
+            jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
+            employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
         }
-        public static void AddingProduct(ref List<Product> products, string systemOp)
+        public static void AddingProduct(ref List<Product> products, string systemOp, Employee employee)
         {
 
             bool correctPrice, correctQuantity, correctData = false;
@@ -62,9 +54,9 @@ namespace Warehouse_Application
                 try
                 {
 
-                    if (correctPrice && correctQuantity && !products.Any(x => x.Id == id))
+                    if (correctPrice && correctQuantity)
                     {
-                        Product p1 = new Product(name, id, price, quantity, date);
+                        Product p1 = new Product(name, id, price, quantity, date, employee);
 
                         string jsonCreator;
                         correctData = false;
@@ -74,15 +66,18 @@ namespace Warehouse_Application
                             products1Copy.Add(p1);
                             jsonCreator = JsonConvert.SerializeObject(products1Copy);
                             File.WriteAllText(systemOp, jsonCreator);
+                            break;
                         }
-                        else
+                        else if (!products.Any(x => x.Id == id))
                         {
                             products.Add(p1);
                             jsonCreator = JsonConvert.SerializeObject(products);
                             File.WriteAllText(systemOp, jsonCreator);
+                            correctData = true;
 
                         }
-                        correctData = true;
+                        else
+                            throw new FormatException("Id is already exist!");
                     }
                     else
                     {
@@ -120,7 +115,7 @@ namespace Warehouse_Application
                 Console.Write("File Name: ");
                 string fileName = Console.ReadLine() + ".txt";
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                path = Path.Combine(path,fileName);
+                path = Path.Combine(path, fileName);
                 File.WriteAllText(path, report);
                 Console.WriteLine("File is complete!");
             }
@@ -130,7 +125,6 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
         }
-
         public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
         {
             graphic = true;
@@ -155,7 +149,6 @@ namespace Warehouse_Application
             Console.Clear();
 
         }
-
         public static void RemovingRecord(ref List<Product> products, string systemOp)
         {
             Product p1 = new Product();
@@ -228,8 +221,8 @@ namespace Warehouse_Application
 
             }
 
-          
-       
+
+
         }
         public static string NameFile()
         {
@@ -246,12 +239,12 @@ namespace Warehouse_Application
             } while (!attempt);
             return x;
 
-          
+
         }
         public static void Statistics(List<Product> products)
         {
             Console.Clear();
-            if(products.Count == 0)
+            if (products.Count == 0)
             {
                 Console.Clear();
                 Console.WriteLine("List is empty\nClick enter to continue");
@@ -292,13 +285,15 @@ namespace Warehouse_Application
                 Console.WriteLine("The most frequently occuring price: \n");
                 var p3 = products.Select(x => new
                 {
-                    x.Name, x.Id, x.Price
+                    x.Name,
+                    x.Id,
+                    x.Price
                 }).GroupBy(x => x.Price);
                 y = p3.Max(x => x.Count());
                 foreach (var item in p3)
                 {
                     double d = item.Count();
-                    if(y == d)
+                    if (y == d)
                     {
                         foreach (var p in item)
                         {
@@ -306,10 +301,10 @@ namespace Warehouse_Application
                         }
                         Console.WriteLine();
                     }
-                    
+
                 }
                 Console.WriteLine();
-                Console.WriteLine("\n\nNext page click enter");
+                Console.WriteLine("\n\nClick enter to continue");
                 Console.ReadKey();
                 Console.Clear();
 
@@ -349,7 +344,7 @@ namespace Warehouse_Application
                 foreach (var item in p7)
                 {
                     double d = item.Count();
-                    if(d == y)
+                    if (d == y)
                     {
                         foreach (var p in item)
                         {
@@ -359,7 +354,7 @@ namespace Warehouse_Application
                     }
                 }
                 Console.WriteLine();
-                Console.WriteLine("\n\nNext page click enter");
+                Console.WriteLine("\n\nClick enter to continue");
                 Console.ReadKey();
                 Console.Clear();
 
@@ -386,13 +381,15 @@ namespace Warehouse_Application
                 Console.WriteLine("\n\nThe most frequently occuring date: \n");
                 var p11 = products.Select(x => new
                 {
-                    x.Date,x.Name,x.Id
+                    x.Date,
+                    x.Name,
+                    x.Id
                 }).GroupBy(x => x.Date);
                 y = p11.Max(x => x.Count());
                 foreach (var item in p11)
                 {
                     double d = item.Count();
-                    if(d == y)
+                    if (d == y)
                     {
                         foreach (var p in item)
                         {

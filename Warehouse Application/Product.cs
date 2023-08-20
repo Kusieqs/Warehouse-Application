@@ -11,6 +11,9 @@ public class Product
     public int day { get; set; }
     public int year { get; set; } /// No idea to a better sorting method 
     public int month { get; set; }
+    public Employee addedBy { get; set; }
+
+
     public Product(Product p1)
     {
         this.name = p1.name;
@@ -19,6 +22,7 @@ public class Product
         this.quantity = p1.quantity;
         this.date = p1.date;
         this.list = p1.list;
+        this.addedBy = p1.addedBy;
     }
     public Product(ProductHistory p1, List<HistoryModifications> list)
     {
@@ -28,6 +32,8 @@ public class Product
         this.quantity = p1.quantity;
         this.date = p1.date;
         this.list = list.ToList();
+        this.addedBy = p1.addedBy;
+        
     }
     public Product(ProductHistory p1)
     {
@@ -36,6 +42,7 @@ public class Product
         this.price = p1.price;
         this.quantity = p1.quantity;
         this.date = p1.date;
+        this.addedBy = p1.addedBy;
     }
     public Product()
     {
@@ -45,12 +52,13 @@ public class Product
         quantity = 0;
         DateTime dateCopy = DateTime.Now;
         date = dateCopy.Date;
+        addedBy = null;
 
         day = date.Day;
         month = date.Month;
         year = date.Year;
     }
-    public Product(string name, string id, double price, int quantity, DateTime date)
+    public Product(string name, string id, double price, int quantity, DateTime date, Employee employee)
     {
         if (Regex.IsMatch((id.Trim()), @"^[A-Za-z]{4}\d{5}$") && price > 0 && quantity >= 0 && name.Length > 0)
         {
@@ -62,6 +70,7 @@ public class Product
         else
             throw new FormatException("Informations about product are not correct");
 
+        this.addedBy = employee;
         this.date = date;
         day = date.Day;
         month = date.Month;
