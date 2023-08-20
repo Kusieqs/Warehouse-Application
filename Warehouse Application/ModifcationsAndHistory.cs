@@ -8,7 +8,7 @@ namespace Warehouse_Application
 {
     public static class ModificationsAndHistory
     {
-        public static void ModifyingProduct(ref List<Product> products, string systemOp,Employee employee)
+        public static void ModifyingProduct(ref List<Product> products, string systemOp, Employee employee)
         {
             Product copy = null;
             string modifyingRecord;
@@ -138,7 +138,7 @@ namespace Warehouse_Application
                     object parsedValue = ParseValue(value, propertyInfo.PropertyType);
                     copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
                     Console.Clear();
-                    if(products.Any(x => x.Id == parsedValue) && property == "Id")
+                    if (products.Any(x => x.Id == parsedValue) && property == "Id")
                     {
                         Console.WriteLine("This id is already exist\nClick enter to continue!");
                         Console.ReadKey();
@@ -148,26 +148,25 @@ namespace Warehouse_Application
                     AcceptingModify(copy, out accept);
                     if (accept)
                     {
-                        ProductHistory h1 = null, h2 = null;
                         Product jsonBefore = null;
                         if (correctNumber && number <= products.Count && number > 0)
                         {
                             jsonBefore = new Product(products[number - 1]);
                             products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
-                            products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1,employee));
+                            products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee));
                         }
                         else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
                         {
                             jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
                             products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
-                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy),d1,employee));
+                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee));
                         }
                         Program.JsonFileRecord(ref products, systemOp);
                     }
                 } while (!correctModifying);
             }
         }
-        public static void ModifyingReportHistory(ref List<Product> listOfProducts,string systemOp, Employee employee)
+        public static void ModifyingReportHistory(ref List<Product> listOfProducts, string systemOp, Employee employee)
         {
             if (!File.Exists(systemOp) || string.IsNullOrEmpty(File.ReadAllText(systemOp)))
             {
@@ -213,18 +212,18 @@ namespace Warehouse_Application
                     index = listOfProducts.FindIndex(x => x.Id == answer);
                     productToChange = listOfProducts.Find(x => x.Id == answer);
                 }
-                else if (correctNumber && number > 0 && number <= listOfProducts.Count+1)
+                else if (correctNumber && number > 0 && number <= listOfProducts.Count + 1)
                 {
-                    index = number-1;
+                    index = number - 1;
                     productToChange = listOfProducts[index];
                 }
 
-                if(productToChange.list.Count <= 0)
+                if (productToChange.list.Count <= 0)
                 {
                     Console.WriteLine("Lack of modifications\nClick neter to continue");
                     Console.ReadKey();
                 }
-                else if(productToChange.list.Count > 0)
+                else if (productToChange.list.Count > 0)
                 {
                     bool attempt = false;
                     do
@@ -272,14 +271,14 @@ namespace Warehouse_Application
 
                                 HistoryModifications h1 = new HistoryModifications();
                                 h1 = productToChange.list.Find(x => x.idModofication == secondAnswer);
-                                productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory( new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1, employee));
-                                listOfProducts[index] = new Product(h1.before,productToChange.list);
+                                productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory(new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1, employee));
+                                listOfProducts[index] = new Product(h1.before, productToChange.list);
                                 attempt = true;
                                 Program.JsonFileRecord(ref listOfProducts, systemOp);
 
                             }
                         }
-                        else if(secondAnswer =="1")
+                        else if (secondAnswer == "1")
                         {
                             productToChange.list.Clear();
                             listOfProducts[index] = productToChange;
@@ -348,6 +347,100 @@ namespace Warehouse_Application
             } while (!infinity);
             accpet = false;
 
+        }
+        public static void NewDelivery(ref List<Product> products,Employee employee,string systemOp)
+        {
+            Product product;
+            bool answer = false;
+            do
+            {
+                Console.Clear();
+                Console.Write("Write ID or 0 to exit: ");
+                string id = Console.ReadLine();
+                if (products.Any(x => x.Id == id))
+                {
+                    product = new Product(products.Find(x => x.Id == id));
+                    int index = products.FindIndex(x => x.Id == id);
+                    ModifyingProductDelivery(product, employee, ref products, index);
+                    Program.JsonFileRecord(ref products, systemOp);
+                }
+                else if (!products.Any(x => x.Id == id))
+                {
+                    Console.WriteLine("This id is not in our database\nAdd product with new ID\n\n");
+                    Utils.AddingProduct(ref products, systemOp, employee);
+                    Program.JsonFileRecord(ref products,systemOp);
+                }
+                else if (id == "0")
+                    answer = true;
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Wrong id\nClick enter to continue");
+                    Console.ReadKey();
+                }
+
+            } while (!answer);
+        }
+        private static void ModifyingProductDelivery(Product product, Employee employee, ref List<Product> products, int index)
+        {
+            Product copy = product;
+            string property = string.Empty;
+            string value = "";
+            int number;
+            bool correctNumber, correctModifying = false, accept, graphic = false;
+
+
+            Console.Clear();
+            do
+            {
+                Console.Clear();
+                Console.Write("Modifying:\n1. Price\n2. Quantity\n3. Exit");
+                Console.SetCursorPosition(25, 1);
+                Console.WriteLine($"Name: {copy.Name}");
+                Console.SetCursorPosition(25, 2);
+                Console.WriteLine($"Price: {copy.Price}");
+                Console.SetCursorPosition(25, 3);
+                Console.WriteLine($"Quantity: {copy.Quantity}");
+                Console.SetCursorPosition(25, 4);
+                Console.WriteLine($"Id: {copy.Id}");
+                Console.SetCursorPosition(25, 5);
+                Console.WriteLine($"Date: {copy.Date}");
+                Console.SetCursorPosition(0, 10);
+                Console.Write("Number: ");
+
+                string answer = Console.ReadLine();
+                switch (answer)
+                {
+                    case "1":
+                        property = "Price";
+                        break;
+                    case "2":
+                        property = "Quantity";
+                        break;
+                    case "3":
+                        return;
+                    default:
+                        break;
+                }
+            } while (string.IsNullOrEmpty(property));
+
+            Console.Write($"Changing {property}: ");
+            value = Console.ReadLine();
+
+
+            DateTime d1 = DateTime.Now;
+            PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
+            object parsedValue = ParseValue(value, propertyInfo.PropertyType);
+            copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
+            Console.Clear();
+
+            AcceptingModify(copy, out accept);
+            if (accept)
+            {
+                copy = new Product(products[index]);
+                products[index].GetType().GetProperty(property).SetValue(products[index], parsedValue);
+                products[index].HistoryOfProduct(new HistoryModifications(new ProductHistory(product), new ProductHistory(copy), d1, employee));
+            }
         }
     }
 }

@@ -69,7 +69,6 @@ internal class Program
 
                             case 9:
                                 EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
-                                correctNumber = true;
                                 break;
 
                             case 0:
@@ -105,7 +104,6 @@ internal class Program
 
                             case 4:
                                 EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
-                                correctNumber = true;
                                 break;
 
                             case 5:
@@ -150,7 +148,6 @@ internal class Program
 
                             case 6:
                                 EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
-                                correctNumber = true;
                                 break;
 
                             case 7:
@@ -164,10 +161,31 @@ internal class Program
                         }
                     } while (!correctNumber);
                     break;
-                    ////////////
-                    /////////////////
-                    ///////////////////////////////
                 case PositionName.Supplier:
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("1. New delivery\n2. Change position\n3. Exit");
+                        Console.Write("Number: ");
+                        correctNumber = int.TryParse(Console.ReadLine(), out number);
+                        switch (number)
+                        {
+                            case 1:
+
+                                break;
+
+                            case 2:
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee, firstTime);
+                                break;
+
+                            case 3:
+                                closeProgram = true;
+                                break;
+
+                            default:
+                                break;
+                        }
+                    } while (!correctNumber);
                     break;
             }
             
