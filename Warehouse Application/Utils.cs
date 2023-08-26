@@ -23,8 +23,8 @@ namespace Warehouse_Application
             products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
             jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
-        }
-        public static void AddingProduct(ref List<Product> products, string systemOp, Employee employee)
+        } /// Checking for existence directory with data
+        public static void AddingProduct(ref List<Product> products, string systemOp, Employee employee) 
         {
 
             bool correctPrice, correctQuantity, correctData = false;
@@ -106,25 +106,7 @@ namespace Warehouse_Application
             string jsonWriter = File.ReadAllText(systemOp);
             products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
 
-        }
-        public static void RecordingTxtFile(string systemOp, string report)
-        {
-            if (!string.IsNullOrEmpty(systemOp))
-            {
-                Console.Clear();
-                Console.Write("File Name: ");
-                string fileName = Console.ReadLine() + ".txt";
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                path = Path.Combine(path, fileName);
-                File.WriteAllText(path, report);
-                Console.WriteLine("File is complete!");
-            }
-            else
-            {
-                Console.WriteLine("File is empty!\nClick enter to continue");
-                Console.ReadKey();
-            }
-        }
+        }/// adding new product to list
         public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
         {
             graphic = true;
@@ -148,7 +130,7 @@ namespace Warehouse_Application
             correctNumber = int.TryParse(answer, out number);
             Console.Clear();
 
-        }
+        } ///List of products to see on Removing Method nad Modifying method
         public static void RemovingRecord(ref List<Product> products, string systemOp)
         {
             Product p1 = new Product();
@@ -223,7 +205,7 @@ namespace Warehouse_Application
 
 
 
-        }
+        } /// removing product from list
         public static string NameFile()
         {
             string x = "";
@@ -240,7 +222,7 @@ namespace Warehouse_Application
             return x;
 
 
-        }
+        } /// Name of writing down file
         public static void Statistics(List<Product> products)
         {
             Console.Clear();
@@ -403,7 +385,7 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 Console.Clear();
             }
-        }
+        } /// Statistics of products
     }
 }
 

@@ -193,12 +193,12 @@ internal class Program
         } while (!closeProgram);
 
     }
-    public static void JsonFileRecord(ref List<Product> products, string systemOp)
+    public static void JsonFileRecord(ref List<Product> products, string systemOp) /// Method to overwriting list of Products
     {
         string jsonWriter = JsonConvert.SerializeObject(products);
         File.WriteAllText(systemOp, jsonWriter);
 
-            string jsonReader = File.ReadAllText(systemOp);
-            products = JsonConvert.DeserializeObject<List<Product>>(jsonReader).ToList();
+        string jsonReader = File.ReadAllText(systemOp);
+        products = JsonConvert.DeserializeObject<List<Product>>(jsonReader).ToList();
     }
 }

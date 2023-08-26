@@ -8,7 +8,7 @@ namespace Warehouse_Application
 {
 	public static class EmployeeMethods
 	{
-        private static void AcceptingModify(Employee e1, out bool accpet)
+        private static void AcceptingModify(Employee e1, out bool accpet) 
         {
             bool infinity = false;
             do
@@ -35,7 +35,7 @@ namespace Warehouse_Application
             } while (!infinity);
             accpet = false;
 
-        }
+        } /// Accepting Modifying
         public static void ChoosingEmployee(ref List<Employee> employees, ref Employee employee, bool firsTime)
         {
             bool closeEmployee = false;
@@ -100,7 +100,7 @@ namespace Warehouse_Application
                     Console.ReadKey();
                 }
             } while (!closeEmployee);
-        }
+        }/// Setting first admin or choosing employee
         public static void AddingEmployee(ref List<Employee> employees,bool firsTime)
         {
             Employee employee = new Employee();
@@ -151,7 +151,7 @@ namespace Warehouse_Application
             } while (!choosingPosition);
 
 
-        }
+        } /// adding new employee to list
         private static void NewEmployeeInformation(Employee employee,ref List<Employee> employees, bool firsTime)
         {
             Console.Write($"Name: ");
@@ -187,7 +187,7 @@ namespace Warehouse_Application
                     break;
                 }
                 else if (!employees.Any(x => x.Login == login))
-                    correctLogin = true; /// dodac throw bad login
+                    correctLogin = true; 
 
             } while (!correctLogin);
 
@@ -206,6 +206,7 @@ namespace Warehouse_Application
             Console.WriteLine("WRITE DOWN THIS INFORMATION:");
             Console.WriteLine($"Login: {employee.Login}\nPassword: {employee.Password}\n\nClick enter to continue");
             Console.ReadKey();
+
             if(firsTime)
             {
                 firsTimeList.Add(employee);
@@ -216,14 +217,13 @@ namespace Warehouse_Application
                 employees.Add(employee);
                 json = JsonConvert.SerializeObject(employees);
             }
-            ///
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             File.WriteAllText(Path.Combine(systemOp,"WareHouse" ,"Employee.json"), json);
 
             string jsonReader = File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
 
-        }
+        } /// Adding informations do new Employee 
         public static void EmployeeModifying(ref List<Employee> listEmployees)
         {
             bool infinti = false;
@@ -303,7 +303,7 @@ namespace Warehouse_Application
                         else if (number <= count && number > 0)
                         {
                             Employee employee = listEmployees[number - 1];
-                            EmployeeModifying(ref employee, listEmployees);
+                            EmployeeModifyingData(ref employee, listEmployees);
                             listEmployees[number - 1] = employee;
 
                             string system = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -319,8 +319,8 @@ namespace Warehouse_Application
                 }
 
             } while (!correctChoosing);
-        }
-        private static void EmployeeModifying(ref Employee employee, List<Employee> employees)
+        } ///Options to remove or modifying employee
+        private static void EmployeeModifyingData(ref Employee employee, List<Employee> employees) 
         {
             Employee copy = employee;
             string property = "", value = "";
@@ -465,7 +465,7 @@ namespace Warehouse_Application
                 employee = copy;
             }
 
-        }
+        } // Changing informations about employee
     }
 }
 
