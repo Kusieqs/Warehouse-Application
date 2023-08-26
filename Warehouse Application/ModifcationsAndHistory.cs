@@ -364,6 +364,8 @@ namespace Warehouse_Application
                     ModifyingProductDelivery(product, employee, ref products, index);
                     Program.JsonFileRecord(ref products, systemOp);
                 }
+                else if (id == "0")
+                    answer = true;
                 else if (!products.Any(x => x.Id == id))
                 {
                     Console.WriteLine("This id is not in our database\nAdd product with new ID\nClick enter to continue\n");
@@ -371,8 +373,6 @@ namespace Warehouse_Application
                     Utils.AddingProduct(ref products, systemOp, employee);
                     Program.JsonFileRecord(ref products,systemOp);
                 }
-                else if (id == "0")
-                    answer = true;
                 else
                 {
                     Console.Clear();
