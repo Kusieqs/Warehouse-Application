@@ -11,7 +11,7 @@ namespace Warehouse_Application
 {
     public static class ReportMethods
     {
-        public static void ReportOfProducts(ref List<Product> products, string systemOp)
+        public static void ReportOfProducts(ref List<Product> products)
         {
             bool endOfRaport = false;
             if (products.Count == 0)
@@ -31,13 +31,13 @@ namespace Warehouse_Application
                 switch (answer)
                 {
                     case "1":
-                        AllProductReport(products, systemOp);
+                        AllProductReport(products);
                         break;
                     case "2":
-                        SearchingById(products, systemOp);
+                        SearchingById(products);
                         break;
                     case "3":
-                        SortingByValue(products, systemOp);
+                        SortingByValue(products);
                         break;
                     case "4":
                         endOfRaport = true;
@@ -47,8 +47,8 @@ namespace Warehouse_Application
 
                 }
             } while (!endOfRaport);
-        }
-        private static void AllProductReport(List<Product> products, string systemOp)
+        }// Choosing to sort or sreach by id or to see all products
+        private static void AllProductReport(List<Product> products)
         {
             bool endOfReport = false;
             do
@@ -70,8 +70,8 @@ namespace Warehouse_Application
                 ReportMenu(report, ref endOfReport, products);
             } while (!endOfReport);
 
-        }
-        private static void SearchingById(List<Product> products, string systemOp)
+        }// Show all of products
+        private static void SearchingById(List<Product> products)
         {
 
             bool endSearching = false;
@@ -118,8 +118,8 @@ namespace Warehouse_Application
                 }
 
             } while (!endSearching);
-        }
-        private static void SortingByValue(List<Product> products, string systemOp)
+        } // show product with inscribed id
+        private static void SortingByValue(List<Product> products)
         {
             List<Product> copyList = new List<Product>();
             List<Product> sortList = new List<Product>();
@@ -347,7 +347,7 @@ namespace Warehouse_Application
 
 
             } while (!endOfSort);
-        }
+        } // show products with range of values
         private static void ReportMenu(string report, ref bool endOfReport, List<Product> reportProducts)
         {
             Console.WriteLine("1.Write down to txt file\n2.Write down to pdf\n3.Write down to excel\n4.Statistics of list\n5.Exit\n");
@@ -358,7 +358,7 @@ namespace Warehouse_Application
             switch (answer)
             {
                 case "1":
-                    RecordingTxtFile(report);
+                    TxtFile(report);
                     break;
                 case "2":
                     PdfCreater(report);
@@ -376,7 +376,7 @@ namespace Warehouse_Application
                 default:
                     break;
             }
-        }
+        } // menu with choosing report (txt,pdf,excel)
         private static Func<Product, bool> CreateFilter(PropertyInfo property, string filter, string value)
         {
             var parameter = Expression.Parameter(typeof(Product), "x");
@@ -384,7 +384,7 @@ namespace Warehouse_Application
             var convertedFilterValue = Expression.Constant(Convert.ChangeType(value, property.PropertyType));
             var comparison = GetComparisonExpression(propertyAccess, filter, convertedFilterValue);
             return Expression.Lambda<Func<Product, bool>>(comparison, parameter).Compile();
-        }
+        } // creating an expression Lambda wtih comaprison
         private static Expression GetComparisonExpression(Expression left, string filter, Expression right)
         {
             switch (filter)
@@ -404,8 +404,8 @@ namespace Warehouse_Application
                 default:
                     throw new FormatException("Critical Error");
             }
-        }
-        private static void RecordingTxtFile(string report)
+        } // Comaprison to method "CreateFilter"
+        private static void TxtFile(string report)
         {
             if (!string.IsNullOrEmpty(report))
             {
@@ -421,7 +421,7 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
             Console.Clear();
-        }
+        } // Saving to txt file
         private static void PdfCreater(string report)
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -459,7 +459,7 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
             Console.Clear();
-        }
+        } // saving to pdf file
         private static void ExcelCreater(List<Product> products)
         {
             if (products.Count == 0)
@@ -509,7 +509,7 @@ namespace Warehouse_Application
                 }
 
             }
-        }
+        }// saving to excel file
     }
 }
 
