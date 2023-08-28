@@ -153,19 +153,19 @@ namespace Warehouse_Application
                         {
                             jsonBefore = new Product(products[number - 1]);
                             products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
-                            products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee));
+                            products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee, products[number-1].listOfModifications));
                         }
                         else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
                         {
                             jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
                             products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
-                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee));
+                            products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee,products.Find(x => x.Id == modifyingRecord).listOfModifications));
                         }
                         Program.JsonFileRecord(ref products, systemOp);
                     }
                 } while (!correctModifying);
             }
-        }
+        } // Modifying porducts (id/index)
         public static void ModifyingReportHistory(ref List<Product> listOfProducts, string systemOp, Employee employee)
         {
             if (!File.Exists(systemOp) || string.IsNullOrEmpty(File.ReadAllText(systemOp)))
@@ -193,7 +193,7 @@ namespace Warehouse_Application
                     Console.ResetColor();
                     Console.WriteLine($"Name: {product.Name}");
                     Console.WriteLine($"Id: {product.Id}");
-                    Console.WriteLine($"CHANGES: {product.list.Count}");
+                    Console.WriteLine($"CHANGES: {product.listOfModifications.Count}");
                     Console.BackgroundColor = ConsoleColor.White;
                     Console.WriteLine("\n                    \n");
                     Console.ResetColor();
@@ -218,19 +218,19 @@ namespace Warehouse_Application
                     productToChange = listOfProducts[index];
                 }
 
-                if (productToChange.list.Count <= 0)
+                if (productToChange.listOfModifications.Count <= 0)
                 {
                     Console.WriteLine("Lack of modifications\nClick neter to continue");
                     Console.ReadKey();
                 }
-                else if (productToChange.list.Count > 0)
+                else if (productToChange.listOfModifications.Count > 0)
                 {
                     bool attempt = false;
                     do
                     {
                         Console.Clear();
                         int line = 3;
-                        foreach (var history in productToChange.list)
+                        foreach (var history in productToChange.listOfModifications)
                         {
 
                             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -265,14 +265,14 @@ namespace Warehouse_Application
 
                         if (Regex.IsMatch(secondAnswer, @"^[a-zA-Z0-9]{5}$"))
                         {
-                            if (productToChange.list.Any(x => x.idModofication == secondAnswer))
+                            if (productToChange.listOfModifications.Any(x => x.idModofication == secondAnswer))
                             {
                                 DateTime d1 = DateTime.Now;
 
                                 HistoryModifications h1 = new HistoryModifications();
-                                h1 = productToChange.list.Find(x => x.idModofication == secondAnswer);
-                                productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory(new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1, employee));
-                                listOfProducts[index] = new Product(h1.before, productToChange.list);
+                                h1 = productToChange.listOfModifications.Find(x => x.idModofication == secondAnswer);
+                                productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory(new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1, employee,productToChange.listOfModifications));
+                                listOfProducts[index] = new Product(h1.before, productToChange.listOfModifications);
                                 attempt = true;
                                 Program.JsonFileRecord(ref listOfProducts, systemOp);
 
@@ -280,7 +280,7 @@ namespace Warehouse_Application
                         }
                         else if (secondAnswer == "1")
                         {
-                            productToChange.list.Clear();
+                            productToChange.listOfModifications.Clear();
                             listOfProducts[index] = productToChange;
                             attempt = true;
                         }
@@ -292,7 +292,7 @@ namespace Warehouse_Application
                 }
             } while (!endOfModifications);
 
-        }
+        } // undoing modifications/ All history
         public static object ParseValue(string input, Type targetType)
         {
             if (targetType == typeof(int))
@@ -321,7 +321,7 @@ namespace Warehouse_Application
                 }
             }
             throw new FormatException("Error with target type");
-        }
+        } // Parse value 
         private static void AcceptingModify(Product p1, out bool accpet)
         {
             bool infinity = false;
@@ -347,7 +347,7 @@ namespace Warehouse_Application
             } while (!infinity);
             accpet = false;
 
-        }
+        } // Accepting modifying product
         public static void NewDelivery(ref List<Product> products,Employee employee,string systemOp)
         {
             Product product;
@@ -381,7 +381,7 @@ namespace Warehouse_Application
                 }
 
             } while (!answer);
-        }
+        }  // adding new Product to list or changing quantity/ price of product
         private static void ModifyingProductDelivery(Product product, Employee employee, ref List<Product> products, int index)
         {
             Product copy = product;
@@ -440,9 +440,9 @@ namespace Warehouse_Application
             {
                 copy = new Product(products[index]);
                 products[index].GetType().GetProperty(property).SetValue(products[index], parsedValue);
-                products[index].HistoryOfProduct(new HistoryModifications(new ProductHistory(product), new ProductHistory(copy), d1, employee));
+                products[index].HistoryOfProduct(new HistoryModifications(new ProductHistory(product), new ProductHistory(copy), d1, employee, products[index].listOfModifications));
             }
-        }
+        } // modifying engine (Delivery)
     }
 }
 

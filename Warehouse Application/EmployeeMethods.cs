@@ -6,9 +6,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Warehouse_Application
 {
-	public static class EmployeeMethods
-	{
-        private static void AcceptingModify(Employee e1, out bool accpet) 
+    public static class EmployeeMethods
+    {
+        private static void AcceptingModify(Employee e1, out bool accpet)
         {
             bool infinity = false;
             do
@@ -47,49 +47,48 @@ namespace Warehouse_Application
                     if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"))))
                     {
                         Console.ForegroundColor = ConsoleColor.DarkBlue;
-                        Console.WriteLine("Welcome to warehouse app. Please provide information to the main admin");
+                        Console.WriteLine("Welcome to warehouse app. Please provide information for the main admin");
                         Console.ResetColor();
 
                         Console.WriteLine("\n\nAdmin Information");
                         employee.Position = PositionName.Admin;
 
-                        NewEmployeeInformation(employee,ref employees, firsTime);
+                        NewEmployeeInformation(employee, ref employees, firsTime);
                     }
-                    
 
-                        Console.Clear();
-                        int count = 0;
-                        foreach (var worker in employees)
-                        {
-                            ++count;
-                            Console.WriteLine($"{count}. {worker.Name} {worker.LastName} {worker.Position}");
-                        }
-                        Console.WriteLine("0. Exit");
-                        Console.Write("\nNumber: ");
-                        bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
+                    int line = 1;
+                    Console.Clear();
+                    foreach (var worker in employees)
+                    {
+                        Console.WriteLine($"{line}. {worker.Name} {worker.LastName} {worker.Position}");
+                        ++line;
+                    }
+                    Console.WriteLine("0. Exit");
+                    Console.Write("\nNumber: ");
+                    bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
                     if (number == 0)
                         Environment.Exit(0);
-                    else if (!correctNumber || count > number)
+                    else if (!correctNumber || employees.Count < number)
                         continue;
 
-                        employee = employees[number - 1];
+                    employee = employees[number - 1];
 
-                        Console.Clear();
+                    Console.Clear();
 
-                        Console.WriteLine("LOGIN");
-                        Console.Write("\n\nLogin: ");
-                        string login = Console.ReadLine();
-                        Console.Write("Password: ");
-                        string password = Console.ReadLine();
-                        if (employee.Login == login && employee.Password == password)
-                        {
-                            closeEmployee = true;
-                        }
-                        else
-                            throw new FormatException("Wrong login or password");
-                        employee.mainAccount = true;
-                    
+                    Console.WriteLine("LOGIN");
+                    Console.Write("\n\nLogin: ");
+                    string login = Console.ReadLine();
+                    Console.Write("Password: ");
+                    string password = Console.ReadLine();
+                    if (employee.Login == login && employee.Password == password)
+                    {
+                        closeEmployee = true;
+                    }
+                    else
+                        throw new FormatException("Wrong login or password");
+                    employee.mainAccount = true;
+
                 }
                 catch (FormatException e)
                 {
@@ -101,7 +100,7 @@ namespace Warehouse_Application
                 }
             } while (!closeEmployee);
         }/// Setting first admin or choosing employee
-        public static void AddingEmployee(ref List<Employee> employees,bool firsTime)
+        public static void AddingEmployee(ref List<Employee> employees, bool firsTime)
         {
             Employee employee = new Employee();
             bool choosingPosition = false;
@@ -135,7 +134,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.WriteLine($"Position: {employee.Position}");
 
-                    NewEmployeeInformation(employee,ref employees,firsTime);
+                    NewEmployeeInformation(employee, ref employees, firsTime);
 
                     choosingPosition = true;
 
@@ -152,15 +151,34 @@ namespace Warehouse_Application
 
 
         } /// adding new employee to list
-        private static void NewEmployeeInformation(Employee employee,ref List<Employee> employees, bool firsTime)
+        private static void NewEmployeeInformation(Employee employee, ref List<Employee> employees, bool firsTime)
         {
             Console.Write($"Name: ");
             string name = Console.ReadLine();
-            employee.Name = name;
+            if (Regex.IsMatch(name, @"^[A-Za-z]+$"))
+            {
+                name = name.ToLower();
+                name = char.ToUpper(name[0]) + name.Substring(1);
+                employee.Name = name;
+            }
+            else
+            {
+                throw new FormatException("Numbers can't be in name");
+            }
+
 
             Console.Write("Last name: ");
             string lastName = Console.ReadLine();
-            employee.LastName = lastName;
+            if (Regex.IsMatch(lastName, @"^[A-Za-z]+$"))
+            {
+                lastName = lastName.ToLower();
+                lastName = char.ToUpper(lastName[0]) + lastName.Substring(1);
+                employee.LastName = lastName;
+            }
+            else
+            {
+                throw new FormatException("Numbers can't be in last name");
+            }
 
             Console.Write("Id (3 chars): ");
             string id = Console.ReadLine();
@@ -182,16 +200,16 @@ namespace Warehouse_Application
                     int p = random.Next(0, 10);
                     login += p.ToString();
                 }
-                if (firsTime || string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"WareHouse","Employee.json"))))
+                if (firsTime || string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"))))
                 {
                     break;
                 }
                 else if (!employees.Any(x => x.Login == login))
-                    correctLogin = true; 
+                    correctLogin = true;
 
             } while (!correctLogin);
 
-            Console.WriteLine($"Login: {login}");
+            Console.WriteLine($"\n\nLogin: {login}");
             employee.Login = login;
 
             Console.Write("Password: ");
@@ -203,11 +221,11 @@ namespace Warehouse_Application
             List<Employee> firsTimeList = new List<Employee>();
 
             Console.Clear();
-            Console.WriteLine("WRITE DOWN THIS INFORMATION:");
-            Console.WriteLine($"Login: {employee.Login}\nPassword: {employee.Password}\n\nClick enter to continue");
+            Console.WriteLine("WRITE DOWN THIS INFORMATION:\n");
+            Console.WriteLine($"Login: {employee.Login}\nPassword: {employee.Password}\n\n\nClick enter to continue");
             Console.ReadKey();
 
-            if(firsTime)
+            if (firsTime)
             {
                 firsTimeList.Add(employee);
                 json = JsonConvert.SerializeObject(firsTimeList);
@@ -218,7 +236,7 @@ namespace Warehouse_Application
                 json = JsonConvert.SerializeObject(employees);
             }
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            File.WriteAllText(Path.Combine(systemOp,"WareHouse" ,"Employee.json"), json);
+            File.WriteAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"), json);
 
             string jsonReader = File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
@@ -261,7 +279,7 @@ namespace Warehouse_Application
                         }
                         else if (correctNumber && number > 0 && number <= count)
                         {
-                            if (listEmployees[number-1].mainAccount != true)
+                            if (listEmployees[number - 1].mainAccount != true)
                             {
                                 listEmployees.RemoveAt(number - 1);
                             }
@@ -320,7 +338,7 @@ namespace Warehouse_Application
 
             } while (!correctChoosing);
         } ///Options to remove or modifying employee
-        private static void EmployeeModifyingData(ref Employee employee, List<Employee> employees) 
+        private static void EmployeeModifyingData(ref Employee employee, List<Employee> employees)
         {
             Employee copy = employee;
             string property = "", value = "";
@@ -349,7 +367,7 @@ namespace Warehouse_Application
                 Console.Write("Number: ");
 
                 string answer = Console.ReadLine();
-                switch(answer)
+                switch (answer)
                 {
                     case "1":
                         property = "Name";
@@ -383,7 +401,7 @@ namespace Warehouse_Application
             } while (!correctModify);
 
 
-            if(property == "Position")
+            if (property == "Position")
             {
                 bool x = true;
                 do
@@ -392,7 +410,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.Write("1.Admin\n2.Supplier\n3.Employee\n4.Manager\n5.Exit\nNumber: ");
                     string answer = Console.ReadLine();
-                    switch(answer)
+                    switch (answer)
                     {
                         case "1":
                             copy.Position = PositionName.Admin;
@@ -411,11 +429,11 @@ namespace Warehouse_Application
                         default:
                             x = false;
                             break;
-                            
+
                     }
                 } while (!x);
             }
-            else if(property == "mainAccount")
+            else if (property == "mainAccount")
             {
                 bool x = true;
                 do
@@ -424,7 +442,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.WriteLine("1.Main account (true)\n2.Main account (false)\n3.Exit");
                     string answer = Console.ReadLine();
-                    switch(answer)
+                    switch (answer)
                     {
                         case "1":
                             copy.mainAccount = true;
@@ -452,7 +470,7 @@ namespace Warehouse_Application
             object valueParsed = ModificationsAndHistory.ParseValue(value, propertyInfo.PropertyType);
             copy.GetType().GetProperty(property).SetValue(copy, valueParsed);
 
-            if(employees.Any(x => x.Id == valueParsed)&& property == "Id")
+            if (employees.Any(x => x.Id == valueParsed) && property == "Id")
             {
                 Console.WriteLine("This id is already exist\nClick enter to continue!");
                 Console.ReadKey();
@@ -460,7 +478,7 @@ namespace Warehouse_Application
             }
 
             AcceptingModify(copy, out accept);
-            if(accept)
+            if (accept)
             {
                 employee = copy;
             }

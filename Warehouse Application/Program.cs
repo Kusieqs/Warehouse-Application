@@ -45,7 +45,7 @@ internal class Program
                                 break;
 
                             case 3:
-                                ReportMethods.ReportOfProducts(ref listOfProducts, systemOperation);
+                                ReportMethods.ReportOfProducts(ref listOfProducts);
                                 break;
 
                             case 4:
@@ -135,7 +135,7 @@ internal class Program
                                 break;
 
                             case 3:
-                                ReportMethods.ReportOfProducts(ref listOfProducts, systemOperation);
+                                ReportMethods.ReportOfProducts(ref listOfProducts);
                                 break;
 
                             case 4:
