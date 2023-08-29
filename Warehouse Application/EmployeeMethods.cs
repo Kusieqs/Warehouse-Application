@@ -224,7 +224,7 @@ namespace Warehouse_Application
             Console.WriteLine("WRITE DOWN THIS INFORMATION:\n");
             Console.WriteLine($"Login: {employee.Login}\nPassword: {employee.Password}\n\n\nClick enter to continue");
             Console.ReadKey();
-
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             if (firsTime)
             {
                 firsTimeList.Add(employee);
@@ -232,10 +232,20 @@ namespace Warehouse_Application
             }
             else
             {
-                employees.Add(employee);
-                json = JsonConvert.SerializeObject(employees);
+                if(string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp,"WareHouse","Employee.json"))))
+                {
+                    List<Employee> employees1 = new List<Employee>();
+                    employees1.Add(employee);
+                    json = JsonConvert.SerializeObject(employees1);
+
+                }
+                else
+                {
+                    employees.Add(employee);
+                    json = JsonConvert.SerializeObject(employees);
+                }
             }
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
             File.WriteAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"), json);
 
             string jsonReader = File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"));
