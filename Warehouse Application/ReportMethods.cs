@@ -13,8 +13,10 @@ namespace Warehouse_Application
     {
         public static void ReportOfProducts(ref List<Product> products)
         {
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
             bool endOfRaport = false;
-            if (products.Count == 0)
+            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp,"WareHouse","Products.json"))))
             {
                 Console.Clear();
                 Console.WriteLine("List is empty\nClick enter to continue");

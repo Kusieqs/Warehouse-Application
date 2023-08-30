@@ -8,7 +8,7 @@ internal class Program
     {
         bool firstTime = true; 
         int number;
-        bool closeProgram = false, correctNumber, closeEmployee = false;
+        bool closeProgram = false, correctNumber;
         string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         systemOperation = Path.Combine(systemOperation, "WareHouse");
 
@@ -41,7 +41,7 @@ internal class Program
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts, systemOperation);
+                                Utils.RemovingRecord(ref listOfProducts);
                                 break;
 
                             case 3:
@@ -49,7 +49,7 @@ internal class Program
                                 break;
 
                             case 4:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
                                 break;
 
                             case 5:
@@ -95,11 +95,11 @@ internal class Program
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts, systemOperation);
+                                Utils.RemovingRecord(ref listOfProducts);
                                 break;
 
                             case 3:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
                                 break;
 
                             case 4:
@@ -131,7 +131,7 @@ internal class Program
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts, systemOperation);
+                                Utils.RemovingRecord(ref listOfProducts);
                                 break;
 
                             case 3:
@@ -139,7 +139,7 @@ internal class Program
                                 break;
 
                             case 4:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
                                 break;
 
                             case 5:

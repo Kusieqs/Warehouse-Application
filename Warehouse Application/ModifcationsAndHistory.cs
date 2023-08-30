@@ -8,8 +8,10 @@ namespace Warehouse_Application
 {
     public static class ModificationsAndHistory
     {
-        public static void ModifyingProduct(ref List<Product> products, string systemOp, Employee employee)
+        public static void ModifyingProduct(ref List<Product> products,Employee employee)
         {
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
             Product copy = null;
             string modifyingRecord;
             string property = string.Empty;
@@ -17,7 +19,7 @@ namespace Warehouse_Application
             int number;
             bool correctNumber, correctModifying = false, accept, graphic = false;
 
-            if (products.Count == 0)
+            if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
             {
                 Console.Clear();
                 Console.WriteLine("List is empty!\nClick enter to continue");

@@ -131,14 +131,15 @@ namespace Warehouse_Application
             Console.Clear();
 
         } ///List of products to see on Removing Method nad Modifying method
-        public static void RemovingRecord(ref List<Product> products, string systemOp)
+        public static void RemovingRecord(ref List<Product> products)
         {
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             Product p1 = new Product();
             string removingRecord;
             int number;
             bool itIsNumber, correctNumber, graphic = false;
             bool endRemovingRecord = false;
-            if (products.Count == 0)
+            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp,"WareHouse","Products.json"))))
             {
                 Console.Clear();
                 Console.WriteLine("List is empty!\nClick enter to continue");
@@ -225,8 +226,10 @@ namespace Warehouse_Application
         } /// Name of writing down file
         public static void Statistics(List<Product> products)
         {
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
             Console.Clear();
-            if (products.Count == 0)
+            if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
             {
                 Console.Clear();
                 Console.WriteLine("List is empty\nClick enter to continue");
@@ -253,8 +256,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("\n");
+
                 y = products.Min(x => x.Price);
                 var p2 = products.Where(x => x.Price == y).ToList();
                 Console.WriteLine("Min: ");
@@ -262,8 +265,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("\n");
+
                 Console.WriteLine("The most frequently occuring price: \n");
                 var p3 = products.Select(x => new
                 {
@@ -302,8 +305,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("\n");
+
                 y = products.Min(x => x.Quantity);
                 var p6 = products.Where(x => x.Quantity == y).ToList();
                 Console.WriteLine("Min: ");
@@ -311,8 +314,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("\n");
+
                 Console.WriteLine("The most frequently occuring quantity: \n");
 
                 var p7 = products.Select(x => new

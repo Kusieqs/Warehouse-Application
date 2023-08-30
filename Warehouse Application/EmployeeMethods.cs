@@ -277,9 +277,9 @@ namespace Warehouse_Application
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine($"{count}.");
                             Console.ResetColor();
-                            Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}");
+                            Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n");
                         }
-                        Console.WriteLine("Number of employee (0 to exit): ");
+                        Console.Write("\n\nNumber of employee (0 to exit): ");
                         correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
                         if (correctNumber && number == 0)
@@ -289,9 +289,17 @@ namespace Warehouse_Application
                         }
                         else if (correctNumber && number > 0 && number <= count)
                         {
-                            if (listEmployees[number - 1].mainAccount != true)
+                            if (!listEmployees[number - 1].mainAccount  && listEmployees.Count > 1)
                             {
                                 listEmployees.RemoveAt(number - 1);
+                            }
+                            else if (listEmployees.Count == 1 && (!listEmployees[number-1].mainAccount))
+                            {
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("WARNING\n\n");
+                                Console.ResetColor();
+                                Console.WriteLine("You are going to delete ");
                             }
                             else
                             {
@@ -316,19 +324,19 @@ namespace Warehouse_Application
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine($"{count}.");
                             Console.ResetColor();
-                            Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}");
+                            Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n");
                         }
 
 
-                        Console.WriteLine("Number of employee (0 to exit): ");
+                        Console.Write("\n\nNumber of employee (0 to exit): ");
                         correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
-                        if (number == 0)
+                        if (number == 0 && correctNumber)
                         {
                             correctChoosing = true;
                             break;
                         }
-                        else if (number <= count && number > 0)
+                        else if (number <= count && number > 0 && correctNumber)
                         {
                             Employee employee = listEmployees[number - 1];
                             EmployeeModifyingData(ref employee, listEmployees);
@@ -352,11 +360,12 @@ namespace Warehouse_Application
         {
             Employee copy = employee;
             string property = "", value = "";
-            bool correctModify = false;
+            bool correctModify;
             do
             {
+                correctModify = true;
                 Console.Clear();
-                Console.WriteLine("Employee Modifications\n1.Name\n2.Last name\n3.Id\n4.Age\n5.Position\n6.Password\n7.Login\n8.Remove Employee\n9.Main account\n10.Exit");
+                Console.WriteLine("Employee Modifications\n1.Name\n2.Last name\n3.Id\n4.Age\n5.Position\n6.Password\n7.Login\n8.Main account\n9.Exit");
                 Console.SetCursorPosition(25, 1);
                 Console.WriteLine($"Name: {employee.Name}");
                 Console.SetCursorPosition(25, 2);
@@ -406,6 +415,7 @@ namespace Warehouse_Application
                     case "9":
                         return;
                     default:
+                        correctModify = false;
                         break;
                 }
             } while (!correctModify);
