@@ -329,6 +329,13 @@ namespace Warehouse_Application
                     return x;
                 }
             }
+            else if (targetType == typeof(PositionName))
+            {
+                if(PositionName.TryParse(input, out PositionName x))
+                {
+                    return x;
+                }
+            }
             throw new FormatException("Error with target type");
         } // Parse value 
         private static void AcceptingModify(Product p1, out bool accpet)

@@ -449,16 +449,16 @@ namespace Warehouse_Application
                     switch (answer)
                     {
                         case "1":
-                            copy.Position = PositionName.Admin;
+                            value = PositionName.Admin.ToString();
                             break;
                         case "2":
-                            copy.Position = PositionName.Supplier;
+                            value = PositionName.Supplier.ToString();
                             break;
                         case "3":
-                            copy.Position = PositionName.Employee;
+                            value = PositionName.Employee.ToString();
                             break;
                         case "4":
-                            copy.Position = PositionName.Manager;
+                            value = PositionName.Manager.ToString();
                             break;
                         case "5":
                             return;
@@ -481,10 +481,10 @@ namespace Warehouse_Application
                     switch (answer)
                     {
                         case "1":
-                            copy.mainAccount = true;
+                            value = true.ToString();
                             break;
                         case "2":
-                            copy.mainAccount = false;
+                            value = false.ToString();
                             break;
                         case "3":
                             return;
@@ -503,7 +503,7 @@ namespace Warehouse_Application
             bool accept;
 
             PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
-            object valueParsed = ModificationsAndHistory.ParseValue(value, propertyInfo.PropertyType);
+            object valueParsed = ModificationsAndHistory.ParseValue(value, propertyInfo.PropertyType); ///problem
             copy.GetType().GetProperty(property).SetValue(copy, valueParsed);
 
             if (employees.Any(x => x.Id == valueParsed) && property == "Id")
@@ -512,7 +512,7 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 return;
             }
-
+            Console.Clear();
             AcceptingModify(copy, out accept);
             if (accept)
             {
