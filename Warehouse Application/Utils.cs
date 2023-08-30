@@ -389,6 +389,7 @@ namespace Warehouse_Application
                 Console.Clear();
             }
         } /// Statistics of products
+    
     }
 }
 

@@ -322,6 +322,13 @@ namespace Warehouse_Application
                     return x;
                 }
             }
+            else if (targetType == typeof(bool))
+            {
+                if(bool.TryParse(input, out bool x))
+                {
+                    return x;
+                }
+            }
             throw new FormatException("Error with target type");
         } // Parse value 
         private static void AcceptingModify(Product p1, out bool accpet)

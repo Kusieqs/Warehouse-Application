@@ -293,13 +293,29 @@ namespace Warehouse_Application
                             {
                                 listEmployees.RemoveAt(number - 1);
                             }
-                            else if (listEmployees.Count == 1 && (!listEmployees[number-1].mainAccount))
+                            else if (listEmployees.Count == 1 || listEmployees.Count(x => x.Position == PositionName.Admin) == 1)
                             {
-                                Console.Clear();
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("WARNING\n\n");
-                                Console.ResetColor();
-                                Console.WriteLine("You are going to delete ");
+                                bool correctAnswer = false;
+                                do
+                                {
+                                    Console.Clear();
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine("WARNING\n\n");
+                                    Console.ResetColor();
+                                    Console.WriteLine("You are going to delete last admin position\nThis will delete all files\n\n1.Delete\n2.Continue");
+                                    string answer = Console.ReadLine();
+
+                                    if(answer == "1")
+                                    {
+                                        string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                                        Directory.Delete(Path.Combine(systemOp, "WareHouse"), true);
+                                        Environment.Exit(0);
+                                    }
+                                    else if(answer =="2")
+                                    {
+                                        correctAnswer = true;
+                                    }                           
+                                } while (!correctAnswer);
                             }
                             else
                             {
