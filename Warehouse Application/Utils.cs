@@ -5,7 +5,7 @@ namespace Warehouse_Application
 {
     public static class Utils
     {
-        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation, ref List<Employee> employees,ref bool firstTime)
+        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation, ref List<Employee> employees, ref bool firstTime)
         {
 
             if (!Directory.Exists(systemOperation))
@@ -24,7 +24,7 @@ namespace Warehouse_Application
             jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
         } /// Checking for existence directory with data
-        public static void AddingProduct(ref List<Product> products, string systemOp, Employee employee) 
+        public static void AddingProduct(ref List<Product> products, string systemOp, Employee employee)
         {
 
             bool correctPrice, correctQuantity, correctData = false;
@@ -33,69 +33,71 @@ namespace Warehouse_Application
             double price;
             DateTime copyDate = DateTime.Now;
             DateTime date = copyDate.Date;
-
-
-            do
+            Product p1 = null;
+            try
             {
-                Console.Clear();
-                Console.Write("Name of product: ");
-                name = Console.ReadLine().Trim();
-
-                Console.Write("\nPrice of product: ");
-                correctPrice = double.TryParse(Console.ReadLine(), out price);
-
-                Console.Write("\nQuantity of product: ");
-                correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
-
-                Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
-                id = Console.ReadLine().Trim();
-
-
-                try
+                do
                 {
 
-                    if (correctPrice && correctQuantity)
+
+                    Console.Clear();
+                    Console.Write("Name of product: ");
+                    name = Console.ReadLine().Trim();
+                    p1.Name = name;
+
+                    Console.Write("\nPrice of product: ");
+                    correctPrice = double.TryParse(Console.ReadLine(), out price);
+
+                    if (!correctPrice)
+                        throw new FormatException("Wrong format");
+                    p1.Price = price;
+
+                    Console.Write("\nQuantity of product: ");
+                    correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
+
+                    if (!correctQuantity)
+                        throw new FormatException("Wrong format");
+                    p1.Quantity = quantity;
+
+                    Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
+                    id = Console.ReadLine().Trim();
+                    p1.Id = id;
+                    p1.Date = date;
+
+
+                    string jsonCreator;
+                    correctData = false;
+                    if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
                     {
-                        Product p1 = new Product(name, id, price, quantity, date, employee);
+                        List<Product> products1Copy = new List<Product>();
+                        products1Copy.Add(p1);
+                        jsonCreator = JsonConvert.SerializeObject(products1Copy);
+                        File.WriteAllText(systemOp, jsonCreator);
+                        break;
+                    }
+                    else if (!products.Any(x => x.Id == id))
+                    {
+                        products.Add(p1);
+                        jsonCreator = JsonConvert.SerializeObject(products);
+                        File.WriteAllText(systemOp, jsonCreator);
+                        correctData = true;
 
-                        string jsonCreator;
-                        correctData = false;
-                        if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
-                        {
-                            List<Product> products1Copy = new List<Product>();
-                            products1Copy.Add(p1);
-                            jsonCreator = JsonConvert.SerializeObject(products1Copy);
-                            File.WriteAllText(systemOp, jsonCreator);
-                            break;
-                        }
-                        else if (!products.Any(x => x.Id == id))
-                        {
-                            products.Add(p1);
-                            jsonCreator = JsonConvert.SerializeObject(products);
-                            File.WriteAllText(systemOp, jsonCreator);
-                            correctData = true;
-
-                        }
-                        else
-                            throw new FormatException("Id is already exist!");
                     }
                     else
-                    {
-                        throw new FormatException("Wrong data or Id already exist");
-                    }
-                }
-                catch (FormatException e)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\n{e.Message}");
-                    Console.ResetColor();
-                    Console.WriteLine("Click enter to continue or 0 to exit");
-                    string answer = Console.ReadLine();
-                    if (answer == "0")
-                        return;
-                }
+                        throw new FormatException("Id is already exist!");
 
-            } while (!correctData);
+                } while (!correctData);
+            }
+            catch (FormatException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"\n{e.Message}");
+                Console.ResetColor();
+                Console.WriteLine("Click enter to continue or 0 to exit");
+                string answer = Console.ReadLine();
+                if (answer == "0")
+                    return;
+            }
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nProduct added to list");
@@ -139,7 +141,7 @@ namespace Warehouse_Application
             int number;
             bool itIsNumber, correctNumber, graphic = false;
             bool endRemovingRecord = false;
-            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp,"WareHouse","Products.json"))))
+            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))))
             {
                 Console.Clear();
                 Console.WriteLine("List is empty!\nClick enter to continue");
@@ -389,7 +391,7 @@ namespace Warehouse_Application
                 Console.Clear();
             }
         } /// Statistics of products
-    
+
     }
 }
 
