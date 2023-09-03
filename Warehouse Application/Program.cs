@@ -8,7 +8,7 @@ internal class Program
     {
         bool firstTime = true; 
         int number;
-        bool closeProgram = false, correctNumber;
+        bool closeProgram = false, correctNumber = false;
         string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         systemOperation = Path.Combine(systemOperation, "WareHouse");
 
@@ -37,7 +37,7 @@ internal class Program
                         switch (number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, systemOperation,employee);
+                                Utils.AddingProduct(ref listOfProducts, employee);
                                 break;
 
                             case 2:
@@ -76,6 +76,7 @@ internal class Program
                                 break;
 
                             default:
+                                correctNumber = false;
                                 break;
                         }
                     } while (!correctNumber);
@@ -91,7 +92,7 @@ internal class Program
                         switch(number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, systemOperation,employee);
+                                Utils.AddingProduct(ref listOfProducts,employee);
                                 break;
 
                             case 2:
@@ -111,6 +112,7 @@ internal class Program
                                 break;
 
                             default:
+                                correctNumber = false;
                                 break;
 
                         }
@@ -127,7 +129,7 @@ internal class Program
                         switch(number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, systemOperation,employee);
+                                Utils.AddingProduct(ref listOfProducts, employee);
                                 break;
 
                             case 2:
@@ -155,6 +157,7 @@ internal class Program
                                 break;
 
                             default:
+                                correctNumber = false;
                                 break;
 
 
@@ -171,7 +174,7 @@ internal class Program
                         switch (number)
                         {
                             case 1:
-                                ModificationsAndHistory.NewDelivery(ref listOfProducts, employee, systemOperation);
+                                ModificationsAndHistory.NewDelivery(ref listOfProducts, employee);
                                 break;
 
                             case 2:
@@ -183,6 +186,7 @@ internal class Program
                                 break;
 
                             default:
+                                correctNumber = false;
                                 break;
                         }
                     } while (!correctNumber);
@@ -193,8 +197,10 @@ internal class Program
         } while (!closeProgram);
 
     }
-    public static void JsonFileRecord(ref List<Product> products, string systemOp) /// Method to overwriting list of Products
+    public static void JsonFileRecord(ref List<Product> products) /// Method to overwriting list of Products
     {
+        string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
         string jsonWriter = JsonConvert.SerializeObject(products);
         File.WriteAllText(systemOp, jsonWriter);
 

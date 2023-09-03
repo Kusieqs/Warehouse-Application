@@ -24,19 +24,19 @@ namespace Warehouse_Application
             jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
         } /// Checking for existence directory with data
-        public static void AddingProduct(ref List<Product> products, string systemOp, Employee employee)
+        public static void AddingProduct(ref List<Product> products, Employee employee)
         {
-
+            string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
             string name, id;
             int quantity;
             double price;
             DateTime copyDate = DateTime.Now;
             DateTime date = copyDate.Date;
-            Product p1 = null;
-            try
+            Product p1 = new Product();
+            do
             {
-                do
+                try
                 {
 
 
@@ -86,18 +86,19 @@ namespace Warehouse_Application
                     else
                         throw new FormatException("Id is already exist!");
 
-                } while (!correctData);
-            }
-            catch (FormatException e)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\n{e.Message}");
-                Console.ResetColor();
-                Console.WriteLine("Click enter to continue or 0 to exit");
+                }
+                catch (FormatException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"\n{e.Message}");
+                    Console.ResetColor();
+                    Console.WriteLine("Click enter to continue or 0 to exit");
+                } while (!correctData) ;
                 string answer = Console.ReadLine();
                 if (answer == "0")
                     return;
-            }
+            } while (!correctData);
+            
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nProduct added to list");
@@ -193,7 +194,7 @@ namespace Warehouse_Application
                                 products.RemoveAt(number - 1);
                             else
                                 products.Remove(p1);
-                            Program.JsonFileRecord(ref products, systemOp);
+                            Program.JsonFileRecord(ref products);
 
                         }
                         else if (choosingYesNo == "2")

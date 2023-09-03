@@ -163,7 +163,7 @@ namespace Warehouse_Application
                             products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
                             products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee,products.Find(x => x.Id == modifyingRecord).listOfModifications));
                         }
-                        Program.JsonFileRecord(ref products, systemOp);
+                        Program.JsonFileRecord(ref products);
                     }
                 } while (!correctModifying);
             }
@@ -276,7 +276,7 @@ namespace Warehouse_Application
                                 productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory(new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1, employee,productToChange.listOfModifications));
                                 listOfProducts[index] = new Product(h1.before, productToChange.listOfModifications);
                                 attempt = true;
-                                Program.JsonFileRecord(ref listOfProducts, systemOp);
+                                Program.JsonFileRecord(ref listOfProducts);
 
                             }
                         }
@@ -289,7 +289,7 @@ namespace Warehouse_Application
                         else if (secondAnswer == "0")
                             attempt = true;
 
-                        Program.JsonFileRecord(ref listOfProducts, systemOp);
+                        Program.JsonFileRecord(ref listOfProducts);
                     } while (!attempt);
                 }
             } while (!endOfModifications);
@@ -364,7 +364,7 @@ namespace Warehouse_Application
             accpet = false;
 
         } // Accepting modifying product
-        public static void NewDelivery(ref List<Product> products,Employee employee,string systemOp)
+        public static void NewDelivery(ref List<Product> products,Employee employee)
         {
             Product product;
             bool answer = false;
@@ -378,7 +378,7 @@ namespace Warehouse_Application
                     product = new Product(products.Find(x => x.Id == id));
                     int index = products.FindIndex(x => x.Id == id);
                     ModifyingProductDelivery(product, employee, ref products, index);
-                    Program.JsonFileRecord(ref products, systemOp);
+                    Program.JsonFileRecord(ref products);
                 }
                 else if (id == "0")
                     answer = true;
@@ -386,8 +386,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine("This id is not in our database\nAdd product with new ID\nClick enter to continue\n");
                     Console.ReadKey();
-                    Utils.AddingProduct(ref products, systemOp, employee);
-                    Program.JsonFileRecord(ref products,systemOp);
+                    Utils.AddingProduct(ref products,employee);
+                    Program.JsonFileRecord(ref products);
                 }
                 else
                 {
