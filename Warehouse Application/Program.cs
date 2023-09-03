@@ -31,7 +31,7 @@ internal class Program
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Edit employee\n9. Change position\n0. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Edit employee\n9. Change position\n0. Exit");
                         Console.Write($"\n\nPosition: {employee.Position}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch (number)
@@ -123,7 +123,7 @@ internal class Program
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Change position\n7. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Change position\n7. Exit");
                         Console.Write("Number: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)

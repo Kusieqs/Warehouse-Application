@@ -93,10 +93,10 @@ namespace Warehouse_Application
                     Console.WriteLine($"\n{e.Message}");
                     Console.ResetColor();
                     Console.WriteLine("Click enter to continue or 0 to exit");
-                } while (!correctData) ;
-                string answer = Console.ReadLine();
-                if (answer == "0")
-                    return;
+                    string answer = Console.ReadLine();
+                    if (answer == "0")
+                        return;
+                } 
             } while (!correctData);
             
 
@@ -152,6 +152,15 @@ namespace Warehouse_Application
             {
                 do
                 {
+                    if(products.Count == 0)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("List is empty!\nClick enter to continue");
+                        Console.ReadKey();
+                        endRemovingRecord = true;
+                        break;
+                    }
+
                     GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number, ref graphic);
 
                     if (correctNumber && number <= products.Count && number > 0)
@@ -169,11 +178,8 @@ namespace Warehouse_Application
                         break;
                     }
                     else
-                    {
-                        Console.WriteLine("Wrong number or id\nClick enter to continue");
-                        Console.ReadKey();
                         continue;
-                    }
+                    
                     Console.Clear();
                     bool choosingCorrect = false;
                     do
@@ -206,9 +212,6 @@ namespace Warehouse_Application
                 } while (!endRemovingRecord);
 
             }
-
-
-
         } /// removing product from list
         public static string NameFile()
         {

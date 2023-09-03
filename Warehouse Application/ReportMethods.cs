@@ -275,7 +275,7 @@ namespace Warehouse_Application
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1.Condition to sorted list (All products in sorted list)\n2.Condition to main list (All products)");
+                        Console.Write("1. Condition to sorted list (All products in sorted list)\n2. Condition to main list (All products)\n\nNumber: ");
                         string answer = Console.ReadLine();
                         switch (answer)
                         {
@@ -283,17 +283,16 @@ namespace Warehouse_Application
                                 attempt = true;
                                 if (!copyList.Any())
                                 {
-                                    sortList = products.Where(filter).ToList();
+                                    sortList = products.Where(filter).Distinct().ToList();
                                 }
                                 else
                                 {
-                                    sortList = sortList.Where(filter).ToList();
+                                    sortList = sortList.Where(filter).Distinct().ToList();
                                 }
-                                sortList = sortList.Distinct().ToList();
                                 break;
                             case "2":
-                                copyList = products.Where(filter).ToList();
-                                sortList = sortList.Concat(copyList).ToList();
+                                copyList = products.Where(filter).Distinct().ToList();
+                                sortList = sortList.Concat(copyList).Distinct().ToList();
                                 attempt = true;
                                 break;
                             default:
@@ -310,6 +309,7 @@ namespace Warehouse_Application
                     string report = "";
                     if (sortList.Count == 0)
                     {
+                        Console.Clear();
                         Console.WriteLine("List is empty");
                     }
                     else
