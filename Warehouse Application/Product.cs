@@ -2,7 +2,7 @@
 namespace Warehouse_Application;
 public class Product
 {
-    public List<HistoryModifications> list = new List<HistoryModifications>();
+    public List<HistoryModifications> listOfModifications = new List<HistoryModifications>();
     private string name;
     private string id;
     private double price;
@@ -21,7 +21,7 @@ public class Product
         this.price = p1.price;
         this.quantity = p1.quantity;
         this.date = p1.date;
-        this.list = p1.list;
+        this.listOfModifications = p1.listOfModifications;
         this.addedBy = p1.addedBy;
     }
     public Product(ProductHistory p1, List<HistoryModifications> list)
@@ -31,7 +31,7 @@ public class Product
         this.price = p1.price;
         this.quantity = p1.quantity;
         this.date = p1.date;
-        this.list = list.ToList();
+        this.listOfModifications = list.ToList();
         this.addedBy = p1.addedBy;
         
     }
@@ -160,7 +160,7 @@ public class Product
     }
     public void HistoryOfProduct(HistoryModifications p1)
     {
-        list.Add(p1);
+        listOfModifications.Add(p1);
     }
 }
 

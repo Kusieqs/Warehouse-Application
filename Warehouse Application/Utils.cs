@@ -5,7 +5,7 @@ namespace Warehouse_Application
 {
     public static class Utils
     {
-        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation, ref List<Employee> employees,ref bool firstTime)
+        public static void FirstTimeUsing(ref List<Product> products, ref string systemOperation, ref List<Employee> employees, ref bool firstTime)
         {
 
             if (!Directory.Exists(systemOperation))
@@ -23,66 +23,69 @@ namespace Warehouse_Application
             products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
             jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
-        }
-        public static void AddingProduct(ref List<Product> products, string systemOp, Employee employee)
+        } /// Checking for existence directory with data
+        public static void AddingProduct(ref List<Product> products, Employee employee)
         {
-
+            string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
             string name, id;
             int quantity;
             double price;
             DateTime copyDate = DateTime.Now;
             DateTime date = copyDate.Date;
-
-
+            Product p1 = new Product();
             do
             {
-                Console.Clear();
-                Console.Write("Name of product: ");
-                name = Console.ReadLine().Trim();
-
-                Console.Write("\nPrice of product: ");
-                correctPrice = double.TryParse(Console.ReadLine(), out price);
-
-                Console.Write("\nQuantity of product: ");
-                correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
-
-                Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
-                id = Console.ReadLine().Trim();
-
-
                 try
                 {
 
-                    if (correctPrice && correctQuantity)
+
+                    Console.Clear();
+                    Console.Write("Name of product: ");
+                    name = Console.ReadLine().Trim();
+                    p1.Name = name;
+
+                    Console.Write("\nPrice of product: ");
+                    correctPrice = double.TryParse(Console.ReadLine(), out price);
+
+                    if (!correctPrice)
+                        throw new FormatException("Wrong format");
+                    p1.Price = price;
+
+                    Console.Write("\nQuantity of product: ");
+                    correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
+
+                    if (!correctQuantity)
+                        throw new FormatException("Wrong format");
+                    p1.Quantity = quantity;
+
+                    Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
+                    id = Console.ReadLine().Trim();
+                    p1.Id = id;
+                    p1.Date = date;
+
+
+                    string jsonCreator;
+                    correctData = false;
+                    if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
                     {
-                        Product p1 = new Product(name, id, price, quantity, date, employee);
+                        List<Product> products1Copy = new List<Product>();
+                        products1Copy.Add(p1);
+                        jsonCreator = JsonConvert.SerializeObject(products1Copy);
+                        File.WriteAllText(systemOp, jsonCreator);
+                        break;
+                    }
+                    else if (!products.Any(x => x.Id == id))
+                    {
+                        products.Add(p1);
+                        jsonCreator = JsonConvert.SerializeObject(products);
+                        File.WriteAllText(systemOp, jsonCreator);
+                        correctData = true;
 
-                        string jsonCreator;
-                        correctData = false;
-                        if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
-                        {
-                            List<Product> products1Copy = new List<Product>();
-                            products1Copy.Add(p1);
-                            jsonCreator = JsonConvert.SerializeObject(products1Copy);
-                            File.WriteAllText(systemOp, jsonCreator);
-                            break;
-                        }
-                        else if (!products.Any(x => x.Id == id))
-                        {
-                            products.Add(p1);
-                            jsonCreator = JsonConvert.SerializeObject(products);
-                            File.WriteAllText(systemOp, jsonCreator);
-                            correctData = true;
-
-                        }
-                        else
-                            throw new FormatException("Id is already exist!");
                     }
                     else
-                    {
-                        throw new FormatException("Wrong data or Id already exist");
-                    }
+                        throw new FormatException("Id is already exist!");
+
                 }
                 catch (FormatException e)
                 {
@@ -93,9 +96,9 @@ namespace Warehouse_Application
                     string answer = Console.ReadLine();
                     if (answer == "0")
                         return;
-                }
-
+                } 
             } while (!correctData);
+            
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nProduct added to list");
@@ -106,25 +109,7 @@ namespace Warehouse_Application
             string jsonWriter = File.ReadAllText(systemOp);
             products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
 
-        }
-        public static void RecordingTxtFile(string systemOp, string report)
-        {
-            if (!string.IsNullOrEmpty(systemOp))
-            {
-                Console.Clear();
-                Console.Write("File Name: ");
-                string fileName = Console.ReadLine() + ".txt";
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                path = Path.Combine(path, fileName);
-                File.WriteAllText(path, report);
-                Console.WriteLine("File is complete!");
-            }
-            else
-            {
-                Console.WriteLine("File is empty!\nClick enter to continue");
-                Console.ReadKey();
-            }
-        }
+        }/// adding new product to list
         public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
         {
             graphic = true;
@@ -148,15 +133,16 @@ namespace Warehouse_Application
             correctNumber = int.TryParse(answer, out number);
             Console.Clear();
 
-        }
-        public static void RemovingRecord(ref List<Product> products, string systemOp)
+        } ///List of products to see on Removing Method nad Modifying method
+        public static void RemovingRecord(ref List<Product> products)
         {
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             Product p1 = new Product();
             string removingRecord;
             int number;
             bool itIsNumber, correctNumber, graphic = false;
             bool endRemovingRecord = false;
-            if (products.Count == 0)
+            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))))
             {
                 Console.Clear();
                 Console.WriteLine("List is empty!\nClick enter to continue");
@@ -166,6 +152,15 @@ namespace Warehouse_Application
             {
                 do
                 {
+                    if(products.Count == 0)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("List is empty!\nClick enter to continue");
+                        Console.ReadKey();
+                        endRemovingRecord = true;
+                        break;
+                    }
+
                     GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number, ref graphic);
 
                     if (correctNumber && number <= products.Count && number > 0)
@@ -183,11 +178,8 @@ namespace Warehouse_Application
                         break;
                     }
                     else
-                    {
-                        Console.WriteLine("Wrong number or id\nClick enter to continue");
-                        Console.ReadKey();
                         continue;
-                    }
+                    
                     Console.Clear();
                     bool choosingCorrect = false;
                     do
@@ -208,7 +200,7 @@ namespace Warehouse_Application
                                 products.RemoveAt(number - 1);
                             else
                                 products.Remove(p1);
-                            Program.JsonFileRecord(ref products, systemOp);
+                            Program.JsonFileRecord(ref products);
 
                         }
                         else if (choosingYesNo == "2")
@@ -220,10 +212,7 @@ namespace Warehouse_Application
                 } while (!endRemovingRecord);
 
             }
-
-
-
-        }
+        } /// removing product from list
         public static string NameFile()
         {
             string x = "";
@@ -240,11 +229,13 @@ namespace Warehouse_Application
             return x;
 
 
-        }
+        } /// Name of writing down file
         public static void Statistics(List<Product> products)
         {
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
             Console.Clear();
-            if (products.Count == 0)
+            if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
             {
                 Console.Clear();
                 Console.WriteLine("List is empty\nClick enter to continue");
@@ -271,8 +262,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("\n");
+
                 y = products.Min(x => x.Price);
                 var p2 = products.Where(x => x.Price == y).ToList();
                 Console.WriteLine("Min: ");
@@ -280,8 +271,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("\n");
+
                 Console.WriteLine("The most frequently occuring price: \n");
                 var p3 = products.Select(x => new
                 {
@@ -320,8 +311,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("\n");
+
                 y = products.Min(x => x.Quantity);
                 var p6 = products.Where(x => x.Quantity == y).ToList();
                 Console.WriteLine("Min: ");
@@ -329,8 +320,8 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("\n");
+
                 Console.WriteLine("The most frequently occuring quantity: \n");
 
                 var p7 = products.Select(x => new
@@ -403,7 +394,8 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 Console.Clear();
             }
-        }
+        } /// Statistics of products
+
     }
 }
 

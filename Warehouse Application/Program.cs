@@ -8,7 +8,7 @@ internal class Program
     {
         bool firstTime = true; 
         int number;
-        bool closeProgram = false, correctNumber, closeEmployee = false;
+        bool closeProgram = false, correctNumber = false;
         string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         systemOperation = Path.Combine(systemOperation, "WareHouse");
 
@@ -31,25 +31,25 @@ internal class Program
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Edit employee\n9. Change position\n0. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Edit employee\n9. Change position\n0. Exit");
                         Console.Write($"\n\nPosition: {employee.Position}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch (number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, systemOperation,employee);
+                                Utils.AddingProduct(ref listOfProducts, employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts, systemOperation);
+                                Utils.RemovingRecord(ref listOfProducts);
                                 break;
 
                             case 3:
-                                ReportMethods.ReportOfProducts(ref listOfProducts, systemOperation);
+                                ReportMethods.ReportOfProducts(ref listOfProducts);
                                 break;
 
                             case 4:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
                                 break;
 
                             case 5:
@@ -76,6 +76,7 @@ internal class Program
                                 break;
 
                             default:
+                                correctNumber = false;
                                 break;
                         }
                     } while (!correctNumber);
@@ -91,15 +92,15 @@ internal class Program
                         switch(number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, systemOperation,employee);
+                                Utils.AddingProduct(ref listOfProducts,employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts, systemOperation);
+                                Utils.RemovingRecord(ref listOfProducts);
                                 break;
 
                             case 3:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
                                 break;
 
                             case 4:
@@ -111,6 +112,7 @@ internal class Program
                                 break;
 
                             default:
+                                correctNumber = false;
                                 break;
 
                         }
@@ -121,25 +123,25 @@ internal class Program
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports\n4. Modifying Product\n5. History of Modifying\n6. Change position\n7. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Change position\n7. Exit");
                         Console.Write("Number: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, systemOperation,employee);
+                                Utils.AddingProduct(ref listOfProducts, employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts, systemOperation);
+                                Utils.RemovingRecord(ref listOfProducts);
                                 break;
 
                             case 3:
-                                ReportMethods.ReportOfProducts(ref listOfProducts, systemOperation);
+                                ReportMethods.ReportOfProducts(ref listOfProducts);
                                 break;
 
                             case 4:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
                                 break;
 
                             case 5:
@@ -155,6 +157,7 @@ internal class Program
                                 break;
 
                             default:
+                                correctNumber = false;
                                 break;
 
 
@@ -171,7 +174,7 @@ internal class Program
                         switch (number)
                         {
                             case 1:
-                                ModificationsAndHistory.NewDelivery(ref listOfProducts, employee, systemOperation);
+                                ModificationsAndHistory.NewDelivery(ref listOfProducts, employee);
                                 break;
 
                             case 2:
@@ -183,6 +186,7 @@ internal class Program
                                 break;
 
                             default:
+                                correctNumber = false;
                                 break;
                         }
                     } while (!correctNumber);
@@ -193,12 +197,14 @@ internal class Program
         } while (!closeProgram);
 
     }
-    public static void JsonFileRecord(ref List<Product> products, string systemOp)
+    public static void JsonFileRecord(ref List<Product> products) /// Method to overwriting list of Products
     {
+        string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
         string jsonWriter = JsonConvert.SerializeObject(products);
         File.WriteAllText(systemOp, jsonWriter);
 
-            string jsonReader = File.ReadAllText(systemOp);
-            products = JsonConvert.DeserializeObject<List<Product>>(jsonReader).ToList();
+        string jsonReader = File.ReadAllText(systemOp);
+        products = JsonConvert.DeserializeObject<List<Product>>(jsonReader).ToList();
     }
 }
