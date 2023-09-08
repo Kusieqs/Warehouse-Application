@@ -435,10 +435,26 @@ namespace Warehouse_Application
                     answer = true;
                 else if (!products.Any(x => x.Id == id))
                 {
-                    Console.WriteLine("This id is not in our database\nAdd product with new ID\nClick enter to continue\n");
-                    Console.ReadKey();
-                    Utils.AddingProduct(ref products, employee);
-                    Program.JsonFileRecord(ref products);
+                    bool correctAnwer;
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("This id is not in our database\n\n1. Add product with new ID\n2. Write Id\n\nNumber: ");
+                        correctAnwer = true;
+                        string answerId = Console.ReadLine();
+                        switch (answerId)
+                        {
+                            case "1":
+                                Utils.AddingProduct(ref products, employee);
+                                Program.JsonFileRecord(ref products);
+                                break;
+                            case "2":
+                                break;
+                            default:
+                                correctAnwer = false;
+                                break;
+                        }
+                    } while (!correctAnwer);
                 }
                 else
                 {
@@ -462,7 +478,7 @@ namespace Warehouse_Application
             do
             {
                 Console.Clear();
-                Console.Write("Modifying:\n1. Price\n2. Quantity\n3. Exit");
+                Console.Write("Modifying:\n\n1. Price\n2. Quantity\n3. Exit");
                 Console.SetCursorPosition(25, 1);
                 Console.WriteLine($"Name: {copy.Name}");
                 Console.SetCursorPosition(25, 2);
@@ -473,6 +489,8 @@ namespace Warehouse_Application
                 Console.WriteLine($"Id: {copy.Id}");
                 Console.SetCursorPosition(25, 5);
                 Console.WriteLine($"Date: {copy.Date}");
+                Console.SetCursorPosition(25, 6);
+                Console.WriteLine($"$Added by: {copy.addedBy}");
                 Console.SetCursorPosition(0, 10);
                 Console.Write("Number: ");
 

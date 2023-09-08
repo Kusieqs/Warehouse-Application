@@ -144,7 +144,7 @@ namespace Warehouse_Application
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(e.Message);
                     Console.ResetColor();
-                    Console.WriteLine("Click enter to continue");
+                    Console.WriteLine("\nClick enter to continue");
                     Console.ReadKey();
                 }
             } while (!choosingPosition);

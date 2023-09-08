@@ -37,10 +37,10 @@ namespace Warehouse_Application
 			}
 			set
 			{
-				if (value.Length > 0)
+				if (value.Length > 3)
 					name = value;
 				else
-					throw new FormatException("Name is empty");
+					throw new FormatException("Name is to short");
 			}
 		}
 		public string LastName
@@ -51,10 +51,10 @@ namespace Warehouse_Application
 			}
 			set
 			{
-				if (value.Length > 0)
+				if (value.Length > 2)
 					lastName = value;
 				else
-					throw new FormatException("Last name is empty");
+					throw new FormatException("Last name is to short");
 			}
 		}
 		public string Id
