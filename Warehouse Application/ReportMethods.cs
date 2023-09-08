@@ -5,6 +5,7 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
 using OfficeOpenXml;
 using System.IO;
+using OfficeOpenXml.Packaging.Ionic.Zlib;
 
 
 namespace Warehouse_Application
@@ -60,12 +61,13 @@ namespace Warehouse_Application
                 Console.WriteLine("- - - - - - - - - - - -");
                 foreach (var product in products)
                 {
-                    report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n - - - - - - - - \n";
+                    report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\nAdded by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n - - - - - - - - \n";
                     Console.WriteLine($"Name: {product.Name}");
                     Console.WriteLine($"Price: {product.Price}");
                     Console.WriteLine($"Quantity: {product.Quantity}");
                     Console.WriteLine($"Id: {product.Id}");
                     Console.WriteLine($"Date: {product.Date}");
+                    Console.WriteLine($"Added by: { product.addedBy.Position} { product.addedBy.Name} { product.addedBy.LastName}");
                     Console.WriteLine("- - - - - - - - - - - -");
                 }
                 Console.WriteLine("\n\n");
@@ -92,12 +94,13 @@ namespace Warehouse_Application
                         string report = "";
                         foreach (var product in copyList)
                         {
-                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n - - - - - - - - \n";
+                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\nAdded by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n - - - - - - - - \n";
                             Console.WriteLine("Name: " + product.Name);
                             Console.WriteLine("Price: " + product.Price);
                             Console.WriteLine("Quantity: " + product.Quantity);
                             Console.WriteLine("Id: " + product.Id);
                             Console.WriteLine("Date: " + product.Date);
+                            Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}");
                         }
                         Console.WriteLine("\n\n");
                         ReportMenu(report, ref endSearching, copyList);
@@ -323,6 +326,7 @@ namespace Warehouse_Application
                             Console.WriteLine($"Quantity: {product.Quantity}");
                             Console.WriteLine($"Id: {product.Id}");
                             Console.WriteLine($"Date: {product.Date}");
+                            Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}");
                             Console.WriteLine("- - - - - - - - - - - -");
                         }
                     }

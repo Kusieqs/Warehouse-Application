@@ -332,9 +332,10 @@ namespace Warehouse_Application
         } // undoing modifications/ All history
         public static object ParseValue(string input, Type targetType)
         {
+
             if (targetType == typeof(int))
             {
-                if (int.TryParse(input, out int x) && x < 0)
+                if (int.TryParse(input, out int x) && x > 0)
                 {
                     return x;
                 }
@@ -345,7 +346,7 @@ namespace Warehouse_Application
             }
             else if (targetType == typeof(double))
             {
-                if (double.TryParse(input, out double x) && x <= 0)
+                if (double.TryParse(input, out double x) && x >= 0)
                 {
                     return x;
                 }
