@@ -489,9 +489,10 @@ namespace Warehouse_Application
                     worksheet.Cells[1, 4].Value = "Price";
                     worksheet.Cells[1, 5].Value = "Quantity";
                     worksheet.Cells[1, 6].Value = "Date";
+                    worksheet.Cells[1, 7].Value = "Added by";
                     worksheet.Cells[1, 6].Style.Numberformat.Format = "yyyy-mm-dd";
 
-                    var range = worksheet.Cells["A1:F1"];
+                    var range = worksheet.Cells["A1:G1"];
                     range.Style.Font.Bold = true;
                     range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                     range.Style.Fill.BackgroundColor.SetColor(OfficeOpenXml.Style.ExcelIndexedColor.Indexed10);
@@ -507,6 +508,7 @@ namespace Warehouse_Application
                         worksheet.Cells[i + 3, 5].Value = products[i].Quantity;
                         worksheet.Cells[i + 3, 6].Style.Numberformat.Format = "yyyy-mm-dd";
                         worksheet.Cells[i + 3, 6].Value = products[i].Date;
+                        worksheet.Cells[i + 3, 7].Value = products[i].addedBy.Position + " " + products[i].addedBy.LastName + "" + products[i].addedBy.Name;
                     }
 
                     worksheet.Cells.AutoFitColumns();
