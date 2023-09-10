@@ -73,7 +73,7 @@ namespace Warehouse_Application
                         continue;
 
                     employee = employees[number - 1];
-
+                    
                     Console.Clear();
 
                     Console.WriteLine("LOGIN");
@@ -87,7 +87,6 @@ namespace Warehouse_Application
                     }
                     else
                         throw new FormatException("Wrong login or password");
-                    employee.mainAccount = true;
 
                 }
                 catch (FormatException e)

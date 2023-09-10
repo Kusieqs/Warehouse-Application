@@ -12,6 +12,8 @@ namespace Warehouse_Application
 		private string password;
 		private string login;
 		public bool mainAccount { get; set; }
+
+
 		public Employee(string name, string lastName, string id, int age, PositionName position)
 		{
 			if (name.Length > 0 && lastName.Length > 0 && Regex.IsMatch(id, @"^[a-zA-Z0-9]{3}$") && age >= 18)
@@ -26,6 +28,17 @@ namespace Warehouse_Application
 			{
 				throw new FormatException("Input informations are not correct with guidelines");
 			}
+		}
+		public Employee(string name, string lastName, PositionName position,int age, string id, string password, string login, bool mainAccount)
+		{
+			this.name = name;
+			this.lastName = lastName;
+			this.position = position;
+			this.age = age;
+			this.password = password;
+			this.login = login;
+			this.mainAccount = mainAccount;
+			this.id = id;
 		}
 		public Employee()
 		{ }
@@ -104,7 +117,7 @@ namespace Warehouse_Application
 			}
 			set
 			{
-				if (value.Length > 6)
+				if (value.Length > 5)
 					password = value;
 				else
 					throw new FormatException("Password is to short");

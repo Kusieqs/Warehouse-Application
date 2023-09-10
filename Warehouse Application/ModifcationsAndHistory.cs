@@ -156,14 +156,28 @@ namespace Warehouse_Application
                                 string employeeReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"WareHouse", "Employee.json"));
                                 List<Employee> listOfEmployees = JsonConvert.DeserializeObject<List<Employee>>(employeeReader);
 
-                                /// wyswietlic wszytskich pracownikow
-
-                                bool correctAdded;
+                                int count = 1;
+                                int numberOfEmployee;
+                                bool correctAdded = false;
                                 do
                                 {
                                     Console.Clear();
+                                    foreach (var employees in listOfEmployees)
+                                    {
+                                        Console.WriteLine($"{count}. {employees.Position} {employees.Name} {employees.LastName}");
+                                        count++;
+                                    }
+                                    Console.Write("\n\nNumber : ");
+                                    bool answer = int.TryParse(Console.ReadLine(),out numberOfEmployee);
 
+                                    if (!answer || listOfEmployees.Count < numberOfEmployee)
+                                        continue;
+
+                                    employee1 = listOfEmployees[numberOfEmployee - 1];
                                     correctAdded = true;
+
+                                    value = $"{employee1.Name} {employee1.LastName} {employee1.Position} {employee1.Age} {employee1.Id} {employee1.Login} {employee1.Password} {employee1.LastName} {employee1.mainAccount}";
+
                                 } while (!correctAdded);
                             }
                             else
@@ -404,9 +418,11 @@ namespace Warehouse_Application
             else if(targetType == typeof(Employee))
             {
                 string[] employeeInfo = input.Split(' ');
-                int.TryParse(employeeInfo[3], out int x);
-                Enum.TryParse(employeeInfo[4], out PositionName y);
-                return new Employee(employeeInfo[0], employeeInfo[1], employeeInfo[2], x, y);
+                Enum.TryParse(employeeInfo[2], out PositionName x);
+                int.TryParse(employeeInfo[3], out int y);
+                bool.TryParse(employeeInfo[7], out bool z);
+                return new Employee(employeeInfo[0], employeeInfo[1], x, y, employeeInfo[4], employeeInfo[6], employeeInfo[5], z);
+
             }
             throw new FormatException("Error with target type");
         } // Parse value 
