@@ -73,7 +73,7 @@ namespace Warehouse_Application
                         continue;
 
                     employee = employees[number - 1];
-
+                    
                     Console.Clear();
 
                     Console.WriteLine("LOGIN");
@@ -87,7 +87,6 @@ namespace Warehouse_Application
                     }
                     else
                         throw new FormatException("Wrong login or password");
-                    employee.mainAccount = true;
 
                 }
                 catch (FormatException e)
@@ -144,7 +143,7 @@ namespace Warehouse_Application
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(e.Message);
                     Console.ResetColor();
-                    Console.WriteLine("Click enter to continue");
+                    Console.WriteLine("\nClick enter to continue");
                     Console.ReadKey();
                 }
             } while (!choosingPosition);
@@ -215,7 +214,11 @@ namespace Warehouse_Application
             Console.Write("Password: ");
             string password = Console.ReadLine();
             employee.Password = password;
-            employee.mainAccount = false;
+
+            if (firsTime)
+                employee.mainAccount = true;
+            else
+                employee.mainAccount = false;
 
             string json;
             List<Employee> firsTimeList = new List<Employee>();

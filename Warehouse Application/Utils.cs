@@ -38,8 +38,6 @@ namespace Warehouse_Application
             {
                 try
                 {
-
-
                     Console.Clear();
                     Console.Write("Name of product: ");
                     name = Console.ReadLine().Trim();
@@ -63,7 +61,7 @@ namespace Warehouse_Application
                     id = Console.ReadLine().Trim();
                     p1.Id = id;
                     p1.Date = date;
-
+                    p1.addedBy = employee;
 
                     string jsonCreator;
                     correctData = false;
@@ -125,7 +123,8 @@ namespace Warehouse_Application
                 Console.WriteLine($"Price: {product.Price}");
                 Console.WriteLine($"Quantity: {product.Quantity}");
                 Console.WriteLine($"Id: {product.Id}");
-                Console.WriteLine($"Date: {product.Date}\n\n");
+                Console.WriteLine($"Date: {product.Date}");
+                Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n\n");
                 Console.ResetColor();
             }
             Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");
@@ -189,6 +188,7 @@ namespace Warehouse_Application
                         Console.WriteLine($"Quantity: {p1.Quantity}");
                         Console.WriteLine($"Id: {p1.Id}");
                         Console.WriteLine($"Date: {p1.Date}");
+                        Console.WriteLine($"{p1.addedBy.Position} {p1.addedBy.Name} {p1.addedBy.LastName}");
                         Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
                         Console.Write("Number: ");
                         string choosingYesNo = Console.ReadLine();

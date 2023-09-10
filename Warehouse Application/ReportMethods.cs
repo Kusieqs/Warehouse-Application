@@ -3,8 +3,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.IO;
+using OfficeOpenXml.Packaging.Ionic.Zlib;
 
 
 namespace Warehouse_Application
@@ -60,12 +62,13 @@ namespace Warehouse_Application
                 Console.WriteLine("- - - - - - - - - - - -");
                 foreach (var product in products)
                 {
-                    report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n - - - - - - - - \n";
+                    report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\nAdded by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n - - - - - - - - \n";
                     Console.WriteLine($"Name: {product.Name}");
                     Console.WriteLine($"Price: {product.Price}");
                     Console.WriteLine($"Quantity: {product.Quantity}");
                     Console.WriteLine($"Id: {product.Id}");
                     Console.WriteLine($"Date: {product.Date}");
+                    Console.WriteLine($"Added by: { product.addedBy.Position} { product.addedBy.Name} { product.addedBy.LastName}");
                     Console.WriteLine("- - - - - - - - - - - -");
                 }
                 Console.WriteLine("\n\n");
@@ -92,12 +95,13 @@ namespace Warehouse_Application
                         string report = "";
                         foreach (var product in copyList)
                         {
-                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n - - - - - - - - \n";
+                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\nAdded by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n - - - - - - - - \n";
                             Console.WriteLine("Name: " + product.Name);
                             Console.WriteLine("Price: " + product.Price);
                             Console.WriteLine("Quantity: " + product.Quantity);
                             Console.WriteLine("Id: " + product.Id);
                             Console.WriteLine("Date: " + product.Date);
+                            Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}");
                         }
                         Console.WriteLine("\n\n");
                         ReportMenu(report, ref endSearching, copyList);
@@ -125,8 +129,8 @@ namespace Warehouse_Application
         {
             List<Product> copyList = new List<Product>();
             List<Product> sortList = new List<Product>();
-            bool endOfSort = false, attempt = false;
-            string sortingBy, operatorSort;
+            bool endOfSort = false, attempt = true ;
+            string sortingBy, operatorSort = "";
             DateTime dateSorting;
             string value = "";
             int year, month, day;
@@ -135,173 +139,171 @@ namespace Warehouse_Application
                 do
                 {
                     Console.Clear();
-                    Console.Write("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Exit\n\nNumber: ");
+                    Console.Write("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Sort by employee\n5.Exit\n\nNumber: ");
                     sortingBy = Console.ReadLine();
                     switch (sortingBy)
                     {
                         case "1":
                             sortingBy = "Price";
-                            attempt = true;
                             break;
                         case "2":
                             sortingBy = "Quantity";
-                            attempt = true;
                             break;
                         case "3":
                             sortingBy = "date";
-                            attempt = true;
                             break;
                         case "4":
+                            sortingBy = "addedBy";
+                            break;
+                        case "5":
                             return;
                         default:
+                            attempt = false;
                             break;
                     }
 
                 } while (!attempt);
                 attempt = false;
-                do
+
+                if (sortingBy == "addedBy")
                 {
-                    Console.Clear();
-                    if (sortingBy == "date")
+                    int count = 1;
+                    string json = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
+                    List<Employee> employees = JsonConvert.DeserializeObject<List<Employee>>(json);
+                    do
                     {
-                        bool yearBool, monthBool, dayBool;
-                        Console.Clear();
-                        Console.Write("1.By day\n2.By month\n3.By year\n4.By date\nNumber: ");
-                        string answerDate = Console.ReadLine();
-                        switch (answerDate)
+                        
+                        foreach (var employee in employees)
                         {
-                            case "1":
-                                sortingBy = "day";
-                                Console.Write("Day: ");
-                                dayBool = int.TryParse(Console.ReadLine(), out day);
-                                if (!dayBool)
-                                {
-                                    break;
-                                }
-                                value = day.ToString();
-                                attempt = true;
-                                break;
-
-                            case "2":
-                                sortingBy = "month";
-                                Console.Write("Month: ");
-                                monthBool = int.TryParse(Console.ReadLine(), out month);
-                                if (!monthBool)
-                                {
-                                    break;
-                                }
-                                value = month.ToString();
-                                attempt = true;
-                                break;
-
-                            case "3":
-                                sortingBy = "year";
-                                Console.Write("Year: ");
-                                yearBool = int.TryParse(Console.ReadLine(), out year);
-                                if (!yearBool)
-                                {
-                                    break;
-                                }
-                                value = year.ToString();
-                                attempt = true;
-                                break;
-
-                            case "4":
-                                Console.Clear();
-                                Console.Write("Year: ");
-                                yearBool = int.TryParse(Console.ReadLine(), out year);
-                                Console.Write("Month: ");
-                                monthBool = int.TryParse(Console.ReadLine(), out month);
-                                Console.Write("Day: ");
-                                dayBool = int.TryParse(Console.ReadLine(), out day);
-                                if (yearBool && monthBool && dayBool)
-                                {
-                                    if ((year < 1 || month < 1 || month > 12 || day < 1))
-                                    {
-                                        int daysInMonth = DateTime.DaysInMonth(year, month);
-                                        Console.WriteLine("Wrong Date\nClick enter to continue");
-                                        Console.ReadKey();
-                                    }
-                                    else
-                                    {
-                                        int daysInMonth = DateTime.DaysInMonth(year, month);
-                                        if (daysInMonth >= day)
-                                        {
-                                            dateSorting = new DateTime(year, month, day);
-                                            value = dateSorting.ToString();
-                                            attempt = true;
-   
-                                        }
-                                    }
-                                }
-                                break;
-                            default:
-                                break;
+                            Console.WriteLine($"{count}. {employee.Position} {employee.Name} {employee.LastName}");
+                            count++;
                         }
 
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.Write("Value: ");
-                        attempt = double.TryParse(Console.ReadLine(), out double x);
-                        value = x.ToString();
+                        //// to do poprawy
+                        /// sprawdzic jak mozna sortowac tak jak ponizej tylko przez to ze mam pracownika jako klase i bylyby dwie Property
+                        /// property.addedBy.Name
 
-                    }
-                } while (!attempt);
-
-                attempt = false;
-                do
+                    } while (!attempt);
+                }
+                else
                 {
-                    Console.Clear();
-                    Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= )\n\n{sortingBy} [operator] {value}: ");
-                    operatorSort = Console.ReadLine();
-                    string[] operators = new string[] { "=", "!=", ">", "<", ">=", "<=" };
-                    for (int i = 0; i < operators.Length; i++)
-                    {
-                        if (operatorSort == operators[i])
-                            attempt = true;
-                    }
-
-                } while (!attempt);
-
-                attempt = false;
-
-                PropertyInfo property1 = typeof(Product).GetProperty(sortingBy);
-
-                if (property1 != null)
-                {
-                    Func<Product, bool> filter = CreateFilter(property1, operatorSort, value);
                     do
                     {
                         Console.Clear();
-                        Console.Write("1. Condition to sorted list (All products in sorted list)\n2. Condition to main list (All products)\n\nNumber: ");
-                        string answer = Console.ReadLine();
-                        switch (answer)
+                        if (sortingBy == "date")
                         {
-                            case "1":
+                            bool yearBool, monthBool, dayBool;
+                            Console.Clear();
+                            Console.Write("1.By day\n2.By month\n3.By year\n4.By date\nNumber: ");
+                            string answerDate = Console.ReadLine();
+                            switch (answerDate)
+                            {
+                                case "1":
+                                    sortingBy = "day";
+                                    Console.Write("Day: ");
+                                    dayBool = int.TryParse(Console.ReadLine(), out day);
+                                    if (!dayBool)
+                                    {
+                                        break;
+                                    }
+                                    value = day.ToString();
+                                    attempt = true;
+                                    break;
+
+                                case "2":
+                                    sortingBy = "month";
+                                    Console.Write("Month: ");
+                                    monthBool = int.TryParse(Console.ReadLine(), out month);
+                                    if (!monthBool)
+                                    {
+                                        break;
+                                    }
+                                    value = month.ToString();
+                                    attempt = true;
+                                    break;
+
+                                case "3":
+                                    sortingBy = "year";
+                                    Console.Write("Year: ");
+                                    yearBool = int.TryParse(Console.ReadLine(), out year);
+                                    if (!yearBool)
+                                    {
+                                        break;
+                                    }
+                                    value = year.ToString();
+                                    attempt = true;
+                                    break;
+
+                                case "4":
+                                    Console.Clear();
+                                    Console.Write("Year: ");
+                                    yearBool = int.TryParse(Console.ReadLine(), out year);
+                                    Console.Write("Month: ");
+                                    monthBool = int.TryParse(Console.ReadLine(), out month);
+                                    Console.Write("Day: ");
+                                    dayBool = int.TryParse(Console.ReadLine(), out day);
+                                    if (yearBool && monthBool && dayBool)
+                                    {
+                                        if ((year < 1 || month < 1 || month > 12 || day < 1))
+                                        {
+                                            int daysInMonth = DateTime.DaysInMonth(year, month);
+                                            Console.WriteLine("Wrong Date\nClick enter to continue");
+                                            Console.ReadKey();
+                                        }
+                                        else
+                                        {
+                                            int daysInMonth = DateTime.DaysInMonth(year, month);
+                                            if (daysInMonth >= day)
+                                            {
+                                                dateSorting = new DateTime(year, month, day);
+                                                value = dateSorting.ToString();
+                                                attempt = true;
+
+                                            }
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.Write("Value: ");
+                            attempt = double.TryParse(Console.ReadLine(), out double x);
+                            value = x.ToString();
+
+                        }
+                    } while (!attempt);
+                    attempt = false;
+                    do
+                    {
+                        Console.Clear();
+                        Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= )\n\n{sortingBy} [operator] {value}: ");
+                        operatorSort = Console.ReadLine();
+                        string[] operators = new string[] { "=", "!=", ">", "<", ">=", "<=" };
+                        for (int i = 0; i < operators.Length; i++)
+                        {
+                            if (operatorSort == operators[i])
                                 attempt = true;
-                                if (!copyList.Any())
-                                {
-                                    sortList = products.Where(filter).Distinct().ToList();
-                                }
-                                else
-                                {
-                                    sortList = sortList.Where(filter).Distinct().ToList();
-                                }
-                                break;
-                            case "2":
-                                copyList = products.Where(filter).Distinct().ToList();
-                                sortList = sortList.Concat(copyList).Distinct().ToList();
-                                attempt = true;
-                                break;
-                            default:
-                                break;
                         }
 
                     } while (!attempt);
-                    attempt = false;
+                    PropertyInfo property1 = typeof(Product).GetProperty(sortingBy);
+
+                    if (property1 != null)
+                    {
+                        Func<Product, bool> filter = CreateFilter(property1, operatorSort, value);
+                        do
+                        {
+
+
+                        } while (!attempt);
+                        attempt = false;
+                    }
                 }
+
                 bool endOfReport = false;
 
                 do
@@ -323,6 +325,7 @@ namespace Warehouse_Application
                             Console.WriteLine($"Quantity: {product.Quantity}");
                             Console.WriteLine($"Id: {product.Id}");
                             Console.WriteLine($"Date: {product.Date}");
+                            Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}");
                             Console.WriteLine("- - - - - - - - - - - -");
                         }
                     }
@@ -485,9 +488,10 @@ namespace Warehouse_Application
                     worksheet.Cells[1, 4].Value = "Price";
                     worksheet.Cells[1, 5].Value = "Quantity";
                     worksheet.Cells[1, 6].Value = "Date";
+                    worksheet.Cells[1, 7].Value = "Added by";
                     worksheet.Cells[1, 6].Style.Numberformat.Format = "yyyy-mm-dd";
 
-                    var range = worksheet.Cells["A1:F1"];
+                    var range = worksheet.Cells["A1:G1"];
                     range.Style.Font.Bold = true;
                     range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                     range.Style.Fill.BackgroundColor.SetColor(OfficeOpenXml.Style.ExcelIndexedColor.Indexed10);
@@ -503,6 +507,7 @@ namespace Warehouse_Application
                         worksheet.Cells[i + 3, 5].Value = products[i].Quantity;
                         worksheet.Cells[i + 3, 6].Style.Numberformat.Format = "yyyy-mm-dd";
                         worksheet.Cells[i + 3, 6].Value = products[i].Date;
+                        worksheet.Cells[i + 3, 7].Value = products[i].addedBy.Position + " " + products[i].addedBy.LastName + "" + products[i].addedBy.Name;
                     }
 
                     worksheet.Cells.AutoFitColumns();

@@ -53,7 +53,7 @@ namespace Warehouse_Application
                         {
                             correctAnswer = true;
                             Console.Clear();
-                            Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. Exit");
+                            Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. Added by\n7. Exit");
                             Console.SetCursorPosition(25, 1);
                             Console.WriteLine($"Name: {copy.Name}");
                             Console.SetCursorPosition(25, 2);
@@ -64,6 +64,8 @@ namespace Warehouse_Application
                             Console.WriteLine($"Id: {copy.Id}");
                             Console.SetCursorPosition(25, 5);
                             Console.WriteLine($"Date: {copy.Date}");
+                            Console.SetCursorPosition(25, 6);
+                            Console.WriteLine($"Added by: {copy.addedBy.Position} {copy.addedBy.LastName} {copy.addedBy.Name}");
                             Console.SetCursorPosition(0, 10);
                             Console.Write("Number: ");
 
@@ -86,6 +88,9 @@ namespace Warehouse_Application
                                     property = "Date";
                                     break;
                                 case "6":
+                                    property = "addedBy";
+                                    break;
+                                case "7":
                                     correctAnswer = false;
                                     property = "x";
                                     break;
@@ -97,7 +102,7 @@ namespace Warehouse_Application
 
                     correctAnswer = false;
                     Console.Clear();
-
+                    Employee employee1;
                     do
                     {
                         try
@@ -108,6 +113,7 @@ namespace Warehouse_Application
                             Console.WriteLine($"Quantity: {copy.Quantity}");
                             Console.WriteLine($"Id: {copy.Id}");
                             Console.WriteLine($"Date: {copy.Date}\n\n");
+                            Console.WriteLine($"Added by: {copy.addedBy.Position} {copy.addedBy.LastName} {copy.addedBy.Name}");
 
                             if (property == "Date")
                             {
@@ -144,6 +150,35 @@ namespace Warehouse_Application
                                 {
                                     throw new FormatException("Wrong date");
                                 }
+                            }
+                            else if(property == "addedBy")
+                            {
+                                string employeeReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"WareHouse", "Employee.json"));
+                                List<Employee> listOfEmployees = JsonConvert.DeserializeObject<List<Employee>>(employeeReader);
+
+                                int count = 1;
+                                int numberOfEmployee;
+                                bool correctAdded = false;
+                                do
+                                {
+                                    Console.Clear();
+                                    foreach (var employees in listOfEmployees)
+                                    {
+                                        Console.WriteLine($"{count}. {employees.Position} {employees.Name} {employees.LastName}");
+                                        count++;
+                                    }
+                                    Console.Write("\n\nNumber : ");
+                                    bool answer = int.TryParse(Console.ReadLine(),out numberOfEmployee);
+
+                                    if (!answer || listOfEmployees.Count < numberOfEmployee)
+                                        continue;
+
+                                    employee1 = listOfEmployees[numberOfEmployee - 1];
+                                    correctAdded = true;
+
+                                    value = $"{employee1.Name} {employee1.LastName} {employee1.Position} {employee1.Age} {employee1.Id} {employee1.Login} {employee1.Password} {employee1.LastName} {employee1.mainAccount}";
+
+                                } while (!correctAdded);
                             }
                             else
                             {
@@ -332,9 +367,10 @@ namespace Warehouse_Application
         } // undoing modifications/ All history
         public static object ParseValue(string input, Type targetType)
         {
+
             if (targetType == typeof(int))
             {
-                if (int.TryParse(input, out int x) && x < 0)
+                if (int.TryParse(input, out int x) && x > 0)
                 {
                     return x;
                 }
@@ -345,7 +381,7 @@ namespace Warehouse_Application
             }
             else if (targetType == typeof(double))
             {
-                if (double.TryParse(input, out double x) && x <= 0)
+                if (double.TryParse(input, out double x) && x >= 0)
                 {
                     return x;
                 }
@@ -379,12 +415,14 @@ namespace Warehouse_Application
                     return x;
                 }
             }
-            else if (targetType == typeof(PositionName))
+            else if(targetType == typeof(Employee))
             {
-                if (PositionName.TryParse(input, out PositionName x))
-                {
-                    return x;
-                }
+                string[] employeeInfo = input.Split(' ');
+                Enum.TryParse(employeeInfo[2], out PositionName x);
+                int.TryParse(employeeInfo[3], out int y);
+                bool.TryParse(employeeInfo[7], out bool z);
+                return new Employee(employeeInfo[0], employeeInfo[1], x, y, employeeInfo[4], employeeInfo[6], employeeInfo[5], z);
+
             }
             throw new FormatException("Error with target type");
         } // Parse value 
@@ -399,6 +437,7 @@ namespace Warehouse_Application
                 Console.WriteLine($"Quantity: {p1.Quantity}");
                 Console.WriteLine($"Id: {p1.Id}");
                 Console.WriteLine($"Date: {p1.Date}");
+                Console.WriteLine($"Added by: {p1.addedBy.Position} {p1.addedBy.Name} {p1.addedBy.LastName}");
                 Console.Write("\nDo you want to accept this modify?\n1.Yes\n2.No\nNumber: ");
                 string answer = Console.ReadLine();
                 if (answer == "1")
@@ -435,10 +474,26 @@ namespace Warehouse_Application
                     answer = true;
                 else if (!products.Any(x => x.Id == id))
                 {
-                    Console.WriteLine("This id is not in our database\nAdd product with new ID\nClick enter to continue\n");
-                    Console.ReadKey();
-                    Utils.AddingProduct(ref products, employee);
-                    Program.JsonFileRecord(ref products);
+                    bool correctAnwer;
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("This id is not in our database\n\n1. Add product with new ID\n2. Write Id\n\nNumber: ");
+                        correctAnwer = true;
+                        string answerId = Console.ReadLine();
+                        switch (answerId)
+                        {
+                            case "1":
+                                Utils.AddingProduct(ref products, employee);
+                                Program.JsonFileRecord(ref products);
+                                break;
+                            case "2":
+                                break;
+                            default:
+                                correctAnwer = false;
+                                break;
+                        }
+                    } while (!correctAnwer);
                 }
                 else
                 {
@@ -462,7 +517,7 @@ namespace Warehouse_Application
             do
             {
                 Console.Clear();
-                Console.Write("Modifying:\n1. Price\n2. Quantity\n3. Exit");
+                Console.Write("Modifying:\n\n1. Price\n2. Quantity\n3. Exit");
                 Console.SetCursorPosition(25, 1);
                 Console.WriteLine($"Name: {copy.Name}");
                 Console.SetCursorPosition(25, 2);
@@ -473,6 +528,8 @@ namespace Warehouse_Application
                 Console.WriteLine($"Id: {copy.Id}");
                 Console.SetCursorPosition(25, 5);
                 Console.WriteLine($"Date: {copy.Date}");
+                Console.SetCursorPosition(25, 6);
+                Console.WriteLine($"$Added by: {copy.addedBy}");
                 Console.SetCursorPosition(0, 10);
                 Console.Write("Number: ");
 
