@@ -214,7 +214,11 @@ namespace Warehouse_Application
             Console.Write("Password: ");
             string password = Console.ReadLine();
             employee.Password = password;
-            employee.mainAccount = false;
+
+            if (firsTime)
+                employee.mainAccount = true;
+            else
+                employee.mainAccount = false;
 
             string json;
             List<Employee> firsTimeList = new List<Employee>();

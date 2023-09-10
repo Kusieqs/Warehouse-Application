@@ -188,6 +188,7 @@ namespace Warehouse_Application
                         Console.WriteLine($"Quantity: {p1.Quantity}");
                         Console.WriteLine($"Id: {p1.Id}");
                         Console.WriteLine($"Date: {p1.Date}");
+                        Console.WriteLine($"{p1.addedBy.Position} {p1.addedBy.Name} {p1.addedBy.LastName}");
                         Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
                         Console.Write("Number: ");
                         string choosingYesNo = Console.ReadLine();

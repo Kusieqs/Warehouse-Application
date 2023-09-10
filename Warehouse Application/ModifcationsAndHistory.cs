@@ -437,6 +437,7 @@ namespace Warehouse_Application
                 Console.WriteLine($"Quantity: {p1.Quantity}");
                 Console.WriteLine($"Id: {p1.Id}");
                 Console.WriteLine($"Date: {p1.Date}");
+                Console.WriteLine($"Added by: {p1.addedBy.Position} {p1.addedBy.Name} {p1.addedBy.LastName}");
                 Console.Write("\nDo you want to accept this modify?\n1.Yes\n2.No\nNumber: ");
                 string answer = Console.ReadLine();
                 if (answer == "1")
