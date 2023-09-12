@@ -326,14 +326,9 @@ namespace Warehouse_Application
                     } while (!attempt);
                 }
 
-                //// Od tego momentu:
-                PropertyInfo property1 = typeof(Product).GetProperty(sortingBy);
-
-                if (property1 != null)
+                if (sortingBy.Split('.')[0] == "addedBy")
                 {
-                    Console.WriteLine("test");
-                    Console.ReadKey();
-                    Func<Product, bool> filter = CreateFilter(property1, operatorSort, value, itIsString);
+
                     do
                     {
                         Console.Clear();
@@ -345,15 +340,17 @@ namespace Warehouse_Application
                                 attempt = true;
                                 if (!copyList.Any())
                                 {
-                                    sortList = products.Where(filter).Distinct().ToList();
+                                    Console.WriteLine("test1");
+                                    Console.ReadKey();
+                                    sortList = FilterAndSortByAddedBy(products, sortingBy, value, itIsString, operatorSort);
                                 }
                                 else
                                 {
-                                    sortList = sortList.Where(filter).Distinct().ToList();
+                                    sortList = FilterAndSortByAddedBy(sortList, sortingBy, value, itIsString, operatorSort);
                                 }
                                 break;
                             case "2":
-                                copyList = products.Where(filter).Distinct().ToList();
+                                copyList = FilterAndSortByAddedBy(products, sortingBy, value, itIsString, operatorSort);
                                 sortList = sortList.Concat(copyList).Distinct().ToList();
                                 attempt = true;
                                 break;
@@ -362,10 +359,50 @@ namespace Warehouse_Application
                         }
 
                     } while (!attempt);
-                    attempt = false;
+
                 }
+                else
+                {
 
+                    PropertyInfo property1 = typeof(Product).GetProperty(sortingBy);
 
+                    if (property1 != null)
+                    {
+                        Console.WriteLine("test");
+                        Console.ReadKey();
+                        Func<Product, bool> filter = CreateFilter(property1, operatorSort, value);
+                        do
+                        {
+                            Console.Clear();
+                            Console.Write("1. Condition to sorted list (All products in sorted list)\n2. Condition to main list (All products)\n\nNumber: ");
+                            string answer = Console.ReadLine();
+                            switch (answer)
+                            {
+                                case "1":
+                                    attempt = true;
+                                    if (!copyList.Any())
+                                    {
+                                        sortList = products.Where(filter).Distinct().ToList();
+                                    }
+                                    else
+                                    {
+                                        sortList = sortList.Where(filter).Distinct().ToList();
+                                    }
+                                    break;
+                                case "2":
+                                    copyList = products.Where(filter).Distinct().ToList();
+                                    sortList = sortList.Concat(copyList).Distinct().ToList();
+                                    attempt = true;
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                        } while (!attempt);
+                        attempt = false;
+                    }
+
+                }
                 bool endOfReport = false;
 
                 do
@@ -444,30 +481,66 @@ namespace Warehouse_Application
                     break;
             }
         } // menu with choosing report (txt,pdf,excel)
-        private static Func<Product, bool> CreateFilter(PropertyInfo property, string filter, string value, bool itIsString)
+        private static Func<Product, bool> CreateFilter(PropertyInfo property, string filter, string value)
         {
             var parameter = Expression.Parameter(typeof(Product), "x");
             var propertyAccess = Expression.Property(parameter, property);
             var convertedFilterValue = Expression.Constant(Convert.ChangeType(value, property.PropertyType));
-            var comparison = GetComparisonExpression(propertyAccess, filter, convertedFilterValue, itIsString);
+            var comparison = GetComparisonExpression(propertyAccess, filter, convertedFilterValue);
             return Expression.Lambda<Func<Product, bool>>(comparison, parameter).Compile();
         } // creating an expression Lambda wtih comaprison
-        private static Expression GetComparisonExpression(Expression left, string filter, Expression right, bool itIsString)
+        private static List<Product> FilterAndSortByAddedBy(List<Product> products, string propertyName, string value, bool itIsString,string filter)
         {
-            if (itIsString)
+
+            var param = Expression.Parameter(typeof(Product), "x");
+            Expression property = propertyName.Split('.').Aggregate((Expression)param, Expression.PropertyOrField);
+            var filterExpr = ExpressionToAddedBy(itIsString, property, value,filter);
+            var filterLambda = Expression.Lambda<Func<Product, bool>>(filterExpr, param); /// zmienic to na to jak w innej opcji /// wydali nam Func
+            var filteredList = products.Where(filterLambda.Compile()).ToList();
+            return filteredList;
+        }
+        private static Expression ExpressionToAddedBy(bool itIsString,Expression property, string value,string filter)
+        {
+            Console.WriteLine(itIsString);
+            Console.ReadKey();
+            if(itIsString)
             {
-                switch (filter)
+                switch(filter)
                 {
-                    case "!=":
-                        return Expression.NotEqual(left, right);
                     case "=":
-                        return Expression.Equal(left, right);
+                        return Expression.Equal(property, Expression.Constant(value));
+                    case "!=":
+                        return Expression.NotEqual(property, Expression.Constant(value));
                     default:
                         throw new FormatException("Critical Error");
                 }
             }
             else
             {
+                double.TryParse(value, out double x); /// nie dziala to na int
+                switch (filter)
+                {
+                    case ">":
+                        return Expression.GreaterThan(property,Expression.Constant(x));
+                    case "<":
+                        return Expression.LessThan(property, Expression.Constant(x));
+                    case "=":
+                        return Expression.Equal(property, Expression.Constant(x));
+                    case "!=":
+                        return Expression.NotEqual(property, Expression.Constant(x));
+                    case "<=":
+                        return Expression.LessThanOrEqual(property, Expression.Constant(x));
+                    case ">=":
+                        return Expression.GreaterThanOrEqual(property, Expression.Constant(x));
+                    default:
+                        throw new FormatException("Critical Error");
+                }
+            }
+        }
+        private static Expression GetComparisonExpression(Expression left, string filter, Expression right)
+        {
+
+
                 switch (filter)
                 {
                     case ">":
@@ -485,7 +558,7 @@ namespace Warehouse_Application
                     default:
                         throw new FormatException("Critical Error");
                 }
-            }
+            
         } // Comaprison to method "CreateFilter"
         private static void TxtFile(string report)
         {
@@ -541,7 +614,7 @@ namespace Warehouse_Application
                 Console.ReadKey();
             }
             Console.Clear();
-        } // saving to pdf file
+        } // Saving to pdf file
         private static void ExcelCreater(List<Product> products)
         {
             if (products.Count == 0)
@@ -593,7 +666,7 @@ namespace Warehouse_Application
                 }
 
             }
-        }// saving to excel file
+        }// Saving to excel file
     }
 }
 
