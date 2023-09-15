@@ -129,7 +129,7 @@ namespace Warehouse_Application
         {
             List<Product> copyList = new List<Product>();
             List<Product> sortList = new List<Product>();
-            bool endOfSort = false, attempt = true, itIsString = false;
+            bool endOfSort = false, attempt = true, itIsString = true;
             string sortingBy, operatorSort = "";
             DateTime dateSorting;
             string value = "";
@@ -168,18 +168,16 @@ namespace Warehouse_Application
                                         break;
                                     case "2":
                                         sortingBy += ".name";
-                                        itIsString = true;
                                         break;
                                     case "3":
                                         sortingBy += ".LastName";
-                                        itIsString = true;
                                         break;
                                     case "4":
                                         sortingBy += ".Age";
+                                        itIsString = false; 
                                         break;
                                     case "5":
                                         sortingBy += ".Id";
-                                        itIsString = true;
                                         break;
                                     default:
                                         attempt = false;
@@ -196,7 +194,7 @@ namespace Warehouse_Application
 
                 } while (!attempt);
 
-
+                attempt = false;
                 do
                 {
                     Console.Clear();
@@ -277,11 +275,44 @@ namespace Warehouse_Application
                                 break;
                         }
                     }
+                    else if(sortingBy == "addedBy.Position")
+                    {
+                        bool addedByAccept = true;
+                        do
+                        {
+                            addedByAccept = true;
+                            Console.Clear();
+                            Console.Write("1.Admin\n2.Manager\n3.Employee\n4.Supplier\nNumber: ");
+                            string answer = Console.ReadLine();
+                            switch(answer)
+                            {
+                                case "1":
+                                    value = PositionName.Admin.ToString();
+                                    break;
+                                case "2":
+                                    value = PositionName.Manager.ToString();
+                                    break;
+                                case "3":
+                                    value = PositionName.Employee.ToString();
+                                    break;
+                                case "4":
+                                    value = PositionName.Supplier.ToString();
+                                    break;
+                                default:
+                                    addedByAccept = false;
+                                    break;
+                            }
+
+                        } while (!addedByAccept);
+                        attempt = true;
+                    }
                     else if(itIsString)
                     {
                         Console.Clear();
                         Console.Write("String: ");
                         value = Console.ReadLine();
+                        if (value.Length > 0)
+                            attempt = true;
                     }
                     else
                     {
@@ -292,6 +323,7 @@ namespace Warehouse_Application
 
                     }
                 } while (!attempt);
+
                 attempt = false;
                 if(itIsString)
                 {
@@ -488,18 +520,28 @@ namespace Warehouse_Application
         } // creating an expression Lambda wtih comaprison
         private static Func<Product,bool> FilterAndSortByAddedBy(string propertyName, string value,string filter,bool isItString)
         {
-
+           
             var param = Expression.Parameter(typeof(Product), "x");
             Expression property = propertyName.Split('.').Aggregate((Expression)param, Expression.PropertyOrField);
-            var convertedFilterValue = Expression.Constant(Convert.ChangeType(value, property.Type));
-            var comparison = GetComparisonExpression(property, filter, convertedFilterValue,isItString);
-            return Expression.Lambda<Func<Product, bool>>(comparison,param).Compile();
+            if(property.Type.IsEnum)
+            {
+                var enumValue = Enum.Parse(property.Type, value);
+                var converted = Expression.Constant(enumValue);
+                var comparison = GetComparisonExpression(property, filter, converted, isItString);
+                return Expression.Lambda<Func<Product, bool>>(comparison, param).Compile();
+            }
+            else
+            {
+                var convertedFilterValue = Expression.Constant(Convert.ChangeType(value, property.Type));
+                var comparison = GetComparisonExpression(property, filter, convertedFilterValue, isItString);
+                return Expression.Lambda<Func<Product, bool>>(comparison, param).Compile();
+            }
 
         }
         private static Expression GetComparisonExpression(Expression left, string filter, Expression right, bool isItString)
         {
 
-            if(isItString)
+            if(isItString) 
             {
                 switch (filter)
                 {
