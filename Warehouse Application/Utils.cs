@@ -183,6 +183,7 @@ namespace Warehouse_Application
                     bool choosingCorrect = false;
                     do
                     {
+                        Console.Clear();
                         Console.WriteLine($"Name: {p1.Name}");
                         Console.WriteLine($"Price: {p1.Price}");
                         Console.WriteLine($"Quantity: {p1.Quantity}");
