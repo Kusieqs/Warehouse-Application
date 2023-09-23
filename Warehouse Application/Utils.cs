@@ -183,6 +183,7 @@ namespace Warehouse_Application
                     bool choosingCorrect = false;
                     do
                     {
+                        Console.Clear();
                         Console.WriteLine($"Name: {p1.Name}");
                         Console.WriteLine($"Price: {p1.Price}");
                         Console.WriteLine($"Quantity: {p1.Quantity}");
@@ -244,20 +245,32 @@ namespace Warehouse_Application
             else
             {
                 double y;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("PRICE");
+                Console.ResetColor();
                 Console.WriteLine();
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
 
                 y = products.Average(x => x.Price);
-                Console.WriteLine($"Average: {y}\n");
-                Console.WriteLine();
+                Console.WriteLine($"\nAverage: {y}\n");
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
 
                 y = products.Sum(x => x.Price);
-                Console.WriteLine($"Sum: {y}\n");
-                Console.WriteLine();
+                Console.WriteLine($"\nSum: {y}\n");
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
 
                 y = products.Max(x => x.Price);
                 var p1 = products.Where(x => x.Price == y).ToList();
-                Console.WriteLine("Max: ");
+                Console.WriteLine("\nMax: ");
                 foreach (var item in p1)
                 {
                     Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
@@ -271,9 +284,13 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
                 }
-                Console.WriteLine("\n");
+                Console.WriteLine();
 
-                Console.WriteLine("The most frequently occuring price: \n");
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
+
+                Console.WriteLine("\nThe most frequently occuring price: \n\n");
                 var p3 = products.Select(x => new
                 {
                     x.Name,
@@ -290,7 +307,6 @@ namespace Warehouse_Application
                         {
                             Console.WriteLine($"Name: {p.Name}, ID: {p.Id}, Price: {p.Price}");
                         }
-                        Console.WriteLine();
                     }
 
                 }
@@ -299,14 +315,31 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 Console.Clear();
 
-                Console.WriteLine("QUANTITY\n\n");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("QUANTITY\n");
+                Console.ResetColor();
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
+
                 y = products.Average(x => x.Quantity);
-                Console.WriteLine($"Average: {y}\n\n");
+                Console.WriteLine($"\nAverage: {y}\n");
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
+
                 y = products.Sum(x => x.Quantity);
-                Console.WriteLine($"Sum: {y}\n\n");
+                Console.WriteLine($"\nSum: {y}\n");
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
+
                 y = products.Max(x => x.Quantity);
                 var p5 = products.Where(x => x.Quantity == y).ToList();
-                Console.WriteLine("Max: ");
+                Console.WriteLine("\nMax: ");
                 foreach (var item in p5)
                 {
                     Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
@@ -320,9 +353,13 @@ namespace Warehouse_Application
                 {
                     Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
                 }
-                Console.WriteLine("\n");
+                Console.WriteLine();
 
-                Console.WriteLine("The most frequently occuring quantity: \n");
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
+
+                Console.WriteLine("\nThe most frequently occuring quantity: \n\n");
 
                 var p7 = products.Select(x => new
                 {
@@ -341,7 +378,6 @@ namespace Warehouse_Application
                         {
                             Console.WriteLine($"Name: {p.Name}, Quantity: {p.Quantity}, Id: {p.Id}");
                         }
-                        Console.WriteLine();
                     }
                 }
                 Console.WriteLine();
@@ -349,19 +385,28 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 Console.Clear();
 
-                Console.WriteLine("DATE\n\n");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("DATE\n");
                 Console.WriteLine();
+                Console.ResetColor();
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
 
                 DateTime d1 = products.Min(x => x.Date);
                 var p9 = products.Where(x => x.Date == d1);
-                Console.WriteLine("The oldest: \n");
+                Console.WriteLine("\nThe oldest: \n");
                 foreach (var item in p9)
                 {
                     Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
                 }
-
                 Console.WriteLine();
-                Console.WriteLine("\n\nThe newest: \n");
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
+
+                Console.WriteLine("\nThe newest: \n");
                 d1 = products.Max(x => x.Date);
                 var p10 = products.Where(x => x.Date == d1);
                 foreach (var item in p10)
@@ -369,7 +414,12 @@ namespace Warehouse_Application
                     Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
                 }
                 Console.WriteLine();
-                Console.WriteLine("\n\nThe most frequently occuring date: \n");
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.ResetColor();
+
+                Console.WriteLine("\nThe most frequently occuring date: \n\n");
                 var p11 = products.Select(x => new
                 {
                     x.Date,
