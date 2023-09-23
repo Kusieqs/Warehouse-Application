@@ -284,7 +284,7 @@ namespace Warehouse_Application
                     index = listOfProducts.FindIndex(x => x.Id == answer);
                     productToChange = listOfProducts.Find(x => x.Id == answer);
                 }
-                else if (correctNumber && number > 0 && number <= listOfProducts.Count + 1)
+                else if (correctNumber && number > 0 && number < listOfProducts.Count + 1)
                 {
                     index = number - 1;
                     productToChange = listOfProducts[index];
