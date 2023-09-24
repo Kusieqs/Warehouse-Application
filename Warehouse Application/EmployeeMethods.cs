@@ -181,7 +181,10 @@ namespace Warehouse_Application
 
             Console.Write("Id (3 chars): ");
             string id = Console.ReadLine();
+            if (employees.Any(x => x.Id == id))
+                throw new FormatException("This id is already exist");
             employee.Id = id;
+            
 
             Console.Write("Age: ");
             bool x = int.TryParse(Console.ReadLine(), out int age);

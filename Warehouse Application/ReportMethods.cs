@@ -136,6 +136,7 @@ namespace Warehouse_Application
             int year, month, day;
             do
             {
+                itIsString = true;
                 do
                 {
                     attempt = true;
@@ -146,12 +147,15 @@ namespace Warehouse_Application
                     {
                         case "1":
                             sortingBy = "Price";
+                            itIsString = false;
                             break;
                         case "2":
                             sortingBy = "Quantity";
+                            itIsString = false;
                             break;
                         case "3":
                             sortingBy = "date";
+                            itIsString = false;
                             break;
                         case "4":
                             sortingBy = "addedBy";
@@ -159,12 +163,12 @@ namespace Warehouse_Application
                             {
                                 attempt = true;
                                 Console.Clear();
-                                Console.Write("Sorting by:\n1.Position\n2.Name\n3.Last name\n4.Age\n5.Id Employee\n\nNumber: ");
+                                Console.Write("Sorting by:\n1.Position\n2.Name\n3.Last name\n4.Age\n5.Id Employee\nNumber: ");
                                 string answer = Console.ReadLine();
                                 switch (answer)
                                 {
                                     case "1":
-                                        sortingBy += ".Position"; ///???
+                                        sortingBy += ".Position";
                                         break;
                                     case "2":
                                         sortingBy += ".name";
@@ -517,7 +521,7 @@ namespace Warehouse_Application
             var convertedFilterValue = Expression.Constant(Convert.ChangeType(value, property.PropertyType));
             var comparison = GetComparisonExpression(propertyAccess, filter, convertedFilterValue,isItString);
             return Expression.Lambda<Func<Product, bool>>(comparison, parameter).Compile();
-        } // creating an expression Lambda wtih comaprison
+        } // creating an expression Lambda with comaprison (Object with object property)
         private static Func<Product,bool> FilterAndSortByAddedBy(string propertyName, string value,string filter,bool isItString)
         {
            
@@ -537,7 +541,7 @@ namespace Warehouse_Application
                 return Expression.Lambda<Func<Product, bool>>(comparison, param).Compile();
             }
 
-        }
+        } // creating an expression Lamda with comaprison
         private static Expression GetComparisonExpression(Expression left, string filter, Expression right, bool isItString)
         {
 
