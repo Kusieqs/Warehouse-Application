@@ -156,11 +156,11 @@ namespace Warehouse_Application
                                 string employeeReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"WareHouse", "Employee.json"));
                                 List<Employee> listOfEmployees = JsonConvert.DeserializeObject<List<Employee>>(employeeReader);
 
-                                int count = 1;
                                 int numberOfEmployee;
                                 bool correctAdded = false;
                                 do
                                 {
+                                    int count = 1;
                                     Console.Clear();
                                     foreach (var employees in listOfEmployees)
                                     {
@@ -170,7 +170,7 @@ namespace Warehouse_Application
                                     Console.Write("\n\nNumber : ");
                                     bool answer = int.TryParse(Console.ReadLine(),out numberOfEmployee);
 
-                                    if (!answer || listOfEmployees.Count < numberOfEmployee)
+                                    if (!answer || listOfEmployees.Count < numberOfEmployee || numberOfEmployee <= 0)
                                         continue;
 
                                     employee1 = listOfEmployees[numberOfEmployee - 1];
@@ -345,7 +345,7 @@ namespace Warehouse_Application
                             Console.ResetColor();
                         }
                         Console.WriteLine($"\nNOW:\nName: {productToChange.Name}\nPrice: {productToChange.Price}\nQuantity: {productToChange.Quantity}\nId: {productToChange.Id}\nDate: {productToChange.Date}\nAdded by: {productToChange.addedBy.Position} {productToChange.addedBy.Name} {productToChange.addedBy.LastName}");
-                        Console.Write("\n\nWrite a ID of modiciation to undoing modification, 0 to exit or 1 to remove all history\nNumber: ");
+                        Console.Write("\n\nWrite a ID of modiciation to undoing modification, 0 to exit or 1 to remove all history\nId: ");
                         string secondAnswer = Console.ReadLine();
 
                         if (Regex.IsMatch(secondAnswer, @"^[a-zA-Z0-9]{5}$"))
