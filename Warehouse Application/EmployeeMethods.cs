@@ -67,10 +67,11 @@ namespace Warehouse_Application
                     Console.Write("\nNumber: ");
                     bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
-                    if (number == 0)
-                        Environment.Exit(0);
-                    else if (!correctNumber || employees.Count < number)
+                    if (!correctNumber || employees.Count < number)
                         continue;
+                    else if (number == 0)
+                        Environment.Exit(0);
+
 
                     employee = employees[number - 1];
                     
@@ -267,7 +268,7 @@ namespace Warehouse_Application
             {
                 Console.Clear();
                 bool remove;
-                Console.Write("1.Remove\n2.Modifying\n3.Exit\nNumber: ");
+                Console.Write("1.Remove\n2.Modifying\n3.Exit\n\nNumber: ");
                 bool correctNumberChoose = int.TryParse(Console.ReadLine(), out int choose);
                 Console.Clear();
 
@@ -308,7 +309,7 @@ namespace Warehouse_Application
                                     Console.ForegroundColor = ConsoleColor.Red;
                                     Console.WriteLine("WARNING\n\n");
                                     Console.ResetColor();
-                                    Console.WriteLine("You are going to delete last admin position\nThis will delete all files\n\n1.Delete\n2.Continue");
+                                    Console.Write("You are going to delete last admin position\nThis will delete all files\n\n1.Delete\n2.Continue\n\nNumber: ");
                                     string answer = Console.ReadLine();
 
                                     if(answer == "1")
@@ -383,147 +384,163 @@ namespace Warehouse_Application
             Employee copy = employee;
             string property = "", value = "";
             bool correctModify;
-            do
+
+            try
             {
-                correctModify = true;
-                Console.Clear();
-                Console.WriteLine("Employee Modifications\n1.Name\n2.Last name\n3.Id\n4.Age\n5.Position\n6.Password\n7.Login\n8.Main account\n9.Exit");
-                Console.SetCursorPosition(25, 1);
-                Console.WriteLine($"Name: {employee.Name}");
-                Console.SetCursorPosition(25, 2);
-                Console.WriteLine($"Last name: {employee.LastName}");
-                Console.SetCursorPosition(25, 3);
-                Console.WriteLine($"Id: {employee.Id}");
-                Console.SetCursorPosition(25, 4);
-                Console.WriteLine($"Age: {employee.Age}");
-                Console.SetCursorPosition(25, 5);
-                Console.WriteLine($"Position: {employee.Position}");
-                Console.SetCursorPosition(25, 6);
-                Console.WriteLine($"Password: {employee.Password}");
-                Console.SetCursorPosition(25, 7);
-                Console.WriteLine($"Login: {employee.Login}");
-                Console.SetCursorPosition(25, 8);
-                Console.WriteLine($"Main account {employee.mainAccount}");
-                Console.SetCursorPosition(0, 11);
-                Console.Write("Number: ");
-
-                string answer = Console.ReadLine();
-                switch (answer)
-                {
-                    case "1":
-                        property = "Name";
-                        break;
-                    case "2":
-                        property = "LastName";
-                        break;
-                    case "3":
-                        property = "Id";
-                        break;
-                    case "4":
-                        property = "Age";
-                        break;
-                    case "5":
-                        property = "Position";
-                        break;
-                    case "6":
-                        property = "Password";
-                        break;
-                    case "7":
-                        property = "Login";
-                        break;
-                    case "8":
-                        property = "mainAccount";
-                        break;
-                    case "9":
-                        return;
-                    default:
-                        correctModify = false;
-                        break;
-                }
-            } while (!correctModify);
-
-
-            if (property == "Position")
-            {
-                bool x = true;
                 do
                 {
-                    x = true;
+                    correctModify = true;
                     Console.Clear();
-                    Console.Write("1.Admin\n2.Supplier\n3.Employee\n4.Manager\n5.Exit\nNumber: ");
+                    Console.WriteLine("Employee Modifications\n1.Name\n2.Last name\n3.Id\n4.Age\n5.Position\n6.Password\n7.Login\n8.Main account\n9.Exit");
+                    Console.SetCursorPosition(25, 1);
+                    Console.WriteLine($"Name: {employee.Name}");
+                    Console.SetCursorPosition(25, 2);
+                    Console.WriteLine($"Last name: {employee.LastName}");
+                    Console.SetCursorPosition(25, 3);
+                    Console.WriteLine($"Id: {employee.Id}");
+                    Console.SetCursorPosition(25, 4);
+                    Console.WriteLine($"Age: {employee.Age}");
+                    Console.SetCursorPosition(25, 5);
+                    Console.WriteLine($"Position: {employee.Position}");
+                    Console.SetCursorPosition(25, 6);
+                    Console.WriteLine($"Password: {employee.Password}");
+                    Console.SetCursorPosition(25, 7);
+                    Console.WriteLine($"Login: {employee.Login}");
+                    Console.SetCursorPosition(25, 8);
+                    Console.WriteLine($"Main account {employee.mainAccount}");
+                    Console.SetCursorPosition(0, 11);
+                    Console.Write("Number: ");
+
                     string answer = Console.ReadLine();
                     switch (answer)
                     {
                         case "1":
-                            value = PositionName.Admin.ToString();
+                            property = "Name";
                             break;
                         case "2":
-                            value = PositionName.Supplier.ToString();
+                            property = "LastName";
                             break;
                         case "3":
-                            value = PositionName.Employee.ToString();
+                            property = "Id";
                             break;
                         case "4":
-                            value = PositionName.Manager.ToString();
+                            property = "Age";
                             break;
                         case "5":
+                            property = "Position";
+                            break;
+                        case "6":
+                            property = "Password";
+                            break;
+                        case "7":
+                            property = "Login";
+                            break;
+                        case "8":
+                            property = "mainAccount";
+                            break;
+                        case "9":
                             return;
                         default:
-                            x = false;
+                            correctModify = false;
                             break;
-
                     }
-                } while (!x);
-            }
-            else if (property == "mainAccount")
-            {
-                bool x = true;
-                do
+                } while (!correctModify);
+
+
+                if (property == "Position")
                 {
-                    x = true;
-                    Console.Clear();
-                    Console.WriteLine("1.Main account (true)\n2.Main account (false)\n3.Exit");
-                    string answer = Console.ReadLine();
-                    switch (answer)
+                    bool x = true;
+                    do
                     {
-                        case "1":
-                            value = true.ToString();
-                            break;
-                        case "2":
-                            value = false.ToString();
-                            break;
-                        case "3":
-                            return;
-                        default:
-                            break;
+                        x = true;
+                        Console.Clear();
+                        Console.Write("1.Admin\n2.Supplier\n3.Employee\n4.Manager\n5.Exit\nNumber: ");
+                        string answer = Console.ReadLine();
+                        switch (answer)
+                        {
+                            case "1":
+                                value = PositionName.Admin.ToString();
+                                break;
+                            case "2":
+                                value = PositionName.Supplier.ToString();
+                                break;
+                            case "3":
+                                value = PositionName.Employee.ToString();
+                                break;
+                            case "4":
+                                value = PositionName.Manager.ToString();
+                                break;
+                            case "5":
+                                return;
+                            default:
+                                x = false;
+                                break;
 
-                    }
-                } while (!x);
+                        }
+                    } while (!x);
+                }
+                else if (property == "mainAccount")
+                {
+                    bool x = true;
+                    do
+                    {
+                        x = true;
+                        Console.Clear();
+                        Console.WriteLine("1.Main account (true)\n2.Main account (false)\n3.Exit");
+                        string answer = Console.ReadLine();
+                        switch (answer)
+                        {
+                            case "1":
+                                value = true.ToString();
+                                break;
+                            case "2":
+                                value = false.ToString();
+                                break;
+                            case "3":
+                                return;
+                            default:
+                                break;
+
+                        }
+                    } while (!x);
+                }
+                else
+                {
+                    Console.Write($"Changing {property}: ");
+                    value = Console.ReadLine();
+                }
+
+                bool accept;
+
+                PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
+                object valueParsed = ModificationsAndHistory.ParseValue(value, propertyInfo.PropertyType);
+                copy.GetType().GetProperty(property).SetValue(copy, valueParsed);
+
+                if (employees.Any(x => x.Id == valueParsed) && property == "Id")
+                {
+                    Console.WriteLine("This id is already exist\nClick enter to continue!");
+                    Console.ReadKey();
+                    return;
+                }
+                Console.Clear();
+                AcceptingModify(copy, out accept);
+                if (accept)
+                {
+                    employee = copy;
+                }
+
             }
-            else
+            catch (Exception e)
             {
-                Console.Write($"Changing {property}: ");
-                value = Console.ReadLine();
-            }
-
-            bool accept;
-
-            PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
-            object valueParsed = ModificationsAndHistory.ParseValue(value, propertyInfo.PropertyType); ///problem
-            copy.GetType().GetProperty(property).SetValue(copy, valueParsed);
-
-            if (employees.Any(x => x.Id == valueParsed) && property == "Id")
-            {
-                Console.WriteLine("This id is already exist\nClick enter to continue!");
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Error: {e}");
+                Console.ResetColor();
+                Console.WriteLine("\nClick enter to continue");
                 Console.ReadKey();
-                return;
+                Console.Clear();
             }
-            Console.Clear();
-            AcceptingModify(copy, out accept);
-            if (accept)
-            {
-                employee = copy;
-            }
+
 
         } // Changing informations about employee
     }
