@@ -476,7 +476,12 @@ namespace Warehouse_Application
                 Console.Clear();
                 Console.Write("Write ID or 0 to exit: ");
                 string id = Console.ReadLine();
-                if (products.Any(x => x.Id == id))
+
+
+
+                if (id.Length != 9)
+                    continue;
+                else if (products.Any(x => x.Id == id))
                 {
                     product = new Product(products.Find(x => x.Id == id));
                     int index = products.FindIndex(x => x.Id == id);
@@ -491,7 +496,7 @@ namespace Warehouse_Application
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("This id is not in our database\n\n1. Add product with new ID\n2. Write Id\n\nNumber: ");
+                        Console.WriteLine("This id is not in our database\n\n1. Add product with new ID\n2. Write another Id\n\nNumber: ");
                         correctAnwer = true;
                         string answerId = Console.ReadLine();
                         switch (answerId)
