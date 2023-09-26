@@ -65,7 +65,8 @@ namespace Warehouse_Application
                     p1.addedBy = employee;
 
                     string jsonCreator;
-                    correctData = false;
+                    correctData = true;
+
                     if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
                     {
                         List<Product> products1Copy = new List<Product>();
@@ -79,8 +80,6 @@ namespace Warehouse_Application
                         products.Add(p1);
                         jsonCreator = JsonConvert.SerializeObject(products);
                         File.WriteAllText(systemOp, jsonCreator);
-                        correctData = true;
-
                     }
                     else
                         throw new FormatException("Id is already exist!");
@@ -109,9 +108,8 @@ namespace Warehouse_Application
             products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
 
         }/// adding new product to list
-        public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
+        public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number)
         {
-            graphic = true;
             Console.Clear();
             int count = 0;
             foreach (var product in products)
@@ -140,9 +138,9 @@ namespace Warehouse_Application
             Product p1 = new Product();
             string removingRecord;
             int number;
-            bool itIsNumber, correctNumber, graphic = false;
+            bool itIsNumber, correctNumber;
             bool endRemovingRecord = false;
-            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))))
+            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))) || products.Count == 0)
             {
                 Console.Clear();
                 Console.WriteLine("List is empty!\nClick enter to continue");
@@ -152,16 +150,8 @@ namespace Warehouse_Application
             {
                 do
                 {
-                    if(products.Count == 0)
-                    {
-                        Console.Clear();
-                        Console.WriteLine("List is empty!\nClick enter to continue");
-                        Console.ReadKey();
-                        endRemovingRecord = true;
-                        break;
-                    }
 
-                    GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number, ref graphic);
+                    GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
 
                     if (correctNumber && number <= products.Count && number > 0)
                     {
