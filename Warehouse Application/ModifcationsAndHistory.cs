@@ -17,7 +17,7 @@ namespace Warehouse_Application
             string property = string.Empty;
             string value = "";
             int number;
-            bool correctNumber, correctModifying = false, accept, graphic = false;
+            bool correctNumber, correctModifying = false, accept;
 
             if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
             {
@@ -32,7 +32,7 @@ namespace Warehouse_Application
                 {
                     do
                     {
-                        Utils.GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number, ref graphic);
+                        Utils.GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number);
 
                         if (correctNumber && number > 0 && number <= products.Count)
                         {
@@ -49,6 +49,7 @@ namespace Warehouse_Application
                             continue;
                         }
                         Console.Clear();
+
                         do
                         {
                             correctAnswer = true;

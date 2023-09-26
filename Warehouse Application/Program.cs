@@ -55,7 +55,8 @@ internal class Program
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);                                break;
+                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);
+                                break;
 
                             case 6:
                                 Utils.Statistics(listOfProducts);
