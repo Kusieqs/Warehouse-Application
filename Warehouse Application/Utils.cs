@@ -21,6 +21,7 @@ namespace Warehouse_Application
 
             string jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Products.json"));
             products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
+
             jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
         } /// Checking for existence directory with data

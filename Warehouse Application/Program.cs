@@ -9,14 +9,15 @@ internal class Program
         bool firstTime = true; 
         int number;
         bool closeProgram = false, correctNumber = false;
-        string systemOperation = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        systemOperation = Path.Combine(systemOperation, "WareHouse");
 
         List<Employee> employees = new List<Employee>();
         List<Product> listOfProducts = new List<Product>();
+        Employee employee = new Employee();
+
+
+        string systemOperation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse");
         Utils.FirstTimeUsing(ref listOfProducts, ref systemOperation, ref employees, ref firstTime);
 
-        Employee employee = new Employee();
 
         EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
         firstTime = false;
@@ -25,14 +26,15 @@ internal class Program
 
         do
         {
-            switch(employee.Position)
+            switch (employee.Position)
             {
                 case PositionName.Admin:
                     do
                     {
+                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Modifying employees\n9. Log out\n0. Exit");
-                        Console.Write($"\n\nPosition: {employee.Position}\n\nNumber: ");
+                        Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch (number)
                         {
@@ -85,9 +87,10 @@ internal class Program
                 case PositionName.Employee:
                     do
                     {
+                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1. Add product\n2. Removing product\n3. Modifying Product\n4. Log out\n5. Exit");
-                        Console.Write("Number: ");
+                        Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
                         {
@@ -122,9 +125,10 @@ internal class Program
                 case PositionName.Manager:
                     do
                     {
+                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Log out\n7. Exit");
-                        Console.Write("Number: ");
+                        Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
                         {
@@ -167,9 +171,10 @@ internal class Program
                 case PositionName.Supplier:
                     do
                     {
+                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1. New delivery\n2. Log out\n3. Exit");
-                        Console.Write("Number: ");
+                        Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch (number)
                         {
@@ -192,8 +197,6 @@ internal class Program
                     } while (!correctNumber);
                     break;
             }
-            
-
         } while (!closeProgram);
 
     }

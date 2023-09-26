@@ -50,7 +50,7 @@ namespace Warehouse_Application
 			}
 			set
 			{
-				if (value.Length > 3)
+				if (value.Length >= 3)
 					name = value;
 				else
 					throw new FormatException("Name is to short");
