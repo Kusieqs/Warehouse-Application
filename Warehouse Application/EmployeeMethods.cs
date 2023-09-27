@@ -90,7 +90,7 @@ namespace Warehouse_Application
                         throw new FormatException("Wrong login or password");
 
                 }
-                catch (FormatException e)
+                catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\n" + e.Message);
@@ -270,7 +270,6 @@ namespace Warehouse_Application
                 try
                 {
                     Console.Clear();
-                    bool remove;
                     Console.Write("1.Remove\n2.Modifying\n3.Exit\n\nNumber: ");
                     bool correctNumberChoose = int.TryParse(Console.ReadLine(), out int choose);
                     Console.Clear();
@@ -380,16 +379,26 @@ namespace Warehouse_Application
                         return;
                     }
                 }
-                catch (Exception e)
+                catch (TargetInvocationException tie)
+                {
+                    Exception innerException = tie.InnerException;
+
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Error: {innerException.Message}");
+                    Console.ResetColor();
+
+                }
+                catch (Exception ex)
                 {
                     Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Error: {e}");
+                    Console.WriteLine($"Error: {ex.Message}");
                     Console.ResetColor();
-                    Console.WriteLine("\nClick enter to continue");
-                    Console.ReadKey();
-                    Console.Clear();
                 }
+                Console.WriteLine("\nClick enter to continue");
+                Console.ReadKey();
+                Console.Clear();
 
             } while (!correctChoosing);
         } ///Options to remove or modifying employee
@@ -403,24 +412,15 @@ namespace Warehouse_Application
             {
                 correctModify = true;
                 Console.Clear();
-                Console.WriteLine("Employee Modifications\n1.Name\n2.Last name\n3.Id\n4.Age\n5.Position\n6.Password\n7.Login\n8.Main account\n9.Exit");
-                Console.SetCursorPosition(25, 1);
-                Console.WriteLine($"Name: {employee.Name}");
-                Console.SetCursorPosition(25, 2);
-                Console.WriteLine($"Last name: {employee.LastName}");
-                Console.SetCursorPosition(25, 3);
-                Console.WriteLine($"Id: {employee.Id}");
-                Console.SetCursorPosition(25, 4);
-                Console.WriteLine($"Age: {employee.Age}");
-                Console.SetCursorPosition(25, 5);
-                Console.WriteLine($"Position: {employee.Position}");
-                Console.SetCursorPosition(25, 6);
-                Console.WriteLine($"Password: {employee.Password}");
-                Console.SetCursorPosition(25, 7);
-                Console.WriteLine($"Login: {employee.Login}");
-                Console.SetCursorPosition(25, 8);
-                Console.WriteLine($"Main account {employee.mainAccount}");
-                Console.SetCursorPosition(0, 11);
+                Console.WriteLine("1.Name          {0}",employee.Name);
+                Console.WriteLine("2.Last name:    {0}",employee.LastName);
+                Console.WriteLine("3.Id:           {0}",employee.Id);
+                Console.WriteLine("4.Age:          {0}",employee.Age);
+                Console.WriteLine("5.Position:     {0}",employee.Position);
+                Console.WriteLine("6.Password:     {0}",employee.Password);
+                Console.WriteLine("7.Login:        {0}",employee.Login);
+                Console.WriteLine("8.Main account: {0}",employee.mainAccount);
+                Console.WriteLine("9.Exit");
                 Console.Write("Number: ");
 
                 string answer = Console.ReadLine();
@@ -527,28 +527,17 @@ namespace Warehouse_Application
 
             PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
             object valueParsed = ModificationsAndHistory.ParseValue(value, propertyInfo.PropertyType);
-
-            Console.WriteLine("XD");
-            copy.GetType().GetProperty(property).SetValue(copy, valueParsed);  // ---> problem tu jest z try cath
-            Console.WriteLine("XD");
-
             copy.GetType().GetProperty(property).SetValue(copy, valueParsed);
 
             if (employees.Any(x => x.Id == valueParsed) && property == "Id")
-            {
-                Console.WriteLine("This id is already exist\nClick enter to continue!");
-                Console.ReadKey();
-                return;
-            }
+                throw new FormatException("This id is already exist");
+
             Console.Clear();
             AcceptingModify(copy, out accept);
             if (accept)
             {
                 employee = copy;
             }
-
-
-
 
         } // Changing informations about employee
     }

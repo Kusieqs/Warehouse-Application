@@ -54,20 +54,13 @@ namespace Warehouse_Application
                         {
                             correctAnswer = true;
                             Console.Clear();
-                            Console.Write("Modifying:\n1. Name\n2. Price\n3. Quantity\n4. Id\n5. Date\n6. Added by\n7. Exit");
-                            Console.SetCursorPosition(25, 1);
-                            Console.WriteLine($"Name: {copy.Name}");
-                            Console.SetCursorPosition(25, 2);
-                            Console.WriteLine($"Price: {copy.Price}");
-                            Console.SetCursorPosition(25, 3);
-                            Console.WriteLine($"Quantity: {copy.Quantity}");
-                            Console.SetCursorPosition(25, 4);
-                            Console.WriteLine($"Id: {copy.Id}");
-                            Console.SetCursorPosition(25, 5);
-                            Console.WriteLine($"Date: {copy.Date}");
-                            Console.SetCursorPosition(25, 6);
-                            Console.WriteLine($"Added by: {copy.addedBy.Position} {copy.addedBy.LastName} {copy.addedBy.Name}");
-                            Console.SetCursorPosition(0, 10);
+                            Console.WriteLine("1.Name:     {0}", copy.Name);
+                            Console.WriteLine("2.Price:    {0}", copy.Price);
+                            Console.WriteLine("3.Quantity: {0}", copy.Quantity);
+                            Console.WriteLine("4.Id:       {0}", copy.Id);
+                            Console.WriteLine("5.Date:     {0}", copy.Date);
+                            Console.WriteLine("6.Added by: {0} {1} {2}", copy.addedBy.Position, copy.addedBy.LastName, copy.addedBy.Name);
+                            Console.WriteLine("7.Exit\n");
                             Console.Write("Number: ");
 
                             string answer = Console.ReadLine();
@@ -109,11 +102,11 @@ namespace Warehouse_Application
                         try
                         {
                             Console.Clear();
-                            Console.WriteLine($"Name: {copy.Name}");
-                            Console.WriteLine($"Price: {copy.Price}");
+                            Console.WriteLine($"Name:     {copy.Name}");
+                            Console.WriteLine($"Price:    {copy.Price}");
                             Console.WriteLine($"Quantity: {copy.Quantity}");
-                            Console.WriteLine($"Id: {copy.Id}");
-                            Console.WriteLine($"Date: {copy.Date}\n\n");
+                            Console.WriteLine($"Id:       {copy.Id}");
+                            Console.WriteLine($"Date:     {copy.Date}");
                             Console.WriteLine($"Added by: {copy.addedBy.Position} {copy.addedBy.LastName} {copy.addedBy.Name}");
 
                             if (property == "Date")
@@ -152,9 +145,9 @@ namespace Warehouse_Application
                                     throw new FormatException("Wrong date");
                                 }
                             }
-                            else if(property == "addedBy")
+                            else if (property == "addedBy")
                             {
-                                string employeeReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"WareHouse", "Employee.json"));
+                                string employeeReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
                                 List<Employee> listOfEmployees = JsonConvert.DeserializeObject<List<Employee>>(employeeReader);
 
                                 int numberOfEmployee;
@@ -169,9 +162,9 @@ namespace Warehouse_Application
                                         count++;
                                     }
                                     Console.Write("\n\nNumber : ");
-                                    bool answer = int.TryParse(Console.ReadLine(),out numberOfEmployee);
+                                    bool itIsCorrect = int.TryParse(Console.ReadLine(), out numberOfEmployee);
 
-                                    if (!answer || listOfEmployees.Count < numberOfEmployee || numberOfEmployee <= 0)
+                                    if (!itIsCorrect || listOfEmployees.Count < numberOfEmployee || numberOfEmployee <= 0)
                                         continue;
 
                                     employee1 = listOfEmployees[numberOfEmployee - 1];
@@ -222,16 +215,26 @@ namespace Warehouse_Application
                             else
                                 break;
                         }
+                        catch (TargetInvocationException tie)
+                        {
+                            Exception innerException = tie.InnerException;
+
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"Error: {innerException.Message}");
+                            Console.ResetColor();
+                        }
                         catch (FormatException e)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"\n{e.Message}");
+                            Console.WriteLine($"Error: {e.Message}");
                             Console.ResetColor();
-                            Console.WriteLine("Click enter to continue or 0 to exit");
-                            string answer = Console.ReadLine();
-                            if (answer == "0")
-                                correctAnswer = true;
+
                         }
+                        Console.WriteLine("Click enter to continue or 0 to exit");
+                        string answer = Console.ReadLine();
+                        if (answer == "0")
+                            correctAnswer = true;
 
                     } while (!correctAnswer);
                 } while (!correctModifying);
@@ -268,7 +271,7 @@ namespace Warehouse_Application
                     Console.WriteLine($"CHANGES: {product.listOfModifications.Count}");
                     Console.ResetColor();
                     Console.BackgroundColor = ConsoleColor.White;
-                    Console.WriteLine("\n                    \n");
+                    Console.WriteLine("\n                    \n"); // tutaj
                     Console.ResetColor();
                 }
                 Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");

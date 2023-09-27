@@ -85,7 +85,7 @@ namespace Warehouse_Application
                         throw new FormatException("Id is already exist!");
 
                 }
-                catch (FormatException e)
+                catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"\n{e.Message}");
