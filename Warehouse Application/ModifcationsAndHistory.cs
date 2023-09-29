@@ -271,18 +271,18 @@ namespace Warehouse_Application
                     Console.WriteLine($"CHANGES: {product.listOfModifications.Count}");
                     Console.ResetColor();
                     Console.BackgroundColor = ConsoleColor.White;
-                    Console.WriteLine("\n                    \n"); // tutaj
+                    Console.WriteLine("\n                    \n");
                     Console.ResetColor();
                 }
                 Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");
                 answer = Console.ReadLine();
                 correctNumber = int.TryParse(answer, out number);
                 Console.Clear();
+
                 int index = 0;
+
                 if (answer == "0")
-                {
                     break;
-                }
                 else if (Regex.IsMatch(answer, @"^[A-Za-z]{4}\d{5}$") && listOfProducts.Any(x => x.Id == answer))
                 {
                     index = listOfProducts.FindIndex(x => x.Id == answer);
@@ -295,7 +295,6 @@ namespace Warehouse_Application
                 }
                 else
                     continue;
-                ///DO POPRAWY 
 
                 if (productToChange.listOfModifications.Count <= 0)
                 {
@@ -308,7 +307,6 @@ namespace Warehouse_Application
                     do
                     {
                         Console.Clear();
-                        int line = 5;
                         foreach (var history in productToChange.listOfModifications)
                         {
 
@@ -321,34 +319,20 @@ namespace Warehouse_Application
                             Console.Write($"BEFORE\n");
                             Console.ResetColor();
                             Console.Write($"Name:{history.before.name}\nPrice:{history.before.price}\nQuantity:{history.before.quantity}\nId:{history.before.id}\nDate:{history.before.date}\nAdded by: {history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
-                            Console.SetCursorPosition(40, line);
                             Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.WriteLine("AFTER");
                             Console.ResetColor();
-                            line++;
-                            Console.SetCursorPosition(40, line);
-                            Console.WriteLine($"Name:{history.after.name}");
-                            line++;
-                            Console.SetCursorPosition(40, line);
-                            Console.WriteLine($"Price:{history.after.price}");
-                            line++;
-                            Console.SetCursorPosition(40, line);
-                            Console.WriteLine($"Quantity:{history.after.quantity}");
-                            line++;
-                            Console.SetCursorPosition(40, line);
-                            Console.WriteLine($"Id:{history.after.id}");
-                            line++;
-                            Console.SetCursorPosition(40, line);
-                            Console.WriteLine($"Date:{history.after.date}\n\n");
-                            line++;
-                            Console.SetCursorPosition(40, line);
-                            Console.WriteLine($"Added by:{history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
-                            line += 8;
+                            Console.Write($"Name:{history.after.name}\nPrice:{history.after.price}\nQuantity:{history.after.quantity}\nId:{history.after.id}\nDate:{history.after.date}\nAdded by: {history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
+                            string x = "".PadLeft(30);
+                            Console.WriteLine(x);
                             Console.BackgroundColor = ConsoleColor.White;
-                            Console.WriteLine(" - - - - - - - - - - - - - - - - - - - - - - \n");
+                            Console.WriteLine();
                             Console.ResetColor();
                         }
-                        Console.WriteLine($"\nNOW:\nName: {productToChange.Name}\nPrice: {productToChange.Price}\nQuantity: {productToChange.Quantity}\nId: {productToChange.Id}\nDate: {productToChange.Date}\nAdded by: {productToChange.addedBy.Position} {productToChange.addedBy.Name} {productToChange.addedBy.LastName}");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\nNOW:");
+                        Console.ResetColor();
+                        Console.WriteLine($"\nName: {productToChange.Name}\nPrice: {productToChange.Price}\nQuantity: {productToChange.Quantity}\nId: {productToChange.Id}\nDate: {productToChange.Date}\nAdded by: {productToChange.addedBy.Position} {productToChange.addedBy.Name} {productToChange.addedBy.LastName}");
                         Console.Write("\n\nWrite a ID of modiciation to undoing modification, 0 to exit or 1 to remove all history\nId: ");
                         string secondAnswer = Console.ReadLine();
 
@@ -480,8 +464,6 @@ namespace Warehouse_Application
                 Console.Clear();
                 Console.Write("Write ID or 0 to exit: ");
                 string id = Console.ReadLine();
-
-
 
                 if (id.Length != 9)
                     continue;

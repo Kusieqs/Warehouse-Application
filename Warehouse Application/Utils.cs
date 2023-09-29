@@ -224,6 +224,7 @@ namespace Warehouse_Application
         } /// Name of writing down file
         public static void Statistics(List<Product> products)
         {
+            string x = "".PadLeft(60);
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
             Console.Clear();
@@ -242,21 +243,21 @@ namespace Warehouse_Application
                 Console.WriteLine();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Average(x => x.Price);
                 Console.WriteLine($"\nAverage: {y}\n");
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Sum(x => x.Price);
                 Console.WriteLine($"\nSum: {y}\n");
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Max(x => x.Price);
@@ -278,7 +279,7 @@ namespace Warehouse_Application
                 Console.WriteLine();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 Console.WriteLine("\nThe most frequently occuring price: \n\n");
@@ -311,21 +312,21 @@ namespace Warehouse_Application
                 Console.ResetColor();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Average(x => x.Quantity);
                 Console.WriteLine($"\nAverage: {y}\n");
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Sum(x => x.Quantity);
                 Console.WriteLine($"\nSum: {y}\n");
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Max(x => x.Quantity);
@@ -347,7 +348,7 @@ namespace Warehouse_Application
                 Console.WriteLine();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 Console.WriteLine("\nThe most frequently occuring quantity: \n\n");
@@ -382,7 +383,7 @@ namespace Warehouse_Application
                 Console.ResetColor();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 DateTime d1 = products.Min(x => x.Date);
@@ -394,7 +395,7 @@ namespace Warehouse_Application
                 }
                 Console.WriteLine();
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 Console.WriteLine("\nThe newest: \n");
@@ -407,7 +408,7 @@ namespace Warehouse_Application
                 Console.WriteLine();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 Console.WriteLine("\nThe most frequently occuring date: \n\n");
