@@ -60,6 +60,7 @@ namespace Warehouse_Application
 
                     Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
                     id = Console.ReadLine().Trim();
+
                     p1.Id = id;
                     p1.Date = date;
                     p1.addedBy = employee;
@@ -118,11 +119,11 @@ namespace Warehouse_Application
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("Number: " + count);
                 Console.ResetColor();
-                Console.WriteLine($"Name: {product.Name}");
-                Console.WriteLine($"Price: {product.Price}");
+                Console.WriteLine($"Name:     {product.Name}");
+                Console.WriteLine($"Price:    {product.Price}");
                 Console.WriteLine($"Quantity: {product.Quantity}");
-                Console.WriteLine($"Id: {product.Id}");
-                Console.WriteLine($"Date: {product.Date}");
+                Console.WriteLine($"Id:       {product.Id}");
+                Console.WriteLine($"Date:     {product.Date}");
                 Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n\n");
                 Console.ResetColor();
             }
@@ -171,23 +172,24 @@ namespace Warehouse_Application
                         continue;
                     
                     Console.Clear();
-                    bool choosingCorrect = false;
+                    bool choosingCorrect = true;
                     do
                     {
+                        choosingCorrect = true;
                         Console.Clear();
-                        Console.WriteLine($"Name: {p1.Name}");
-                        Console.WriteLine($"Price: {p1.Price}");
+                        Console.WriteLine($"Name:     {p1.Name}");
+                        Console.WriteLine($"Price:    {p1.Price}");
                         Console.WriteLine($"Quantity: {p1.Quantity}");
-                        Console.WriteLine($"Id: {p1.Id}");
-                        Console.WriteLine($"Date: {p1.Date}");
-                        Console.WriteLine($"{p1.addedBy.Position} {p1.addedBy.Name} {p1.addedBy.LastName}");
+                        Console.WriteLine($"Id:       {p1.Id}");
+                        Console.WriteLine($"Date:     {p1.Date}");
+                        Console.WriteLine($"Added by: {p1.addedBy.Position} {p1.addedBy.Name} {p1.addedBy.LastName}");
                         Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
+
                         Console.Write("Number: ");
                         string choosingYesNo = Console.ReadLine();
 
                         if (choosingYesNo == "1")
                         {
-                            choosingCorrect = true;
                             if (itIsNumber)
                                 products.RemoveAt(number - 1);
                             else
@@ -195,8 +197,8 @@ namespace Warehouse_Application
                             Program.JsonFileRecord(ref products);
 
                         }
-                        else if (choosingYesNo == "2")
-                            choosingCorrect = true;
+                        else if (choosingYesNo != "2" && choosingYesNo != "1")
+                            choosingCorrect = false;
 
 
                     } while (!choosingCorrect);

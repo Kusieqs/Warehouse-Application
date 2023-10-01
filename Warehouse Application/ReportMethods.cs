@@ -18,6 +18,7 @@ namespace Warehouse_Application
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
             bool endOfRaport = false;
+
             if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))))
             {
                 Console.Clear();
@@ -25,6 +26,7 @@ namespace Warehouse_Application
                 Console.ReadKey();
                 return;
             }
+
             do
             {
                 Console.Clear();
@@ -125,7 +127,6 @@ namespace Warehouse_Application
 
             } while (!endSearching);
         } // show product with inscribed id
-        //tutaj
         private static void SortingByValue(List<Product> products)
         {
             List<Product> copyList = new List<Product>();
@@ -453,11 +454,11 @@ namespace Warehouse_Application
                         foreach (var product in sortList)
                         {
                             report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n- - - - - - - - - - -\n";
-                            Console.WriteLine($"Name: {product.Name}");
-                            Console.WriteLine($"Price: {product.Price}");
+                            Console.WriteLine($"Name:     {product.Name}");
+                            Console.WriteLine($"Price:    {product.Price}");
                             Console.WriteLine($"Quantity: {product.Quantity}");
-                            Console.WriteLine($"Id: {product.Id}");
-                            Console.WriteLine($"Date: {product.Date}");
+                            Console.WriteLine($"Id:       {product.Id}");
+                            Console.WriteLine($"Date:     {product.Date}");
                             Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}");
                             Console.WriteLine("- - - - - - - - - - - -");
                         }

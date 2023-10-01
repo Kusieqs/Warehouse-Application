@@ -265,13 +265,13 @@ namespace Warehouse_Application
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("Number: " + count);
                     Console.ResetColor();
-                    Console.WriteLine($"Name: {product.Name}");
-                    Console.WriteLine($"Id: {product.Id}");
+                    Console.WriteLine($"Name:    {product.Name}");
+                    Console.WriteLine($"Id:      {product.Id}");
                     Console.ForegroundColor = ConsoleColor.DarkMagenta;
                     Console.WriteLine($"CHANGES: {product.listOfModifications.Count}");
                     Console.ResetColor();
                     Console.BackgroundColor = ConsoleColor.White;
-                    Console.WriteLine("\n                    \n");
+                    Console.WriteLine("".PadLeft(40));
                     Console.ResetColor();
                 }
                 Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");
@@ -312,8 +312,8 @@ namespace Warehouse_Application
 
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine($"DATE MODIFICATION: {history.date}\n");
-                            Console.WriteLine($"ID MODIFICATION: {history.idModofication}");
-                            Console.WriteLine($"MODIFIED BY: {history.modifiedBy.Position} {history.modifiedBy.Name} {history.modifiedBy.LastName}\n");
+                            Console.WriteLine($"ID MODIFICATION:   {history.idModofication}");
+                            Console.WriteLine($"MODIFIED BY:       {history.modifiedBy.Position} {history.modifiedBy.Name} {history.modifiedBy.LastName}\n");
                             Console.ResetColor();
                             Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.Write($"BEFORE\n");
@@ -332,7 +332,12 @@ namespace Warehouse_Application
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\nNOW:");
                         Console.ResetColor();
-                        Console.WriteLine($"\nName: {productToChange.Name}\nPrice: {productToChange.Price}\nQuantity: {productToChange.Quantity}\nId: {productToChange.Id}\nDate: {productToChange.Date}\nAdded by: {productToChange.addedBy.Position} {productToChange.addedBy.Name} {productToChange.addedBy.LastName}");
+                        Console.WriteLine($"Name:     {productToChange.Name}");
+                        Console.WriteLine($"Price:    {productToChange.Price}");
+                        Console.WriteLine($"Quantity: {productToChange.Quantity}");
+                        Console.WriteLine($"Id:       {productToChange.Id}");
+                        Console.WriteLine($"Date:     {productToChange.Date}");
+                        Console.WriteLine($"Added by: {productToChange.addedBy.Position} {productToChange.addedBy.Name} {productToChange.addedBy.LastName}");
                         Console.Write("\n\nWrite a ID of modiciation to undoing modification, 0 to exit or 1 to remove all history\nId: ");
                         string secondAnswer = Console.ReadLine();
 
@@ -513,28 +518,17 @@ namespace Warehouse_Application
             Product copy = product;
             string property = string.Empty;
             string value = "";
-            int number;
-            bool correctNumber, correctModifying = false, accept, graphic = false;
-
-
-            Console.Clear();
+            bool accept;
             do
             {
                 Console.Clear();
-                Console.Write("Modifying:\n\n1. Price\n2. Quantity\n3. Exit");
-                Console.SetCursorPosition(25, 1);
-                Console.WriteLine($"Name: {copy.Name}");
-                Console.SetCursorPosition(25, 2);
-                Console.WriteLine($"Price: {copy.Price}");
-                Console.SetCursorPosition(25, 3);
-                Console.WriteLine($"Quantity: {copy.Quantity}");
-                Console.SetCursorPosition(25, 4);
-                Console.WriteLine($"Id: {copy.Id}");
-                Console.SetCursorPosition(25, 5);
-                Console.WriteLine($"Date: {copy.Date}");
-                Console.SetCursorPosition(25, 6);
-                Console.WriteLine($"$Added by: {copy.addedBy}");
-                Console.SetCursorPosition(0, 10);
+                Console.WriteLine("Modifying:\n\n1. Price\n2. Quantity\n3. Exit\n\n");
+                Console.WriteLine($"Name:      {copy.Name}");
+                Console.WriteLine($"Price:     {copy.Price}");
+                Console.WriteLine($"Quantity:  {copy.Quantity}");
+                Console.WriteLine($"Id:        {copy.Id}");
+                Console.WriteLine($"Date:      {copy.Date}");
+                Console.WriteLine($"$Added by: {copy.addedBy}\n");
                 Console.Write("Number: ");
 
                 string answer = Console.ReadLine();
