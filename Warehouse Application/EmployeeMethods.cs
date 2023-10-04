@@ -267,9 +267,10 @@ namespace Warehouse_Application
         } /// Adding informations do new Employee 
         public static void MenuOfEmployee(ref List<Employee> listEmployees)
         {
-            bool correctChoosing = false;
+            bool correctChoosing = true;
             do
             {
+                correctChoosing = true;
                 try
                 {
                     Console.Clear();
@@ -277,13 +278,16 @@ namespace Warehouse_Application
                     string answer = Console.ReadLine();
                     switch(answer)
                     {
-                        case 1:
+                        case "1":
+                            RemovingEmployee(ref listEmployees);
                             break;
-                        case 2:
+                        case "2":
+                            RemovingEmployee(ref listEmployees);
                             break;
-                        case 3:
-                            break;
+                        case "3":
+                            return;
                         default:
+                            correctChoosing = false;
                             break;
                     }
                 }
