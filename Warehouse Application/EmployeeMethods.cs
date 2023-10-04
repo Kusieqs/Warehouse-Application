@@ -276,112 +276,17 @@ namespace Warehouse_Application
                 {
                     Console.Clear();
                     Console.Write("1.Remove\n2.Modifying\n3.Exit\n\nNumber: ");
-                    bool correctNumberChoose = int.TryParse(Console.ReadLine(), out int choose);
-                    Console.Clear();
-
-                    if (correctNumberChoose && choose == 1)
+                    string answer = Console.ReadLine();
+                    switch(answer)
                     {
-                        do
-                        {
-                            Console.Clear();
-                            int count = 0;
-                            foreach (var employee in listEmployees)
-                            {
-                                ++count;
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                Console.WriteLine($"{count}.");
-                                Console.ResetColor();
-                                Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n");
-                            }
-                            Console.Write("\n\nNumber of employee (0 to exit): ");
-                            correctNumber = int.TryParse(Console.ReadLine(), out int number);
-
-                            if (correctNumber && number == 0)
-                            {
-                                correctChoosing = true;
-                                break;
-                            }
-                            else if (correctNumber && number > 0 && number <= count)
-                            {
-                                if (!listEmployees[number - 1].mainAccount && listEmployees.Count > 1)
-                                {
-                                    listEmployees.RemoveAt(number - 1);
-                                }
-                                else if (listEmployees.Count == 1 || listEmployees.Count(x => x.Position == PositionName.Admin) == 1)
-                                {
-                                    bool correctAnswer = false;
-                                    do
-                                    {
-                                        Console.Clear();
-                                        Console.ForegroundColor = ConsoleColor.Red;
-                                        Console.WriteLine("WARNING\n\n");
-                                        Console.ResetColor();
-                                        Console.Write("You are going to delete last admin position\nThis will delete all files\n\n1.Delete\n2.Continue\n\nNumber: ");
-                                        string answer = Console.ReadLine();
-
-                                        if (answer == "1")
-                                        {
-                                            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                                            Directory.Delete(Path.Combine(systemOp, "WareHouse"), true);
-                                            Environment.Exit(0);
-                                        }
-                                        else if (answer == "2")
-                                        {
-                                            correctAnswer = true;
-                                        }
-                                    } while (!correctAnswer);
-                                }
-                                else
-                                {
-                                    Console.Clear();
-                                    Console.WriteLine("Its main Admin. You can't remove this position\nClick enter to continue!");
-                                    Console.ReadKey();
-                                }
-                            }
-
-                        } while (!infinti);
-
-                    }
-                    else if (correctNumberChoose && choose == 2)
-                    {
-                        do
-                        {
-                            Console.Clear();
-                            int count = 0;
-                            foreach (var employee in listEmployees)
-                            {
-                                ++count;
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                Console.WriteLine($"{count}.");
-                                Console.ResetColor();
-                                Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n");
-                            }
-
-
-                            Console.Write("\n\nNumber of employee (0 to exit): ");
-                            correctNumber = int.TryParse(Console.ReadLine(), out int number);
-
-                            if (number == 0 && correctNumber)
-                            {
-                                correctChoosing = true;
-                                break;
-                            }
-                            else if (number <= count && number > 0 && correctNumber)
-                            {
-                                Employee employee = listEmployees[number - 1];
-                                EmployeeModifyingData(ref employee, listEmployees);
-                                listEmployees[number - 1] = employee;
-
-                                string system = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                                system = Path.Combine(system, "WareHouse", "Employee.json");
-                                string json = JsonConvert.SerializeObject(listEmployees);
-                                File.WriteAllText(system, json);
-                            }
-                        } while (!infinti);
-                    }
-                    else if (correctNumberChoose && choose == 3)
-                    {
-                        return;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            break;
                     }
                 }
                 catch (TargetInvocationException tie)
@@ -545,6 +450,73 @@ namespace Warehouse_Application
             }
 
         } // Changing informations about employee
+        private static void RemovingEmployee(ref List<Employee> listEmployees)
+        {
+            bool infinti = false;
+            bool correctNumber = false;
+            bool correctChoosing = false;
+            do
+            {
+                Console.Clear();
+                int count = 0;
+                foreach (var employee in listEmployees)
+                {
+                    ++count;
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"{count}.");
+                    Console.ResetColor();
+                    Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n");
+                }
+                Console.Write("\n\nNumber of employee (0 to exit): ");
+                correctNumber = int.TryParse(Console.ReadLine(), out int number);
+
+                if (correctNumber && number == 0)
+                {
+                    correctChoosing = true;
+                    break;
+                }
+                else if (correctNumber && number > 0 && number <= count)
+                {
+                    if (!listEmployees[number - 1].mainAccount && listEmployees.Count > 1)
+                    {
+                        listEmployees.RemoveAt(number - 1);
+                    }
+                    else if (listEmployees.Count == 1 || listEmployees.Count(x => x.Position == PositionName.Admin) == 1)
+                    {
+                        bool correctAnswer = false;
+                        do
+                        {
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("WARNING\n\n");
+                            Console.ResetColor();
+                            Console.Write("You are going to delete last admin position\nThis will delete all files\n\n1.Delete\n2.Continue\n\nNumber: ");
+                            string answer = Console.ReadLine();
+
+                            if (answer == "1")
+                            {
+                                string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                                Directory.Delete(Path.Combine(systemOp, "WareHouse"), true);
+                                Environment.Exit(0);
+                            }
+                            else if (answer == "2")
+                            {
+                                correctAnswer = true;
+                            }
+                        } while (!correctAnswer);
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Its main Admin. You can't remove this position\nClick enter to continue!");
+                        Console.ReadKey();
+                    }
+                }
+
+            } while (!infinti);
+
+        }
+        
     }
 }
 
