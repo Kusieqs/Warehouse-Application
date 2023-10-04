@@ -53,7 +53,7 @@ namespace Warehouse_Application
                         Console.WriteLine("\n\nAdmin Information");
                         employee.Position = PositionName.Admin;
 
-                        NewEmployeeInformation(employee, ref employees, firstTime);
+                        NewEmployeeInformation(employee,ref employees, firstTime);
                     }
 
                     int line = 1;
@@ -183,10 +183,15 @@ namespace Warehouse_Application
             Console.Write("Id (3 chars): ");
             string id = Console.ReadLine();
 
-            if (employees.Any(x => x.Id == id))
-                throw new FormatException("This id is already exist");
-            employee.Id = id;
+            if (employees == null)
+                employee.Id = id;
+            else
+            {
+                if (employees.Any(x => x.Id == id))
+                    throw new FormatException("This id is already exist");
 
+                employee.Id = id;
+            }
 
             Console.Write("Age: ");
             bool x = int.TryParse(Console.ReadLine(), out int age);
@@ -395,9 +400,9 @@ namespace Warehouse_Application
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Error: {ex.Message}");
                     Console.ResetColor();
+                    Console.WriteLine("\nClick enter to continue");
+                    Console.ReadKey();
                 }
-                Console.WriteLine("\nClick enter to continue");
-                Console.ReadKey();
                 Console.Clear();
 
             } while (!correctChoosing);
