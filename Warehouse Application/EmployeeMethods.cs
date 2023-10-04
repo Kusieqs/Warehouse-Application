@@ -265,10 +265,8 @@ namespace Warehouse_Application
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
 
         } /// Adding informations do new Employee 
-        public static void EmployeeModifying(ref List<Employee> listEmployees)
+        public static void MenuOfEmployee(ref List<Employee> listEmployees)
         {
-            bool infinti = false;
-            bool correctNumber = false;
             bool correctChoosing = false;
             do
             {
@@ -454,7 +452,6 @@ namespace Warehouse_Application
         {
             bool infinti = false;
             bool correctNumber = false;
-            bool correctChoosing = false;
             do
             {
                 Console.Clear();
@@ -472,7 +469,6 @@ namespace Warehouse_Application
 
                 if (correctNumber && number == 0)
                 {
-                    correctChoosing = true;
                     break;
                 }
                 else if (correctNumber && number > 0 && number <= count)
@@ -515,6 +511,44 @@ namespace Warehouse_Application
 
             } while (!infinti);
 
+        }
+        private static void EmployeeModifying(ref List<Employee> listEmployees)
+        {
+            bool infinti = false;
+            bool correctNumber = false;
+            do
+            {
+                Console.Clear();
+                int count = 0;
+                foreach (var employee in listEmployees)
+                {
+                    ++count;
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"{count}.");
+                    Console.ResetColor();
+                    Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n");
+                }
+
+
+                Console.Write("\n\nNumber of employee (0 to exit): ");
+                correctNumber = int.TryParse(Console.ReadLine(), out int number);
+
+                if (number == 0 && correctNumber)
+                {
+                    break;
+                }
+                else if (number <= count && number > 0 && correctNumber)
+                {
+                    Employee employee = listEmployees[number - 1];
+                    EmployeeModifyingData(ref employee, listEmployees);
+                    listEmployees[number - 1] = employee;
+
+                    string system = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                    system = Path.Combine(system, "WareHouse", "Employee.json");
+                    string json = JsonConvert.SerializeObject(listEmployees);
+                    File.WriteAllText(system, json);
+                }
+            } while (!infinti);
         }
         
     }
