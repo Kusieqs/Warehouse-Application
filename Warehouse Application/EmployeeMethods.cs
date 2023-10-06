@@ -516,7 +516,7 @@ namespace Warehouse_Application
             } while (!infinti);
 
         }
-        private static void EmployeeModifying(ref List<Employee> listEmployees)
+        public static void EmployeeModifying(ref List<Employee> listEmployees)
         {
             bool infinti = false;
             bool correctNumber = false;

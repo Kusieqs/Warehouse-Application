@@ -162,6 +162,15 @@ public class Product
     {
         listOfModifications.Add(p1);
     }
+    public void ObjectGraphic()
+    {
+        Console.WriteLine($"Name:     {Name}");
+        Console.WriteLine($"Price:    {Price}");
+        Console.WriteLine($"Quantity: {Quantity}");
+        Console.WriteLine($"Id:       {Id}");
+        Console.WriteLine($"Date:     {Date}");
+        Console.WriteLine($"Added by: {addedBy.Position} {addedBy.Name} {addedBy.LastName}\n\n");
+    }
 }
 
 
