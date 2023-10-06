@@ -13,14 +13,8 @@ namespace Warehouse_Application
             bool infinity = false;
             do
             {
-                Console.WriteLine($"Name: {e1.Name}");
-                Console.WriteLine($"Last name: {e1.LastName}");
-                Console.WriteLine($"Id: {e1.Id}");
-                Console.WriteLine($"Age: {e1.Age}");
-                Console.WriteLine($"Position: {e1.Position}");
-                Console.WriteLine($"Login: {e1.Login}");
-                Console.WriteLine($"Password {e1.Password}");
-                Console.WriteLine("\nDo you want to accept this modify?\n1.Yes\n2.No");
+                e1.GraphicEmployee();
+                Console.WriteLine("\n\nDo you want to accept this modify?\n1.Yes\n2.No");
                 string answer = Console.ReadLine();
                 if (answer == "1")
                 {
@@ -324,14 +318,7 @@ namespace Warehouse_Application
             {
                 correctModify = true;
                 Console.Clear();
-                Console.WriteLine("1.Name          {0}",employee.Name);
-                Console.WriteLine("2.Last name:    {0}",employee.LastName);
-                Console.WriteLine("3.Id:           {0}",employee.Id);
-                Console.WriteLine("4.Age:          {0}",employee.Age);
-                Console.WriteLine("5.Position:     {0}",employee.Position);
-                Console.WriteLine("6.Password:     {0}",employee.Password);
-                Console.WriteLine("7.Login:        {0}",employee.Login);
-                Console.WriteLine("8.Main account: {0}",employee.mainAccount);
+                employee.GraphicEmployee();
                 Console.WriteLine("9.Exit");
                 Console.Write("Number: ");
 
@@ -466,7 +453,7 @@ namespace Warehouse_Application
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine($"{count}.");
                     Console.ResetColor();
-                    Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n");
+                    employee.GraphicEmployee();
                 }
                 Console.Write("\n\nNumber of employee (0 to exit): ");
                 correctNumber = int.TryParse(Console.ReadLine(), out int number);
@@ -530,7 +517,8 @@ namespace Warehouse_Application
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine($"{count}.");
                     Console.ResetColor();
-                    Console.WriteLine($"Name: {employee.Name}\nLast Name: {employee.LastName}\nId: {employee.Id}\nAge: {employee.Age}\nPosition: {employee.Position}\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n");
+                    employee.GraphicEmployee();
+
                 }
 
 
