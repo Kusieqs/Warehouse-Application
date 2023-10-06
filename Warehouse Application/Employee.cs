@@ -50,7 +50,7 @@ namespace Warehouse_Application
 			}
 			set
 			{
-				if (value.Length > 3)
+				if (value.Length >= 3)
 					name = value;
 				else
 					throw new FormatException("Name is to short");
@@ -134,6 +134,17 @@ namespace Warehouse_Application
 				login = value;
 			}
 		}
+		public void GraphicEmployee()
+		{
+            Console.WriteLine($"Name:         {Name}");
+            Console.WriteLine($"Last name:    {LastName}");
+            Console.WriteLine($"Id:           {Id}");
+            Console.WriteLine($"Age:          {Age}");
+            Console.WriteLine($"Position:     {Position}");
+            Console.WriteLine($"Login:        {Login}");
+            Console.WriteLine($"Password      {Password}");
+            Console.WriteLine($"Main account: {mainAccount}");
+        }
 	}
     public enum PositionName
     {

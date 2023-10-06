@@ -21,6 +21,7 @@ namespace Warehouse_Application
 
             string jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Products.json"));
             products = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
+
             jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
         } /// Checking for existence directory with data
@@ -59,12 +60,14 @@ namespace Warehouse_Application
 
                     Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
                     id = Console.ReadLine().Trim();
+
                     p1.Id = id;
                     p1.Date = date;
                     p1.addedBy = employee;
 
                     string jsonCreator;
-                    correctData = false;
+                    correctData = true;
+
                     if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
                     {
                         List<Product> products1Copy = new List<Product>();
@@ -78,14 +81,12 @@ namespace Warehouse_Application
                         products.Add(p1);
                         jsonCreator = JsonConvert.SerializeObject(products);
                         File.WriteAllText(systemOp, jsonCreator);
-                        correctData = true;
-
                     }
                     else
                         throw new FormatException("Id is already exist!");
 
                 }
-                catch (FormatException e)
+                catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"\n{e.Message}");
@@ -108,9 +109,8 @@ namespace Warehouse_Application
             products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
 
         }/// adding new product to list
-        public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number, ref bool graphic)
+        public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number)
         {
-            graphic = true;
             Console.Clear();
             int count = 0;
             foreach (var product in products)
@@ -119,12 +119,7 @@ namespace Warehouse_Application
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("Number: " + count);
                 Console.ResetColor();
-                Console.WriteLine($"Name: {product.Name}");
-                Console.WriteLine($"Price: {product.Price}");
-                Console.WriteLine($"Quantity: {product.Quantity}");
-                Console.WriteLine($"Id: {product.Id}");
-                Console.WriteLine($"Date: {product.Date}");
-                Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n\n");
+                product.ObjectGraphic();
                 Console.ResetColor();
             }
             Console.Write("\nWrite number of product or Id (4 Letters and 5 numbers or 0 to exit)\nNumber or id: ");
@@ -139,9 +134,9 @@ namespace Warehouse_Application
             Product p1 = new Product();
             string removingRecord;
             int number;
-            bool itIsNumber, correctNumber, graphic = false;
+            bool itIsNumber, correctNumber;
             bool endRemovingRecord = false;
-            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))))
+            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))) || products.Count == 0)
             {
                 Console.Clear();
                 Console.WriteLine("List is empty!\nClick enter to continue");
@@ -151,16 +146,8 @@ namespace Warehouse_Application
             {
                 do
                 {
-                    if(products.Count == 0)
-                    {
-                        Console.Clear();
-                        Console.WriteLine("List is empty!\nClick enter to continue");
-                        Console.ReadKey();
-                        endRemovingRecord = true;
-                        break;
-                    }
 
-                    GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number, ref graphic);
+                    GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
 
                     if (correctNumber && number <= products.Count && number > 0)
                     {
@@ -180,23 +167,19 @@ namespace Warehouse_Application
                         continue;
                     
                     Console.Clear();
-                    bool choosingCorrect = false;
+                    bool choosingCorrect = true;
                     do
                     {
+                        choosingCorrect = true;
                         Console.Clear();
-                        Console.WriteLine($"Name: {p1.Name}");
-                        Console.WriteLine($"Price: {p1.Price}");
-                        Console.WriteLine($"Quantity: {p1.Quantity}");
-                        Console.WriteLine($"Id: {p1.Id}");
-                        Console.WriteLine($"Date: {p1.Date}");
-                        Console.WriteLine($"{p1.addedBy.Position} {p1.addedBy.Name} {p1.addedBy.LastName}");
+                        p1.ObjectGraphic();
                         Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
+
                         Console.Write("Number: ");
                         string choosingYesNo = Console.ReadLine();
 
                         if (choosingYesNo == "1")
                         {
-                            choosingCorrect = true;
                             if (itIsNumber)
                                 products.RemoveAt(number - 1);
                             else
@@ -204,8 +187,8 @@ namespace Warehouse_Application
                             Program.JsonFileRecord(ref products);
 
                         }
-                        else if (choosingYesNo == "2")
-                            choosingCorrect = true;
+                        else if (choosingYesNo != "2" && choosingYesNo != "1")
+                            choosingCorrect = false;
 
 
                     } while (!choosingCorrect);
@@ -233,6 +216,7 @@ namespace Warehouse_Application
         } /// Name of writing down file
         public static void Statistics(List<Product> products)
         {
+            string x = "".PadLeft(60);
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
             Console.Clear();
@@ -251,21 +235,21 @@ namespace Warehouse_Application
                 Console.WriteLine();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Average(x => x.Price);
                 Console.WriteLine($"\nAverage: {y}\n");
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Sum(x => x.Price);
                 Console.WriteLine($"\nSum: {y}\n");
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Max(x => x.Price);
@@ -287,7 +271,7 @@ namespace Warehouse_Application
                 Console.WriteLine();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 Console.WriteLine("\nThe most frequently occuring price: \n\n");
@@ -320,21 +304,21 @@ namespace Warehouse_Application
                 Console.ResetColor();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Average(x => x.Quantity);
                 Console.WriteLine($"\nAverage: {y}\n");
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Sum(x => x.Quantity);
                 Console.WriteLine($"\nSum: {y}\n");
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 y = products.Max(x => x.Quantity);
@@ -356,7 +340,7 @@ namespace Warehouse_Application
                 Console.WriteLine();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 Console.WriteLine("\nThe most frequently occuring quantity: \n\n");
@@ -391,7 +375,7 @@ namespace Warehouse_Application
                 Console.ResetColor();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 DateTime d1 = products.Min(x => x.Date);
@@ -403,7 +387,7 @@ namespace Warehouse_Application
                 }
                 Console.WriteLine();
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 Console.WriteLine("\nThe newest: \n");
@@ -416,7 +400,7 @@ namespace Warehouse_Application
                 Console.WriteLine();
 
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+                Console.WriteLine(x);
                 Console.ResetColor();
 
                 Console.WriteLine("\nThe most frequently occuring date: \n\n");
