@@ -76,13 +76,15 @@ namespace Warehouse_Application
                     string login = Console.ReadLine();
                     Console.Write("Password: ");
                     string password = Console.ReadLine();
-                    if (employee.Login == login && employee.Password == password)
-                    {
-                        closeEmployee = true;
-                    }
-                    else
-                        throw new FormatException("Wrong login or password");
 
+                    if (employee.Login == login && employee.Password != password)
+                        throw new FormatException("Wrong password");
+                    else if (employee.Login != login && employee.Password == password)
+                        throw new FormatException("Wrong login");
+                    else if (employee.Login == login && employee.Password == password)
+                        closeEmployee = true;
+                    else
+                        throw new FormatException("Wrong login and password");
                 }
                 catch (Exception e)
                 {

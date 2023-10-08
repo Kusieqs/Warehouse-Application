@@ -90,13 +90,12 @@ namespace Warehouse_Application
                     } while (!correctAnswer);
 
                     correctAnswer = false;
-                    Console.Clear();
                     Employee employee1;
                     do
                     {
+                        Console.Clear();
                         try
                         {
-                            Console.Clear();
                             copy.ObjectGraphic();
 
                             if (property == "Date")
@@ -177,7 +176,7 @@ namespace Warehouse_Application
                             copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
 
                             Console.Clear();
-                            if (products.Any(x => x.Id == parsedValue) && property == "Id")
+                            if (products.Any(x => x.Id == value) && property == "Id")
                             {
                                 throw new FormatException("This id is already exist");
                             }
@@ -213,13 +212,16 @@ namespace Warehouse_Application
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"Error: {innerException.Message}");
                             Console.ResetColor();
+                            Console.WriteLine("Click enter to continue");
+                            Console.ReadKey();
                         }
                         catch (FormatException e)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"Error: {e.Message}");
                             Console.ResetColor();
-
+                            Console.WriteLine("Click enter to continue");
+                            Console.ReadKey();
                         }
 
                     } while (!correctAnswer);
