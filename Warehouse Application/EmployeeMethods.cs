@@ -157,7 +157,7 @@ namespace Warehouse_Application
             }
             else
             {
-                throw new FormatException("Numbers can't be in name");
+                throw new FormatException("Wrong name format");
             }
 
 
@@ -171,21 +171,29 @@ namespace Warehouse_Application
             }
             else
             {
-                throw new FormatException("Numbers can't be in last name");
+                throw new FormatException("Wrong last name format");
             }
 
             Console.Write("Id (3 chars): ");
             string id = Console.ReadLine();
 
-            if (employees == null)
-                employee.Id = id;
+            if(Regex.IsMatch(id, @"^[A-Za-z0-9]+$"))
+            {
+                if (employees == null)
+                    employee.Id = id;
+                else
+                {
+                    if (employees.Any(x => x.Id == id))
+                        throw new FormatException("This id is already exist");
+
+                    employee.Id = id;
+                }
+            }
             else
             {
-                if (employees.Any(x => x.Id == id))
-                    throw new FormatException("This id is already exist");
-
-                employee.Id = id;
+                throw new FormatException("Wrong id format");
             }
+
 
             Console.Write("Age: ");
             bool x = int.TryParse(Console.ReadLine(), out int age);
