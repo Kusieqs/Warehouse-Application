@@ -65,12 +65,7 @@ namespace Warehouse_Application
                 foreach (var product in products)
                 {
                     report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\nAdded by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n - - - - - - - - \n";
-                    Console.WriteLine($"Name:     {product.Name}");
-                    Console.WriteLine($"Price:    {product.Price}");
-                    Console.WriteLine($"Quantity: {product.Quantity}");
-                    Console.WriteLine($"Id:       {product.Id}");
-                    Console.WriteLine($"Date:     {product.Date}");
-                    Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}");
+                    product.ObjectGraphic();
                     Console.WriteLine("".PadLeft(40));
                 }
                 Console.WriteLine("\n\n");
@@ -98,12 +93,7 @@ namespace Warehouse_Application
                         foreach (var product in copyList)
                         {
                             report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\nAdded by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n - - - - - - - - \n";
-                            Console.WriteLine("Name:     {0}" ,product.Name);
-                            Console.WriteLine("Price:    {0}" ,product.Price);
-                            Console.WriteLine("Quantity: {0}" ,product.Quantity);
-                            Console.WriteLine("Id:       {0}" ,product.Id);
-                            Console.WriteLine("Date:     {0}", product.Date);
-                            Console.WriteLine("Added by: {0} {1} {2}",product.addedBy.Position, product.addedBy.Name, product.addedBy.LastName);
+                            product.ObjectGraphic();
                         }
                         Console.WriteLine("\n\n");
                         ReportMenu(report, ref endSearching, copyList);
@@ -454,12 +444,7 @@ namespace Warehouse_Application
                         foreach (var product in sortList)
                         {
                             report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\n- - - - - - - - - - -\n";
-                            Console.WriteLine($"Name:     {product.Name}");
-                            Console.WriteLine($"Price:    {product.Price}");
-                            Console.WriteLine($"Quantity: {product.Quantity}");
-                            Console.WriteLine($"Id:       {product.Id}");
-                            Console.WriteLine($"Date:     {product.Date}");
-                            Console.WriteLine($"Added by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}");
+                            product.ObjectGraphic();
                             Console.WriteLine("- - - - - - - - - - - -");
                         }
                     }
