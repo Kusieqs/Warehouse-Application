@@ -29,9 +29,8 @@ namespace Warehouse_Application
         {
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
-            string name, id;
+            string name, id,price;
             int quantity;
-            double price;
             DateTime copyDate = DateTime.Now;
             DateTime date = copyDate.Date;
             Product p1 = new Product();
@@ -45,17 +44,19 @@ namespace Warehouse_Application
                     p1.Name = name;
 
                     Console.Write("\nPrice of product: ");
-                    correctPrice = double.TryParse(Console.ReadLine(), out price);
+                    price = Console.ReadLine();
 
+                    price = price.Replace('.', ',');
+                    correctPrice = double.TryParse(price, out double number);
                     if (!correctPrice)
-                        throw new FormatException("Wrong format");
-                    p1.Price = price;
+                        throw new FormatException("Wrong price format");
+                    p1.Price = number;
 
                     Console.Write("\nQuantity of product: ");
                     correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
 
                     if (!correctQuantity)
-                        throw new FormatException("Wrong format");
+                        throw new FormatException("Wrong quantity format");
                     p1.Quantity = quantity;
 
                     Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");

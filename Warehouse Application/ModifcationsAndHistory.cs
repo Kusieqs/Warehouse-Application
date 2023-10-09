@@ -167,19 +167,22 @@ namespace Warehouse_Application
                             {
                                 Console.Write($"\nChanging {property}: ");
                                 value = Console.ReadLine();
+                                if (string.IsNullOrEmpty(value))
+                                    throw new FormatException("Lack of infomrations to modify");
+                                else if (property == "Price")
+                                    value = value.Replace('.', ',');
                             }
 
-                            DateTime d1 = DateTime.Now;
 
+                            DateTime d1 = DateTime.Now;
                             PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
                             object parsedValue = ParseValue(value, propertyInfo.PropertyType);
                             copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
 
+
                             Console.Clear();
                             if (products.Any(x => x.Id == value) && property == "Id")
-                            {
                                 throw new FormatException("This id is already exist");
-                            }
 
                             AcceptingModify(copy, out accept);
 
@@ -381,7 +384,7 @@ namespace Warehouse_Application
             }
             else if (targetType == typeof(string))
             {
-                if(input.Length > 0)
+                if (input.Length > 0)
                 {
                     return input;
                 }
@@ -404,7 +407,7 @@ namespace Warehouse_Application
                     return x;
                 }
             }
-            else if(targetType == typeof(Employee))
+            else if (targetType == typeof(Employee))
             {
                 string[] employeeInfo = input.Split(' ');
                 Enum.TryParse(employeeInfo[2], out PositionName x);
