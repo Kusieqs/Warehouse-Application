@@ -89,13 +89,7 @@ namespace Warehouse_Application
                 }
                 catch (Exception e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\n{e.Message}");
-                    Console.ResetColor();
-                    Console.WriteLine("Click enter to continue or 0 to exit");
-                    string answer = Console.ReadLine();
-                    if (answer == "0")
-                        return;
+                    ExceptionAnswer(e.Message);
                 } 
             } while (!correctData);
             
@@ -428,8 +422,19 @@ namespace Warehouse_Application
                 Console.WriteLine("\n\nClick enter to continue");
                 Console.ReadKey();
                 Console.Clear();
+
             }
         } /// Statistics of products
+        public static void ExceptionAnswer(string message)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n{message}");
+            Console.ResetColor();
+            Console.WriteLine("Click enter to continue");
+            Console.ReadKey();
+        }///message about error
+
 
     }
 }

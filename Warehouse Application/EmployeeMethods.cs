@@ -88,11 +88,7 @@ namespace Warehouse_Application
                 }
                 catch (Exception e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n" + e.Message);
-                    Console.ResetColor();
-                    Console.WriteLine("Click enter to continue");
-                    Console.ReadKey();
+                    Utils.ExceptionAnswer(e.Message);
                 }
             } while (!closeEmployee);
         }/// Setting first admin or choosing employee
@@ -137,11 +133,7 @@ namespace Warehouse_Application
                 }
                 catch (FormatException e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(e.Message);
-                    Console.ResetColor();
-                    Console.WriteLine("\nClick enter to continue");
-                    Console.ReadKey();
+                    Utils.ExceptionAnswer(e.Message);
                 }
             } while (!choosingPosition);
 
@@ -299,20 +291,12 @@ namespace Warehouse_Application
                 {
                     Exception innerException = tie.InnerException;
 
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Error: {innerException.Message}");
-                    Console.ResetColor();
+                    Utils.ExceptionAnswer(innerException.Message);
 
                 }
                 catch (Exception ex)
                 {
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Error: {ex.Message}");
-                    Console.ResetColor();
-                    Console.WriteLine("\nClick enter to continue");
-                    Console.ReadKey();
+                    Utils.ExceptionAnswer(ex.Message);
                 }
                 Console.Clear();
 

@@ -35,20 +35,14 @@ namespace Warehouse_Application
                         Utils.GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number);
 
                         if (correctNumber && number > 0 && number <= products.Count)
-                        {
                             copy = new Product(products[number - 1]);
-                        }
                         else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
-                        {
                             copy = new Product(products.Find(x => x.Id == modifyingRecord));
-                        }
                         else if (number == 0 && correctNumber)
                             return;
                         else
-                        {
                             continue;
-                        }
-                        Console.Clear();
+                        
 
                         do
                         {
@@ -111,7 +105,7 @@ namespace Warehouse_Application
                                 dayBool = int.TryParse(Console.ReadLine(), out day);
                                 if (yearBool && monthBool && dayBool)
                                 {
-                                    if ((year < 1 || month < 1 || month > 12 || day < 1))
+                                    if ((year < 1 || month < 1 || month > 12 || day < 1 || year > 2100 || year < 1900))
                                     {
                                         throw new FormatException("Wrong date");
                                     }
@@ -210,21 +204,12 @@ namespace Warehouse_Application
                         catch (TargetInvocationException tie)
                         {
                             Exception innerException = tie.InnerException;
+                            Utils.ExceptionAnswer(innerException.Message);
 
-                            Console.Clear();
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"Error: {innerException.Message}");
-                            Console.ResetColor();
-                            Console.WriteLine("Click enter to continue");
-                            Console.ReadKey();
                         }
                         catch (FormatException e)
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"Error: {e.Message}");
-                            Console.ResetColor();
-                            Console.WriteLine("Click enter to continue");
-                            Console.ReadKey();
+                            Utils.ExceptionAnswer(e.Message);
                         }
 
                     } while (!correctAnswer);

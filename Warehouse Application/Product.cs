@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Globalization;
 namespace Warehouse_Application;
 public class Product
 {
@@ -171,6 +172,7 @@ public class Product
         Console.WriteLine($"5.Date:     {Date}");
         Console.WriteLine($"6.Added by: {addedBy.Position} {addedBy.Name} {addedBy.LastName}\n");
     }
+
 }
 
 
