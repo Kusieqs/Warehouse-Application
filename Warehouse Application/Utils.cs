@@ -29,9 +29,8 @@ namespace Warehouse_Application
         {
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
-            string name, id;
+            string name, id,price;
             int quantity;
-            double price;
             DateTime copyDate = DateTime.Now;
             DateTime date = copyDate.Date;
             Product p1 = new Product();
@@ -45,17 +44,19 @@ namespace Warehouse_Application
                     p1.Name = name;
 
                     Console.Write("\nPrice of product: ");
-                    correctPrice = double.TryParse(Console.ReadLine(), out price);
+                    price = Console.ReadLine();
 
+                    price = price.Replace('.', ',');
+                    correctPrice = double.TryParse(price, out double number);
                     if (!correctPrice)
-                        throw new FormatException("Wrong format");
-                    p1.Price = price;
+                        throw new FormatException("Wrong price format");
+                    p1.Price = number;
 
                     Console.Write("\nQuantity of product: ");
                     correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
 
                     if (!correctQuantity)
-                        throw new FormatException("Wrong format");
+                        throw new FormatException("Wrong quantity format");
                     p1.Quantity = quantity;
 
                     Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
@@ -88,13 +89,7 @@ namespace Warehouse_Application
                 }
                 catch (Exception e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\n{e.Message}");
-                    Console.ResetColor();
-                    Console.WriteLine("Click enter to continue or 0 to exit");
-                    string answer = Console.ReadLine();
-                    if (answer == "0")
-                        return;
+                    ExceptionAnswer(e.Message);
                 } 
             } while (!correctData);
             
@@ -427,8 +422,19 @@ namespace Warehouse_Application
                 Console.WriteLine("\n\nClick enter to continue");
                 Console.ReadKey();
                 Console.Clear();
+
             }
         } /// Statistics of products
+        public static void ExceptionAnswer(string message)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n{message}");
+            Console.ResetColor();
+            Console.WriteLine("Click enter to continue");
+            Console.ReadKey();
+        }///message about error
+
 
     }
 }

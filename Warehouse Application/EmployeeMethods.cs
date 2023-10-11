@@ -76,21 +76,19 @@ namespace Warehouse_Application
                     string login = Console.ReadLine();
                     Console.Write("Password: ");
                     string password = Console.ReadLine();
-                    if (employee.Login == login && employee.Password == password)
-                    {
-                        closeEmployee = true;
-                    }
-                    else
-                        throw new FormatException("Wrong login or password");
 
+                    if (employee.Login == login && employee.Password != password)
+                        throw new FormatException("Wrong password");
+                    else if (employee.Login != login && employee.Password == password)
+                        throw new FormatException("Wrong login");
+                    else if (employee.Login == login && employee.Password == password)
+                        closeEmployee = true;
+                    else
+                        throw new FormatException("Wrong login and password");
                 }
                 catch (Exception e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n" + e.Message);
-                    Console.ResetColor();
-                    Console.WriteLine("Click enter to continue");
-                    Console.ReadKey();
+                    Utils.ExceptionAnswer(e.Message);
                 }
             } while (!closeEmployee);
         }/// Setting first admin or choosing employee
@@ -135,11 +133,7 @@ namespace Warehouse_Application
                 }
                 catch (FormatException e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(e.Message);
-                    Console.ResetColor();
-                    Console.WriteLine("\nClick enter to continue");
-                    Console.ReadKey();
+                    Utils.ExceptionAnswer(e.Message);
                 }
             } while (!choosingPosition);
 
@@ -157,7 +151,7 @@ namespace Warehouse_Application
             }
             else
             {
-                throw new FormatException("Numbers can't be in name");
+                throw new FormatException("Wrong name format");
             }
 
 
@@ -171,21 +165,29 @@ namespace Warehouse_Application
             }
             else
             {
-                throw new FormatException("Numbers can't be in last name");
+                throw new FormatException("Wrong last name format");
             }
 
             Console.Write("Id (3 chars): ");
             string id = Console.ReadLine();
 
-            if (employees == null)
-                employee.Id = id;
+            if(Regex.IsMatch(id, @"^[A-Za-z0-9]+$"))
+            {
+                if (employees == null)
+                    employee.Id = id;
+                else
+                {
+                    if (employees.Any(x => x.Id == id))
+                        throw new FormatException("This id is already exist");
+
+                    employee.Id = id;
+                }
+            }
             else
             {
-                if (employees.Any(x => x.Id == id))
-                    throw new FormatException("This id is already exist");
-
-                employee.Id = id;
+                throw new FormatException("Wrong id format");
             }
+
 
             Console.Write("Age: ");
             bool x = int.TryParse(Console.ReadLine(), out int age);
@@ -289,20 +291,12 @@ namespace Warehouse_Application
                 {
                     Exception innerException = tie.InnerException;
 
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Error: {innerException.Message}");
-                    Console.ResetColor();
+                    Utils.ExceptionAnswer(innerException.Message);
 
                 }
                 catch (Exception ex)
                 {
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Error: {ex.Message}");
-                    Console.ResetColor();
-                    Console.WriteLine("\nClick enter to continue");
-                    Console.ReadKey();
+                    Utils.ExceptionAnswer(ex.Message);
                 }
                 Console.Clear();
 

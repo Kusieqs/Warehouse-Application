@@ -35,31 +35,20 @@ namespace Warehouse_Application
                         Utils.GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number);
 
                         if (correctNumber && number > 0 && number <= products.Count)
-                        {
                             copy = new Product(products[number - 1]);
-                        }
                         else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
-                        {
                             copy = new Product(products.Find(x => x.Id == modifyingRecord));
-                        }
                         else if (number == 0 && correctNumber)
                             return;
                         else
-                        {
                             continue;
-                        }
-                        Console.Clear();
+                        
 
                         do
                         {
                             correctAnswer = true;
                             Console.Clear();
-                            Console.WriteLine("1.Name:     {0}", copy.Name);
-                            Console.WriteLine("2.Price:    {0}", copy.Price);
-                            Console.WriteLine("3.Quantity: {0}", copy.Quantity);
-                            Console.WriteLine("4.Id:       {0}", copy.Id);
-                            Console.WriteLine("5.Date:     {0}", copy.Date);
-                            Console.WriteLine("6.Added by: {0} {1} {2}", copy.addedBy.Position, copy.addedBy.LastName, copy.addedBy.Name);
+                            copy.ObjectGraphic();
                             Console.WriteLine("7.Exit\n");
                             Console.Write("Number: ");
 
@@ -95,19 +84,13 @@ namespace Warehouse_Application
                     } while (!correctAnswer);
 
                     correctAnswer = false;
-                    Console.Clear();
                     Employee employee1;
                     do
                     {
+                        Console.Clear();
                         try
                         {
-                            Console.Clear();
-                            Console.WriteLine($"Name:     {copy.Name}");
-                            Console.WriteLine($"Price:    {copy.Price}");
-                            Console.WriteLine($"Quantity: {copy.Quantity}");
-                            Console.WriteLine($"Id:       {copy.Id}");
-                            Console.WriteLine($"Date:     {copy.Date}");
-                            Console.WriteLine($"Added by: {copy.addedBy.Position} {copy.addedBy.LastName} {copy.addedBy.Name}");
+                            copy.ObjectGraphic();
 
                             if (property == "Date")
                             {
@@ -122,7 +105,7 @@ namespace Warehouse_Application
                                 dayBool = int.TryParse(Console.ReadLine(), out day);
                                 if (yearBool && monthBool && dayBool)
                                 {
-                                    if ((year < 1 || month < 1 || month > 12 || day < 1))
+                                    if ((year < 1 || month < 1 || month > 12 || day < 1 || year > 2100 || year < 1900))
                                     {
                                         throw new FormatException("Wrong date");
                                     }
@@ -176,21 +159,24 @@ namespace Warehouse_Application
                             }
                             else
                             {
-                                Console.Write($"Changing {property}: ");
+                                Console.Write($"\nChanging {property}: ");
                                 value = Console.ReadLine();
+                                if (string.IsNullOrEmpty(value))
+                                    throw new FormatException("Lack of infomrations to modify");
+                                else if (property == "Price")
+                                    value = value.Replace('.', ',');
                             }
 
-                            DateTime d1 = DateTime.Now;
 
+                            DateTime d1 = DateTime.Now;
                             PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
                             object parsedValue = ParseValue(value, propertyInfo.PropertyType);
                             copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
 
+
                             Console.Clear();
-                            if (products.Any(x => x.Id == parsedValue) && property == "Id")
-                            {
+                            if (products.Any(x => x.Id == value) && property == "Id")
                                 throw new FormatException("This id is already exist");
-                            }
 
                             AcceptingModify(copy, out accept);
 
@@ -218,23 +204,13 @@ namespace Warehouse_Application
                         catch (TargetInvocationException tie)
                         {
                             Exception innerException = tie.InnerException;
+                            Utils.ExceptionAnswer(innerException.Message);
 
-                            Console.Clear();
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"Error: {innerException.Message}");
-                            Console.ResetColor();
                         }
                         catch (FormatException e)
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"Error: {e.Message}");
-                            Console.ResetColor();
-
+                            Utils.ExceptionAnswer(e.Message);
                         }
-                        Console.WriteLine("Click enter to continue or 0 to exit");
-                        string answer = Console.ReadLine();
-                        if (answer == "0")
-                            correctAnswer = true;
 
                     } while (!correctAnswer);
                 } while (!correctModifying);
@@ -318,11 +294,11 @@ namespace Warehouse_Application
                             Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.Write($"BEFORE\n");
                             Console.ResetColor();
-                            Console.Write($"Name:{history.before.name}\nPrice:{history.before.price}\nQuantity:{history.before.quantity}\nId:{history.before.id}\nDate:{history.before.date}\nAdded by: {history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
+                            Console.Write($"1.Name:{history.before.name}\n2.Price:{history.before.price}\n3.Quantity:{history.before.quantity}\n4.Id:{history.before.id}\n5.Date:{history.before.date}\n6.Added by: {history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
                             Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.WriteLine("AFTER");
                             Console.ResetColor();
-                            Console.Write($"Name:{history.after.name}\nPrice:{history.after.price}\nQuantity:{history.after.quantity}\nId:{history.after.id}\nDate:{history.after.date}\nAdded by: {history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
+                            Console.Write($"1.Name:{history.after.name}\n2.Price:{history.after.price}\n3.Quantity:{history.after.quantity}\n4.Id:{history.after.id}\n5.Date:{history.after.date}\n6.Added by: {history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
                             string x = "".PadLeft(30);
                             Console.WriteLine(x);
                             Console.BackgroundColor = ConsoleColor.White;
@@ -332,12 +308,7 @@ namespace Warehouse_Application
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\nNOW:");
                         Console.ResetColor();
-                        Console.WriteLine($"Name:     {productToChange.Name}");
-                        Console.WriteLine($"Price:    {productToChange.Price}");
-                        Console.WriteLine($"Quantity: {productToChange.Quantity}");
-                        Console.WriteLine($"Id:       {productToChange.Id}");
-                        Console.WriteLine($"Date:     {productToChange.Date}");
-                        Console.WriteLine($"Added by: {productToChange.addedBy.Position} {productToChange.addedBy.Name} {productToChange.addedBy.LastName}");
+                        productToChange.ObjectGraphic();
                         Console.Write("\n\nWrite a ID of modiciation to undoing modification, 0 to exit or 1 to remove all history\nId: ");
                         string secondAnswer = Console.ReadLine();
 
@@ -398,7 +369,7 @@ namespace Warehouse_Application
             }
             else if (targetType == typeof(string))
             {
-                if(input.Length > 0)
+                if (input.Length > 0)
                 {
                     return input;
                 }
@@ -421,7 +392,7 @@ namespace Warehouse_Application
                     return x;
                 }
             }
-            else if(targetType == typeof(Employee))
+            else if (targetType == typeof(Employee))
             {
                 string[] employeeInfo = input.Split(' ');
                 Enum.TryParse(employeeInfo[2], out PositionName x);
@@ -438,12 +409,7 @@ namespace Warehouse_Application
             do
             {
                 Console.Clear();
-                Console.WriteLine($"Name: {p1.Name}");
-                Console.WriteLine($"Price: {p1.Price}");
-                Console.WriteLine($"Quantity: {p1.Quantity}");
-                Console.WriteLine($"Id: {p1.Id}");
-                Console.WriteLine($"Date: {p1.Date}");
-                Console.WriteLine($"Added by: {p1.addedBy.Position} {p1.addedBy.Name} {p1.addedBy.LastName}");
+                p1.ObjectGraphic();
                 Console.Write("\nDo you want to accept this modify?\n1.Yes\n2.No\nNumber: ");
                 string answer = Console.ReadLine();
                 if (answer == "1")
@@ -523,12 +489,7 @@ namespace Warehouse_Application
             {
                 Console.Clear();
                 Console.WriteLine("Modifying:\n\n1. Price\n2. Quantity\n3. Exit\n\n");
-                Console.WriteLine($"Name:      {copy.Name}");
-                Console.WriteLine($"Price:     {copy.Price}");
-                Console.WriteLine($"Quantity:  {copy.Quantity}");
-                Console.WriteLine($"Id:        {copy.Id}");
-                Console.WriteLine($"Date:      {copy.Date}");
-                Console.WriteLine($"$Added by: {copy.addedBy}\n");
+                copy.ObjectGraphic();
                 Console.Write("Number: ");
 
                 string answer = Console.ReadLine();
