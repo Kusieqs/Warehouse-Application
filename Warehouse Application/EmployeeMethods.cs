@@ -217,7 +217,7 @@ namespace Warehouse_Application
             Console.WriteLine($"\n\nLogin: {login}");
             employee.Login = login;
 
-            Console.Write("Password: ");
+            Console.Write("\nPassword (min 6 characters): ");
             string password = Console.ReadLine();
             employee.Password = password;
 
