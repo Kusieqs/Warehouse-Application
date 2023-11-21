@@ -88,16 +88,18 @@ namespace Warehouse_Application
                     copyList = copyList.Where(x => x.Id == idSearching).ToList();
                     if (copyList.Count > 0)
                     {
-                        Console.Clear();
-                        string report = "";
-                        foreach (var product in copyList)
+                        do
                         {
-                            report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\nAdded by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n - - - - - - - - \n";
-                            product.ObjectGraphic();
-                        }
-                        Console.WriteLine("\n\n");
-                        ReportMenu(report, ref endSearching, copyList);
-
+                            Console.Clear();
+                            string report = "";
+                            foreach (var product in copyList)
+                            {
+                                report += $"Name: {product.Name}\nPrice: {product.Price}\nQuantity: {product.Quantity}\nId: {product.Id}\nDate: {product.Date}\nAdded by: {product.addedBy.Position} {product.addedBy.Name} {product.addedBy.LastName}\n - - - - - - - - \n";
+                                product.ObjectGraphic();
+                            }
+                            Console.WriteLine("\n\n");
+                            ReportMenu(report, ref endSearching, copyList);
+                        }while (!endSearching);
                     }
                     else
                     {
@@ -312,11 +314,31 @@ namespace Warehouse_Application
                     }
                     else
                     {
-                        Console.Clear();
-                        Console.Write("Value: ");
-                        attempt = double.TryParse(Console.ReadLine(), out double x);
-                        value = x.ToString();
+                        do
+                        {
+                            double x;
+                            int y;
+                            Console.Clear();
+                            Console.Write("Value: ");
+                            string addedValue = Console.ReadLine();
+                            addedValue = addedValue.Replace('.', ',');
+                            if (sortingBy == "Price")
+                            {
+                                attempt = double.TryParse(addedValue, out x);
+                                value = x.ToString();
+                            }
+                            else if (sortingBy == "Quantity")
+                            {
+                                attempt = int.TryParse(addedValue, out y);
+                                value = y.ToString();
 
+                            }
+                            else if (sortingBy == "addedBy.Age")
+                            {
+                                attempt = int.TryParse(addedValue, out y);
+                                value = y.ToString();
+                            }
+                        } while (!attempt);
                     }
                 } while (!attempt);
 
