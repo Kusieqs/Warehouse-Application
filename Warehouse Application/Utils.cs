@@ -447,6 +447,9 @@ namespace Warehouse_Application
             Console.WriteLine("Click enter to continue");
             Console.ReadKey();
         }///message about error
+        public static void JsonFileLoad(ref List<Product> products)
+        {
+        } /// loading list of products from json file
 
 
     }

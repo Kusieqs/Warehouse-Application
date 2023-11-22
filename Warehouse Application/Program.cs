@@ -33,7 +33,7 @@ internal class Program
                     {
                         correctNumber = true;
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Modifying employees\n9. Log out\n0. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Modifying employees\n9.Load JSON file\n10. Log out\n0. Exit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch (number)
@@ -71,6 +71,9 @@ internal class Program
                                 break;
 
                             case 9:
+                                Utils.JsonFileLoad(ref listOfProducts);
+                                break;
+                            case 10:
                                 EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
                                 break;
 
@@ -90,7 +93,7 @@ internal class Program
                     {
                         correctNumber = true;
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Modifying Product\n4. Log out\n5. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Modifying Product\n4. Load JSON file\n5. Log out\n6. Exit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
@@ -108,10 +111,14 @@ internal class Program
                                 break;
 
                             case 4:
-                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                Utils.JsonFileLoad(ref listOfProducts);
                                 break;
 
                             case 5:
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                break;
+
+                            case 6:
                                 closeProgram = true;
                                 break;
 
@@ -128,7 +135,7 @@ internal class Program
                     {
                         correctNumber = true;
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Log out\n7. Exit");
+                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Load JSON file\n7. Log out\n8. Exit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
@@ -154,10 +161,14 @@ internal class Program
                                 break;
 
                             case 6:
-                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                Utils.JsonFileLoad(ref listOfProducts);
                                 break;
 
                             case 7:
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                break;
+
+                            case 8:
                                 closeProgram = true;
                                 break;
 
