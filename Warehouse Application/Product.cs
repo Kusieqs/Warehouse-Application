@@ -61,15 +61,33 @@ public class Product
     }
     public Product(string name, string id, double price, int quantity, DateTime date, Employee employee)
     {
-        if (Regex.IsMatch((id.Trim()), @"^[A-Za-z]{4}\d{5}$") && price > 0 && quantity >= 0 && name.Length > 0)
+        if (Regex.IsMatch((id.Trim()), @"^[A-Za-z]{4}\d{5}$"))
         {
             this.id = id.Trim();
+        }
+        else
+            throw new FormatException("Id is not correct");
+
+        if (price > 0)
+        {
             this.price = price;
+        }
+        else
+            throw new FormatException("Price is not correct");
+
+        if (quantity >= 0)
+        {
             this.quantity = quantity;
+        }
+        else
+            throw new FormatException("Quantity is not correct");
+
+        if(Regex.IsMatch(name.Trim() ,@"^[A-Za-z0-9\s]+$") && name.Length > 0)
+        {
             this.name = name.Trim();
         }
         else
-            throw new FormatException("Informations about product are not correct");
+            throw new FormatException("Name is not correct");
 
         this.addedBy = employee;
         this.date = date;
@@ -85,7 +103,7 @@ public class Product
         }
         set
         {
-            if (value.Length > 0)
+            if (value.Length > 0 && Regex.IsMatch((value), @"^[A-Za-z0-9\s]+$"))
             {
                 name = value.Trim();
             }

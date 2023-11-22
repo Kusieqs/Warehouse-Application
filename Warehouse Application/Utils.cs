@@ -29,8 +29,7 @@ namespace Warehouse_Application
         {
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
-            string name, id,price;
-            int quantity;
+            string name, id,price,quantity;
             DateTime copyDate = DateTime.Now;
             DateTime date = copyDate.Date;
             Product p1 = new Product();
@@ -39,28 +38,41 @@ namespace Warehouse_Application
                 try
                 {
                     Console.Clear();
+                    Console.WriteLine("Write '-' to go to menu\n\n");
                     Console.Write("Name of product: ");
                     name = Console.ReadLine().Trim();
+                    if (name == "-")
+                        return;
+
                     p1.Name = name;
 
                     Console.Write("\nPrice of product: ");
                     price = Console.ReadLine();
+                    if (price == "-")
+                        return;
 
                     price = price.Replace('.', ',');
                     correctPrice = double.TryParse(price, out double number);
                     if (!correctPrice)
                         throw new FormatException("Wrong price format");
+
                     p1.Price = number;
 
                     Console.Write("\nQuantity of product: ");
-                    correctQuantity = int.TryParse(Console.ReadLine(), out quantity);
+                    quantity = Console.ReadLine();
+                    if (quantity == "-")
+                        return;
+                    correctQuantity = int.TryParse(quantity, out int quantityChecked);
 
                     if (!correctQuantity)
                         throw new FormatException("Wrong quantity format");
-                    p1.Quantity = quantity;
+
+                    p1.Quantity = quantityChecked;
 
                     Console.Write("\nId of product (First 4 letters and 5 numbers, example - AbcD12345): ");
                     id = Console.ReadLine().Trim();
+                    if (id == "-")
+                        return;
 
                     p1.Id = id;
                     p1.Date = date;
@@ -89,6 +101,7 @@ namespace Warehouse_Application
                 }
                 catch (Exception e)
                 {
+                    correctData = false;
                     ExceptionAnswer(e.Message);
                 } 
             } while (!correctData);
