@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SixLabors.ImageSharp;
 using System.Text.RegularExpressions;
 
 namespace Warehouse_Application
@@ -449,6 +450,74 @@ namespace Warehouse_Application
         }///message about error
         public static void JsonFileLoad(ref List<Product> products)
         {
+            Console.Write("Write path of file: ");
+            string path = Console.ReadLine();
+            if (Path.Exists(path) && !string.IsNullOrEmpty(File.ReadAllText(path))
+            {
+                do
+                {
+                    try
+                    {
+                        Console.Clear();
+                        string jsonReader = File.ReadAllText(path);
+                        List<Product> jsonList = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
+
+                        if(jsonList.Count == 0)
+                        {
+                            ExceptionAnswer("File is empty");
+                            return;
+                        }
+
+                        int count = 0;
+                        foreach (var item in jsonList)
+                        {
+                            count++;
+                            Console.WriteLine(count);
+                            Console.WriteLine(item.ObjectGraphic());
+                        }
+                        Console.WriteLine("\n\n1.Remove record\n2.Accept list and add to main list\n3.Exit\n\n");
+                        Console.Write("Number: ");
+                        string answer = Console.ReadLine();
+                        bool correctNumber = int.TryParse(answer, out int number);
+
+                        if (!correctNumber)
+                            continue;
+                        switch (number)
+                        {
+                            case 1:
+                                foreach (var item in jsonList)
+                                {
+                                    count++;
+                                    Console.WriteLine(count);
+                                    Console.WriteLine(item.ObjectGraphic());
+                                }
+                                Console.Write("Write number of record: ");
+                                answer = Console.ReadLine();
+                                correctNumber = int.TryParse(answer, out number);
+                                if (!correctNumber || jsonList.Count < number || number < 1)
+                                    continue;
+                                jsonList.RemoveAt(number - 1);
+                                break;
+                            case 2:
+                                //// sprawdzenie id czy jest unikalne dla obu list dodanych
+                                return;
+                            case 3:
+                                return;
+                            default:
+                                continue;
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        ExceptionAnswer(e.Message);
+                    }
+                } while(true)
+            }
+            else
+            {
+                ExceptionAnswer("File doesn't exist")
+            }
         } /// loading list of products from json file
 
 
