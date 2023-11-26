@@ -30,7 +30,7 @@ namespace Warehouse_Application
         {
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
-            string name, id,price,quantity;
+            string name, id, price, quantity;
             DateTime copyDate = DateTime.Now;
             DateTime date = copyDate.Date;
             Product p1 = new Product();
@@ -104,9 +104,9 @@ namespace Warehouse_Application
                 {
                     correctData = false;
                     ExceptionAnswer(e.Message);
-                } 
+                }
             } while (!correctData);
-            
+
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nProduct added to list");
@@ -174,7 +174,7 @@ namespace Warehouse_Application
                     }
                     else
                         continue;
-                    
+
                     Console.Clear();
                     bool choosingCorrect = true;
                     do
@@ -462,7 +462,7 @@ namespace Warehouse_Application
                         string jsonReader = File.ReadAllText(path);
                         List<Product> jsonList = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
 
-                        if(jsonList.Count == 0)
+                        if (jsonList.Count == 0)
                         {
                             ExceptionAnswer("File is empty");
                             return;
@@ -499,20 +499,48 @@ namespace Warehouse_Application
                                 jsonList.RemoveAt(number - 1);
                                 break;
                             case 2:
-                                //// sprawdzenie id czy jest unikalne dla obu list dodanych
-                                return;
+                                foreach (var productsFromMainList in products)
+                                {
+                                    foreach (var addedList in jsonList)
+                                    {
+                                        if (productsFromMainList.Id == addedList.Id)
+                                        {
+                                            Console.Clear();
+                                            Console.ForegroundColor = ConsoleColor.Red;
+                                            Console.WriteLine($"Conflict with the same ID");
+                                            Console.ResetColor();
+                                            Console.WriteLine($"1.\n{productsFromMainList.ObjectGraphic()}\n\n\n2.\n{addedList.ObjectGraphic()}");
+                                            Console.Write("Choose 1 to remove from main list or 2 to remove from added list (3 to retrun): ");
+
+                                            switch (Console.ReadLine())
+                                            {
+                                                case "1":
+                                                    products.Remove(productsFromMainList);
+                                                    break;
+                                                case "2":
+                                                    jsonList.Remove(addedList);
+                                                    break;
+                                                case "3":
+                                                    return;
+                                                default:
+                                                    continue;
+                                            }
+                                        }
+                                    }
+                                }
+                                products = products.Concat(jsonList).ToList();
                             case 3:
                                 return;
                             default:
                                 continue;
-                        }
+                            }
 
-                    }
+                        }
                     catch (Exception e)
                     {
                         ExceptionAnswer(e.Message);
                     }
-                } while(true)
+                } while (true)
             }
             else
             {
