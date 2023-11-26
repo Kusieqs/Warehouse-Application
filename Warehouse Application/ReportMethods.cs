@@ -496,7 +496,7 @@ namespace Warehouse_Application
         } // show products with range of values
         private static void ReportMenu(string report, ref bool endOfReport, List<Product> reportProducts)
         {
-            Console.WriteLine("1.Write down to txt file\n2.Write down to pdf\n3.Write down to excel\n4.Statistics of list\n5.Exit\n");
+            Console.WriteLine("1.Write down to txt file\n2.Write down to pdf\n3.Write down to excel\n4.Write down to json\n5.Statistics of list\n6.Exit\n");
 
             Console.Write($"Number: ");
             string answer = Console.ReadLine();
@@ -512,10 +512,13 @@ namespace Warehouse_Application
                 case "3":
                     ExcelCreater(reportProducts);
                     break;
-                case "4":
-                    Utils.Statistics(reportProducts);
+                case "4"
+                    JsonCreater(reportProducts);
                     break;
                 case "5":
+                    Utils.Statistics(reportProducts);
+                    break;
+                case "6":
                     endOfReport = true;
                     break;
 
@@ -695,6 +698,22 @@ namespace Warehouse_Application
 
             }
         }// Saving to excel file
+        private static void JsonCreater(List<Product> products)
+        {
+            if(products.Count == 0)
+            {
+                Console.WriteLine("List is empty!\nClick enter to continue");
+                Console.ReadKey();
+            }
+            else
+            {
+                string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string fileName = Utils.NameFile();
+                string path = Path.Combine(systemOp, "WareHouse", fileName + ".json");
+                string json = JsonConvert.SerializeObject(products);
+                File.WriteAllText(path, json);
+            }
+        } // Saving to json file
     }
 }
 
