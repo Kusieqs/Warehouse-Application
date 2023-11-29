@@ -450,17 +450,18 @@ namespace Warehouse_Application
         }///message about error
         public static void JsonFileLoad(ref List<Product> products)
         {
+            Console.Clear();
             Console.Write("Write path of file: ");
             string path = Console.ReadLine();
-            if (Path.Exists(path) && !string.IsNullOrEmpty(File.ReadAllText(path))
+            string jsonReader = File.ReadAllText(path);
+            List<Product> jsonList = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
+            if (Path.Exists(path) && !string.IsNullOrEmpty(File.ReadAllText(path)))
             {
                 do
                 {
                     try
                     {
                         Console.Clear();
-                        string jsonReader = File.ReadAllText(path);
-                        List<Product> jsonList = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
 
                         if (jsonList.Count == 0)
                         {
@@ -473,8 +474,9 @@ namespace Warehouse_Application
                         {
                             count++;
                             Console.WriteLine(count);
-                            Console.WriteLine(item.ObjectGraphic());
+                            item.ObjectGraphic();
                         }
+                        count = 0;
                         Console.WriteLine("\n\n1.Remove record\n2.Accept list and add to main list\n3.Exit\n\n");
                         Console.Write("Number: ");
                         string answer = Console.ReadLine();
@@ -485,19 +487,27 @@ namespace Warehouse_Application
                         switch (number)
                         {
                             case 1:
-                                foreach (var item in jsonList)
+                                do
                                 {
-                                    count++;
-                                    Console.WriteLine(count);
-                                    Console.WriteLine(item.ObjectGraphic());
-                                }
-                                Console.Write("Write number of record: ");
-                                answer = Console.ReadLine();
-                                correctNumber = int.TryParse(answer, out number);
-                                if (!correctNumber || jsonList.Count < number || number < 1)
-                                    continue;
+                                    Console.Clear();
+                                    foreach (var item in jsonList)
+                                    {
+                                        count++;
+                                        Console.WriteLine(count);
+                                        item.ObjectGraphic();
+                                    }
+                                    Console.Write("Write number of record: ");
+                                    answer = Console.ReadLine();
+                                    correctNumber = int.TryParse(answer, out number);
+                                    if (!correctNumber || jsonList.Count < number || number < 1)
+                                        continue;
+                                    else
+                                        break;
+                                } while (true);
+
                                 jsonList.RemoveAt(number - 1);
                                 break;
+
                             case 2:
                                 foreach (var productsFromMainList in products)
                                 {
@@ -509,13 +519,16 @@ namespace Warehouse_Application
                                             Console.ForegroundColor = ConsoleColor.Red;
                                             Console.WriteLine($"Conflict with the same ID");
                                             Console.ResetColor();
-                                            Console.WriteLine($"1.\n{productsFromMainList.ObjectGraphic()}\n\n\n2.\n{addedList.ObjectGraphic()}");
+                                            Console.WriteLine($"1.\n");
+                                            productsFromMainList.ObjectGraphic();
+                                            Console.WriteLine("\n\n\n2.\n");
+                                            addedList.ObjectGraphic();
                                             Console.Write("Choose 1 to remove from main list or 2 to remove from added list (3 to retrun): ");
 
                                             switch (Console.ReadLine())
                                             {
                                                 case "1":
-                                                    products.Remove(productsFromMainList);
+                                                    products.Remove(productsFromMainList);           
                                                     break;
                                                 case "2":
                                                     jsonList.Remove(addedList);
@@ -525,26 +538,36 @@ namespace Warehouse_Application
                                                 default:
                                                     continue;
                                             }
+                                            Console.Clear();
                                         }
                                     }
                                 }
                                 products = products.Concat(jsonList).ToList();
+                                Program.JsonFileRecord(ref products);
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("List added to main list");
+                                Console.ResetColor();
+                                Console.WriteLine("Click enter to continue");
+                                Console.ReadKey();
+                                return;
+                                break;
                             case 3:
                                 return;
                             default:
                                 continue;
-                            }
-
                         }
+
+                    }
                     catch (Exception e)
                     {
                         ExceptionAnswer(e.Message);
                     }
-                } while (true)
+                } while (true);
             }
             else
             {
-                ExceptionAnswer("File doesn't exist")
+                ExceptionAnswer("File doesn't exist");
             }
         } /// loading list of products from json file
 

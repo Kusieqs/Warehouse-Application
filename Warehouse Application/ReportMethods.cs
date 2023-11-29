@@ -19,7 +19,7 @@ namespace Warehouse_Application
 
             bool endOfRaport = false;
 
-            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))))
+            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))) || products.Count ==0)
             {
                 Console.Clear();
                 Console.WriteLine("List is empty\nClick enter to continue");
@@ -497,7 +497,6 @@ namespace Warehouse_Application
         private static void ReportMenu(string report, ref bool endOfReport, List<Product> reportProducts)
         {
             Console.WriteLine("1.Write down to txt file\n2.Write down to pdf\n3.Write down to excel\n4.Write down to json\n5.Statistics of list\n6.Exit\n");
-
             Console.Write($"Number: ");
             string answer = Console.ReadLine();
 
@@ -512,7 +511,7 @@ namespace Warehouse_Application
                 case "3":
                     ExcelCreater(reportProducts);
                     break;
-                case "4"
+                case "4":
                     JsonCreater(reportProducts);
                     break;
                 case "5":

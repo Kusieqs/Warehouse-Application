@@ -33,7 +33,7 @@ internal class Program
                     {
                         correctNumber = true;
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Statistics\n7. Adding new employee\n8. Modifying employees\n9.Load JSON file\n10. Log out\n0. Exit");
+                        Console.WriteLine("1.\tAdd product\n2. \tRemoving product\n3. \tReports and sorting\n4. \tModifying Product\n5. \tHistory of Modifying\n6. \tStatistics\n7. \tAdding new employee\n8. \tModifying employees\n9. \tLoad JSON file\n10. \tLog out\n0. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch (number)
@@ -93,7 +93,7 @@ internal class Program
                     {
                         correctNumber = true;
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Modifying Product\n4. Load JSON file\n5. Log out\n6. Exit");
+                        Console.WriteLine("1. \tAdd product\n2. \tRemoving product\n3. \tModifying Product\n4. \tLoad JSON file\n5. \tLog out\n6. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
@@ -135,7 +135,7 @@ internal class Program
                     {
                         correctNumber = true;
                         Console.Clear();
-                        Console.WriteLine("1. Add product\n2. Removing product\n3. Reports and sorting\n4. Modifying Product\n5. History of Modifying\n6. Load JSON file\n7. Log out\n8. Exit");
+                        Console.WriteLine("1. \tAdd product\n2. \tRemoving product\n3. \tReports and sorting\n4. \tModifying Product\n5. \tHistory of Modifying\n6. \tLoad JSON file\n7. \tLog out\n8. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch(number)
@@ -185,7 +185,7 @@ internal class Program
                     {
                         correctNumber = true;
                         Console.Clear();
-                        Console.WriteLine("1. New delivery\n2. Log out\n3. Exit");
+                        Console.WriteLine("1. \tNew delivery\n2. \tLog out\n3. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
                         correctNumber = int.TryParse(Console.ReadLine(), out number);
                         switch (number)
