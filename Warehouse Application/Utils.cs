@@ -145,67 +145,59 @@ namespace Warehouse_Application
             int number;
             bool itIsNumber, correctNumber;
             bool endRemovingRecord = false;
-            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))) || products.Count == 0)
+
+            bool listEmpty = IsItListEmpty(products);
+            if (listEmpty)
+                return;
+
+            do
             {
+
+                GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
+
+                if (correctNumber && number <= products.Count && number > 0)
+                {
+                    p1 = products[number - 1];
+                    itIsNumber = true;
+                }
+                else if (Regex.IsMatch(removingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == removingRecord))
+                {
+                    p1 = products.Find(x => x.Id == removingRecord);
+                    itIsNumber = false;
+                }
+                else if (correctNumber && number == 0)
+                    break;
+                else
+                    continue;
+
                 Console.Clear();
-                Console.WriteLine("List is empty!\nClick enter to continue");
-                Console.ReadKey();
-            }
-            else
-            {
+                bool choosingCorrect = true;
                 do
                 {
-
-                    GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
-
-                    if (correctNumber && number <= products.Count && number > 0)
-                    {
-                        p1 = products[number - 1];
-                        itIsNumber = true;
-                    }
-                    else if (Regex.IsMatch(removingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == removingRecord))
-                    {
-                        p1 = products.Find(x => x.Id == removingRecord);
-                        itIsNumber = false;
-                    }
-                    else if (correctNumber && number == 0)
-                    {
-                        break;
-                    }
-                    else
-                        continue;
-
+                    choosingCorrect = true;
                     Console.Clear();
-                    bool choosingCorrect = true;
-                    do
+                    p1.ObjectGraphic();
+                    Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
+
+                    Console.Write("Number: ");
+                    string choosingYesNo = Console.ReadLine();
+
+                    if (choosingYesNo == "1")
                     {
-                        choosingCorrect = true;
-                        Console.Clear();
-                        p1.ObjectGraphic();
-                        Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
+                        if (itIsNumber)
+                            products.RemoveAt(number - 1);
+                        else
+                            products.Remove(p1);
+                        Program.JsonFileRecord(ref products);
 
-                        Console.Write("Number: ");
-                        string choosingYesNo = Console.ReadLine();
+                    }
+                    else if (choosingYesNo != "2" && choosingYesNo != "1")
+                        choosingCorrect = false;
+                } while (!choosingCorrect);
 
-                        if (choosingYesNo == "1")
-                        {
-                            if (itIsNumber)
-                                products.RemoveAt(number - 1);
-                            else
-                                products.Remove(p1);
-                            Program.JsonFileRecord(ref products);
+            } while (!endRemovingRecord);
 
-                        }
-                        else if (choosingYesNo != "2" && choosingYesNo != "1")
-                            choosingCorrect = false;
-
-
-                    } while (!choosingCorrect);
-
-                } while (!endRemovingRecord);
-
-            }
-        } /// removing product from list
+        }
         public static string NameFile()
         {
             string x = "";
@@ -226,218 +218,213 @@ namespace Warehouse_Application
         public static void Statistics(List<Product> products)
         {
             string x = "".PadLeft(60);
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
             Console.Clear();
-            if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
+
+            bool listEmpty = IsItListEmpty(products);
+            if (listEmpty)
+                return;
+
+            double y;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("PRICE");
+            Console.ResetColor();
+            Console.WriteLine();
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            y = products.Average(x => x.Price);
+            Console.WriteLine($"\nAverage: {y}\n");
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            y = products.Sum(x => x.Price);
+            Console.WriteLine($"\nSum: {y}\n");
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            y = products.Max(x => x.Price);
+            var p1 = products.Where(x => x.Price == y).ToList();
+            Console.WriteLine("\nMax: ");
+            foreach (var item in p1)
             {
-                Console.Clear();
-                Console.WriteLine("List is empty\nClick enter to continue");
-                Console.ReadKey();
+                Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
             }
-            else
+            Console.WriteLine("\n");
+
+            y = products.Min(x => x.Price);
+            var p2 = products.Where(x => x.Price == y).ToList();
+            Console.WriteLine("Min: ");
+            foreach (var item in p2)
             {
-                double y;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("PRICE");
-                Console.ResetColor();
-                Console.WriteLine();
+                Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
+            }
+            Console.WriteLine();
 
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
 
-                y = products.Average(x => x.Price);
-                Console.WriteLine($"\nAverage: {y}\n");
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                y = products.Sum(x => x.Price);
-                Console.WriteLine($"\nSum: {y}\n");
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                y = products.Max(x => x.Price);
-                var p1 = products.Where(x => x.Price == y).ToList();
-                Console.WriteLine("\nMax: ");
-                foreach (var item in p1)
+            Console.WriteLine("\nThe most frequently occuring price: \n\n");
+            var p3 = products.Select(x => new
+            {
+                x.Name,
+                x.Id,
+                x.Price
+            }).GroupBy(x => x.Price);
+            y = p3.Max(x => x.Count());
+            foreach (var item in p3)
+            {
+                double d = item.Count();
+                if (y == d)
                 {
-                    Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
-                }
-                Console.WriteLine("\n");
-
-                y = products.Min(x => x.Price);
-                var p2 = products.Where(x => x.Price == y).ToList();
-                Console.WriteLine("Min: ");
-                foreach (var item in p2)
-                {
-                    Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Id: {item.Id}");
-                }
-                Console.WriteLine();
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                Console.WriteLine("\nThe most frequently occuring price: \n\n");
-                var p3 = products.Select(x => new
-                {
-                    x.Name,
-                    x.Id,
-                    x.Price
-                }).GroupBy(x => x.Price);
-                y = p3.Max(x => x.Count());
-                foreach (var item in p3)
-                {
-                    double d = item.Count();
-                    if (y == d)
+                    foreach (var p in item)
                     {
-                        foreach (var p in item)
-                        {
-                            Console.WriteLine($"Name: {p.Name}, ID: {p.Id}, Price: {p.Price}");
-                        }
-                    }
-
-                }
-                Console.WriteLine();
-                Console.WriteLine("\n\nClick enter to continue");
-                Console.ReadKey();
-                Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("QUANTITY\n");
-                Console.ResetColor();
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                y = products.Average(x => x.Quantity);
-                Console.WriteLine($"\nAverage: {y}\n");
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                y = products.Sum(x => x.Quantity);
-                Console.WriteLine($"\nSum: {y}\n");
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                y = products.Max(x => x.Quantity);
-                var p5 = products.Where(x => x.Quantity == y).ToList();
-                Console.WriteLine("\nMax: ");
-                foreach (var item in p5)
-                {
-                    Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
-                }
-                Console.WriteLine("\n");
-
-                y = products.Min(x => x.Quantity);
-                var p6 = products.Where(x => x.Quantity == y).ToList();
-                Console.WriteLine("Min: ");
-                foreach (var item in p6)
-                {
-                    Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
-                }
-                Console.WriteLine();
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                Console.WriteLine("\nThe most frequently occuring quantity: \n\n");
-
-                var p7 = products.Select(x => new
-                {
-                    x.Quantity,
-                    x.Name,
-                    x.Id
-                }).GroupBy(x => x.Quantity);
-                y = p7.Max(x => x.Count());
-
-                foreach (var item in p7)
-                {
-                    double d = item.Count();
-                    if (d == y)
-                    {
-                        foreach (var p in item)
-                        {
-                            Console.WriteLine($"Name: {p.Name}, Quantity: {p.Quantity}, Id: {p.Id}");
-                        }
+                        Console.WriteLine($"Name: {p.Name}, ID: {p.Id}, Price: {p.Price}");
                     }
                 }
-                Console.WriteLine();
-                Console.WriteLine("\n\nClick enter to continue");
-                Console.ReadKey();
-                Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("DATE\n");
-                Console.WriteLine();
-                Console.ResetColor();
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                DateTime d1 = products.Min(x => x.Date);
-                var p9 = products.Where(x => x.Date == d1);
-                Console.WriteLine("\nThe oldest: \n");
-                foreach (var item in p9)
-                {
-                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
-                }
-                Console.WriteLine();
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                Console.WriteLine("\nThe newest: \n");
-                d1 = products.Max(x => x.Date);
-                var p10 = products.Where(x => x.Date == d1);
-                foreach (var item in p10)
-                {
-                    Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
-                }
-                Console.WriteLine();
-
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine(x);
-                Console.ResetColor();
-
-                Console.WriteLine("\nThe most frequently occuring date: \n\n");
-                var p11 = products.Select(x => new
-                {
-                    x.Date,
-                    x.Name,
-                    x.Id
-                }).GroupBy(x => x.Date);
-                y = p11.Max(x => x.Count());
-                foreach (var item in p11)
-                {
-                    double d = item.Count();
-                    if (d == y)
-                    {
-                        foreach (var p in item)
-                        {
-                            Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Date: {p.Date}");
-                        }
-                        Console.WriteLine();
-                    }
-                }
-                Console.WriteLine();
-                Console.WriteLine("\n\nClick enter to continue");
-                Console.ReadKey();
-                Console.Clear();
 
             }
+            Console.WriteLine();
+            Console.WriteLine("\n\nClick enter to continue");
+            Console.ReadKey();
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("QUANTITY\n");
+            Console.ResetColor();
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            y = products.Average(x => x.Quantity);
+            Console.WriteLine($"\nAverage: {y}\n");
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            y = products.Sum(x => x.Quantity);
+            Console.WriteLine($"\nSum: {y}\n");
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            y = products.Max(x => x.Quantity);
+            var p5 = products.Where(x => x.Quantity == y).ToList();
+            Console.WriteLine("\nMax: ");
+            foreach (var item in p5)
+            {
+                Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
+            }
+            Console.WriteLine("\n");
+
+            y = products.Min(x => x.Quantity);
+            var p6 = products.Where(x => x.Quantity == y).ToList();
+            Console.WriteLine("Min: ");
+            foreach (var item in p6)
+            {
+                Console.WriteLine($"Name: {item.Name}, Quantity: {item.Quantity}, Id: {item.Id}");
+            }
+            Console.WriteLine();
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            Console.WriteLine("\nThe most frequently occuring quantity: \n\n");
+
+            var p7 = products.Select(x => new
+            {
+                x.Quantity,
+                x.Name,
+                x.Id
+            }).GroupBy(x => x.Quantity);
+            y = p7.Max(x => x.Count());
+
+            foreach (var item in p7)
+            {
+                double d = item.Count();
+                if (d == y)
+                {
+                    foreach (var p in item)
+                    {
+                        Console.WriteLine($"Name: {p.Name}, Quantity: {p.Quantity}, Id: {p.Id}");
+                    }
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("\n\nClick enter to continue");
+            Console.ReadKey();
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("DATE\n");
+            Console.WriteLine();
+            Console.ResetColor();
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            DateTime d1 = products.Min(x => x.Date);
+            var p9 = products.Where(x => x.Date == d1);
+            Console.WriteLine("\nThe oldest: \n");
+            foreach (var item in p9)
+            {
+                Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
+            }
+            Console.WriteLine();
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            Console.WriteLine("\nThe newest: \n");
+            d1 = products.Max(x => x.Date);
+            var p10 = products.Where(x => x.Date == d1);
+            foreach (var item in p10)
+            {
+                Console.WriteLine($"Name: {item.Name}, Id: {item.Id}, Date: {item.Date}");
+            }
+            Console.WriteLine();
+
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(x);
+            Console.ResetColor();
+
+            Console.WriteLine("\nThe most frequently occuring date: \n\n");
+            var p11 = products.Select(x => new
+            {
+                x.Date,
+                x.Name,
+                x.Id
+            }).GroupBy(x => x.Date);
+            y = p11.Max(x => x.Count());
+            foreach (var item in p11)
+            {
+                double d = item.Count();
+                if (d == y)
+                {
+                    foreach (var p in item)
+                    {
+                        Console.WriteLine($"Name: {p.Name}, Id: {p.Id}, Date: {p.Date}");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("\n\nClick enter to continue");
+            Console.ReadKey();
+            Console.Clear();
+
+
         } /// Statistics of products
         public static void ExceptionAnswer(string message)
         {
@@ -455,19 +442,16 @@ namespace Warehouse_Application
             string path = Console.ReadLine();
             string jsonReader = File.ReadAllText(path);
             List<Product> jsonList = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
-            if (Path.Exists(path) && !string.IsNullOrEmpty(File.ReadAllText(path)))
+            if (Path.Exists(path))
             {
                 do
                 {
                     try
                     {
                         Console.Clear();
-
-                        if (jsonList.Count == 0)
-                        {
-                            ExceptionAnswer("File is empty");
+                        bool listEmpty = IsItListEmpty(jsonList);
+                        if (listEmpty)
                             return;
-                        }
 
                         int count = 0;
                         foreach (var item in jsonList)
@@ -528,7 +512,7 @@ namespace Warehouse_Application
                                             switch (Console.ReadLine())
                                             {
                                                 case "1":
-                                                    products.Remove(productsFromMainList);           
+                                                    products.Remove(productsFromMainList);
                                                     break;
                                                 case "2":
                                                     jsonList.Remove(addedList);
@@ -570,8 +554,17 @@ namespace Warehouse_Application
                 ExceptionAnswer("File doesn't exist");
             }
         } /// loading list of products from json file
-
-
-    }
+        public static bool IsItListEmpty(List<Product> products)
+        {
+            if (products.Count == 0 || string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json"))))
+            {
+                Console.Clear();
+                ExceptionAnswer("List is empty");
+                return true;
+            }
+            else
+                return false;
+        } /// checking if list is empty
+    } /// removing product from list
 }
 
