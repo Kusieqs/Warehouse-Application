@@ -19,13 +19,9 @@ namespace Warehouse_Application
 
             bool endOfRaport = false;
 
-            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Products.json"))))
-            {
-                Console.Clear();
-                Console.WriteLine("List is empty\nClick enter to continue");
-                Console.ReadKey();
+            bool ListIsEmpty = Utils.IsItListEmpty(products);
+            if (ListIsEmpty)
                 return;
-            }
 
             do
             {
@@ -99,7 +95,7 @@ namespace Warehouse_Application
                             }
                             Console.WriteLine("\n\n");
                             ReportMenu(report, ref endSearching, copyList);
-                        }while (!endSearching);
+                        } while (!endSearching);
                     }
                     else
                     {
@@ -172,7 +168,7 @@ namespace Warehouse_Application
                                         break;
                                     case "4":
                                         sortingBy += ".Age";
-                                        itIsString = false; 
+                                        itIsString = false;
                                         break;
                                     case "5":
                                         sortingBy += ".Id";
@@ -273,7 +269,7 @@ namespace Warehouse_Application
                                 break;
                         }
                     }
-                    else if(sortingBy == "addedBy.Position")
+                    else if (sortingBy == "addedBy.Position")
                     {
                         bool addedByAccept = true;
                         do
@@ -282,7 +278,7 @@ namespace Warehouse_Application
                             Console.Clear();
                             Console.Write("1.Admin\n2.Manager\n3.Employee\n4.Supplier\nNumber: ");
                             string answer = Console.ReadLine();
-                            switch(answer)
+                            switch (answer)
                             {
                                 case "1":
                                     value = PositionName.Admin.ToString();
@@ -304,7 +300,7 @@ namespace Warehouse_Application
                         } while (!addedByAccept);
                         attempt = true;
                     }
-                    else if(itIsString)
+                    else if (itIsString)
                     {
                         Console.Clear();
                         Console.Write("String: ");
@@ -343,14 +339,14 @@ namespace Warehouse_Application
                 } while (!attempt);
 
                 attempt = false;
-                if(itIsString)
+                if (itIsString)
                 {
                     do
                     {
                         Console.Clear();
                         Console.Write($"Choose one of this operators ( = , != )\n\n{sortingBy} [operator] {value}: ");
                         operatorSort = Console.ReadLine();
-                        string[] operators = new string[] { "=", "!="};
+                        string[] operators = new string[] { "=", "!=" };
                         for (int i = 0; i < operators.Length; i++)
                         {
                             if (operatorSort == operators[i])
@@ -378,7 +374,7 @@ namespace Warehouse_Application
 
                 if (sortingBy.Split('.')[0] == "addedBy")
                 {
-                    Func<Product, bool> filter = FilterAndSortByAddedBy(sortingBy, value, operatorSort,itIsString);
+                    Func<Product, bool> filter = FilterAndSortByAddedBy(sortingBy, value, operatorSort, itIsString);
 
                     do
                     {
@@ -496,8 +492,7 @@ namespace Warehouse_Application
         } // show products with range of values
         private static void ReportMenu(string report, ref bool endOfReport, List<Product> reportProducts)
         {
-            Console.WriteLine("1.Write down to txt file\n2.Write down to pdf\n3.Write down to excel\n4.Statistics of list\n5.Exit\n");
-
+            Console.WriteLine("1.Write down to txt file\n2.Write down to pdf\n3.Write down to excel\n4.Write down to json\n5.Statistics of list\n6.Exit\n");
             Console.Write($"Number: ");
             string answer = Console.ReadLine();
 
@@ -513,9 +508,12 @@ namespace Warehouse_Application
                     ExcelCreater(reportProducts);
                     break;
                 case "4":
-                    Utils.Statistics(reportProducts);
+                    JsonCreater(reportProducts);
                     break;
                 case "5":
+                    Utils.Statistics(reportProducts);
+                    break;
+                case "6":
                     endOfReport = true;
                     break;
 
@@ -523,20 +521,20 @@ namespace Warehouse_Application
                     break;
             }
         } // menu with choosing report (txt,pdf,excel)
-        private static Func<Product, bool> CreateFilter(PropertyInfo property, string filter, string value,bool isItString)
+        private static Func<Product, bool> CreateFilter(PropertyInfo property, string filter, string value, bool isItString)
         {
             var parameter = Expression.Parameter(typeof(Product), "x");
             var propertyAccess = Expression.Property(parameter, property);
             var convertedFilterValue = Expression.Constant(Convert.ChangeType(value, property.PropertyType));
-            var comparison = GetComparisonExpression(propertyAccess, filter, convertedFilterValue,isItString);
+            var comparison = GetComparisonExpression(propertyAccess, filter, convertedFilterValue, isItString);
             return Expression.Lambda<Func<Product, bool>>(comparison, parameter).Compile();
         } // creating an expression Lambda with comaprison (Object with object property)
-        private static Func<Product,bool> FilterAndSortByAddedBy(string propertyName, string value,string filter,bool isItString)
+        private static Func<Product, bool> FilterAndSortByAddedBy(string propertyName, string value, string filter, bool isItString)
         {
-           
+
             var param = Expression.Parameter(typeof(Product), "x");
             Expression property = propertyName.Split('.').Aggregate((Expression)param, Expression.PropertyOrField);
-            if(property.Type.IsEnum)
+            if (property.Type.IsEnum)
             {
                 var enumValue = Enum.Parse(property.Type, value);
                 var converted = Expression.Constant(enumValue);
@@ -554,14 +552,14 @@ namespace Warehouse_Application
         private static Expression GetComparisonExpression(Expression left, string filter, Expression right, bool isItString)
         {
 
-            if(isItString) 
+            if (isItString)
             {
                 switch (filter)
                 {
                     case "=":
-                        return Expression.Equal(left ,right);
+                        return Expression.Equal(left, right);
                     case "!=":
-                        return Expression.NotEqual(left,right);
+                        return Expression.NotEqual(left, right);
                     default:
                         throw new FormatException("Critical Error");
                 }
@@ -586,7 +584,7 @@ namespace Warehouse_Application
                         throw new FormatException("Critical Error");
                 }
             }
-            
+
         } // Comaprison to method "CreateFilter"
         private static void TxtFile(string report)
         {
@@ -695,6 +693,16 @@ namespace Warehouse_Application
 
             }
         }// Saving to excel file
+        private static void JsonCreater(List<Product> products)
+        {
+
+            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string fileName = Utils.NameFile();
+            string path = Path.Combine(systemOp, "WareHouse", fileName + ".json");
+            string json = JsonConvert.SerializeObject(products);
+            File.WriteAllText(path, json);
+
+        } // Saving to json file
     }
 }
 

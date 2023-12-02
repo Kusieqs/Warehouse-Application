@@ -183,12 +183,12 @@ public class Product
     }
     public void ObjectGraphic()
     {
-        Console.WriteLine($"1.Name:     {Name}");
-        Console.WriteLine($"2.Price:    {Price}");
-        Console.WriteLine($"3.Quantity: {Quantity}");
-        Console.WriteLine($"4.Id:       {Id}");
-        Console.WriteLine($"5.Date:     {Date}");
-        Console.WriteLine($"6.Added by: {addedBy.Position} {addedBy.Name} {addedBy.LastName}\n");
+        Console.WriteLine($"Name:     {Name}");
+        Console.WriteLine($"Price:    {Price}");
+        Console.WriteLine($"Quantity: {Quantity}");
+        Console.WriteLine($"Id:       {Id}");
+        Console.WriteLine($"Date:     {Date}");
+        Console.WriteLine($"Added by: {addedBy.Position} {addedBy.Name} {addedBy.LastName}\n");
     }
 
 }
