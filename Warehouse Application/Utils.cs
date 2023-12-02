@@ -146,12 +146,12 @@ namespace Warehouse_Application
             bool itIsNumber, correctNumber;
             bool endRemovingRecord = false;
 
-            bool listEmpty = IsItListEmpty(products);
-            if (listEmpty)
-                return;
 
             do
             {
+                bool listEmpty = IsItListEmpty(products);
+                if (listEmpty)
+                    return;
 
                 GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
 
@@ -440,10 +440,10 @@ namespace Warehouse_Application
             Console.Clear();
             Console.Write("Write path of file: ");
             string path = Console.ReadLine();
-            string jsonReader = File.ReadAllText(path);
-            List<Product> jsonList = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
             if (Path.Exists(path))
             {
+                string jsonReader = File.ReadAllText(path);
+                List<Product> jsonList = JsonConvert.DeserializeObject<List<Product>>(jsonReader);
                 do
                 {
                     try
@@ -556,7 +556,7 @@ namespace Warehouse_Application
         } /// loading list of products from json file
         public static bool IsItListEmpty(List<Product> products)
         {
-            if (products.Count == 0 || string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json"))))
+            if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json")))|| products.Count == 0)
             {
                 Console.Clear();
                 ExceptionAnswer("List is empty");
