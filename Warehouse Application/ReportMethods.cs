@@ -13,7 +13,6 @@ namespace Warehouse_Application
     {
         public static void ReportOfProducts(ref List<Product> products)
         {
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
             bool endOfRaport = false;
 

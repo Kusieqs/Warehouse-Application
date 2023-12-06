@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
+
 
 namespace Warehouse_Application
 {
@@ -224,7 +224,7 @@ namespace Warehouse_Application
             {
                 Product productToChange = new Product();
                 int number;
-                bool correctNumber, garph = false;
+                bool correctNumber;
                 string answer;
                 Console.Clear();
                 int count = 0;
@@ -398,7 +398,6 @@ namespace Warehouse_Application
         } // Parse value 
         private static void AcceptingModify(Product p1, out bool accpet)
         {
-            bool infinity = false;
             do
             {
                 Console.Clear();
@@ -415,8 +414,7 @@ namespace Warehouse_Application
                     accpet = false;
                     return;
                 }
-            } while (!infinity);
-            accpet = false;
+            } while (true);
 
         } // Accepting modifying product
         public static void NewDelivery(ref List<Product> products, Employee employee)

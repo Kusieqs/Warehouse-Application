@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
+
 
 namespace Warehouse_Application
 {
@@ -10,7 +10,6 @@ namespace Warehouse_Application
     {
         private static void AcceptingModify(Employee e1, out bool accpet)
         {
-            bool infinity = false;
             do
             {
                 e1.GraphicEmployee();
@@ -26,13 +25,11 @@ namespace Warehouse_Application
                     accpet = false;
                     return;
                 }
-            } while (!infinity);
-            accpet = false;
+            } while (true);
 
-        } /// Accepting Modifying
+        } /// Accepting Modifying employee
         public static void ChoosingEmployee(ref List<Employee> employees, ref Employee employee, bool firstTime)
         {
-            bool closeEmployee = false;
             do
             {
                 try
@@ -82,7 +79,7 @@ namespace Warehouse_Application
                     else if (employee.Login != login && employee.Password == password)
                         throw new FormatException("Wrong login");
                     else if (employee.Login == login && employee.Password == password)
-                        closeEmployee = true;
+                        break;
                     else
                         throw new FormatException("Wrong login and password");
                 }
@@ -90,12 +87,11 @@ namespace Warehouse_Application
                 {
                     Utils.ExceptionAnswer(e.Message);
                 }
-            } while (!closeEmployee);
+            } while (true);
         }/// Setting first admin or choosing employee
         public static void AddingEmployee(ref List<Employee> employees, bool firsTime)
         {
             Employee employee = new Employee();
-            bool choosingPosition = false;
             do
             {
                 try
@@ -128,14 +124,14 @@ namespace Warehouse_Application
 
                     NewEmployeeInformation(employee, ref employees, firsTime);
 
-                    choosingPosition = true;
+                    break;
 
                 }
                 catch (FormatException e)
                 {
                     Utils.ExceptionAnswer(e.Message);
                 }
-            } while (!choosingPosition);
+            } while (true);
 
 
         } /// adding new employee to list
@@ -195,8 +191,8 @@ namespace Warehouse_Application
                 throw new FormatException("Wrong age");
             employee.Age = age;
 
-            bool correctLogin = false;
             string login = name.Substring(0, 3);
+
             do
             {
                 for (int i = 0; i < 3; i++)
@@ -210,9 +206,9 @@ namespace Warehouse_Application
                     break;
                 }
                 else if (!employees.Any(x => x.Login == login))
-                    correctLogin = true;
+                    break;
 
-            } while (!correctLogin);
+            } while (true);
 
             Console.WriteLine($"\n\nLogin: {login}");
             employee.Login = login;
@@ -496,11 +492,9 @@ namespace Warehouse_Application
 
             } while (!infinti);
 
-        }
+        }// Deleting employee
         public static void EmployeeModifying(ref List<Employee> listEmployees)
         {
-            bool infinti = false;
-            bool correctNumber = false;
             do
             {
                 Console.Clear();
@@ -517,7 +511,7 @@ namespace Warehouse_Application
 
 
                 Console.Write("\n\nNumber of employee (0 to exit): ");
-                correctNumber = int.TryParse(Console.ReadLine(), out int number);
+                bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
                 if (number == 0 && correctNumber)
                 {
@@ -534,8 +528,8 @@ namespace Warehouse_Application
                     string json = JsonConvert.SerializeObject(listEmployees);
                     File.WriteAllText(system, json);
                 }
-            } while (!infinti);
-        }
+            } while (true);
+        }// Modifying employee
         
     }
 }

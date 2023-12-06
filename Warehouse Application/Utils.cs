@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SixLabors.ImageSharp;
 using System.Text.RegularExpressions;
 
 namespace Warehouse_Application
@@ -187,7 +186,7 @@ namespace Warehouse_Application
 
             } while (true);
 
-        }
+        }//Removing product from list
         public static string NameFile()
         {
             string x = "";

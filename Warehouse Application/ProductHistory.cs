@@ -18,11 +18,11 @@ namespace Warehouse_Application
             id = p1.Id;
             price = p1.Price;
             quantity = p1.Quantity;
-            this.date = p1.Date;
+            date = p1.Date;
             day = p1.day;
             month = p1.month;
             year = p1.year;
-            this.addedBy = p1.addedBy;
+            addedBy = p1.addedBy;
 		}
         public ProductHistory()
         { }
