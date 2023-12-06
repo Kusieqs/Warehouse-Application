@@ -50,11 +50,11 @@ namespace Warehouse_Application
                     if (price == "-")
                         return;
 
-                    price = price.Replace('.', ',');
+                    price = price.Replace(',', '.');
                     correctPrice = double.TryParse(price, out double number);
                     if (!correctPrice)
                         throw new FormatException("Wrong price format");
-
+                    
                     p1.Price = number;
 
                     Console.Write("\nQuantity of product: ");
