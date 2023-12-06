@@ -5,8 +5,6 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
 using Newtonsoft.Json;
 using OfficeOpenXml;
-using System.IO;
-using OfficeOpenXml.Packaging.Ionic.Zlib;
 
 
 namespace Warehouse_Application

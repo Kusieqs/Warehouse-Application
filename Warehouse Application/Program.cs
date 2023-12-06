@@ -31,7 +31,6 @@ internal class Program
                 case PositionName.Admin:
                     do
                     {
-                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1.\tAdd product\n2. \tRemoving product\n3. \tReports and sorting\n4. \tModifying Product\n5. \tHistory of Modifying\n6. \tStatistics\n7. \tAdding new employee\n8. \tModifying employees\n9. \tLoad JSON file\n10. \tLog out\n0. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
@@ -91,7 +90,6 @@ internal class Program
                 case PositionName.Employee:
                     do
                     {
-                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1. \tAdd product\n2. \tRemoving product\n3. \tModifying Product\n4. \tLoad JSON file\n5. \tLog out\n6. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");

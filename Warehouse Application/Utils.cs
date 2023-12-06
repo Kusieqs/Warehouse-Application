@@ -31,8 +31,7 @@ namespace Warehouse_Application
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
             string name, id, price, quantity;
-            DateTime copyDate = DateTime.Now;
-            DateTime date = copyDate.Date;
+            DateTime date = DateTime.Now.Date;
             Product p1 = new Product();
             do
             {
@@ -102,7 +101,6 @@ namespace Warehouse_Application
                 }
                 catch (Exception e)
                 {
-                    correctData = false;
                     ExceptionAnswer(e.Message);
                 }
             } while (!correctData);
@@ -143,9 +141,7 @@ namespace Warehouse_Application
             Product p1 = new Product();
             string removingRecord;
             int number;
-            bool itIsNumber, correctNumber;
-            bool endRemovingRecord = false;
-
+            bool correctNumber;
 
             do
             {
@@ -156,25 +152,19 @@ namespace Warehouse_Application
                 GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
 
                 if (correctNumber && number <= products.Count && number > 0)
-                {
                     p1 = products[number - 1];
-                    itIsNumber = true;
-                }
                 else if (Regex.IsMatch(removingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == removingRecord))
-                {
                     p1 = products.Find(x => x.Id == removingRecord);
-                    itIsNumber = false;
-                }
                 else if (correctNumber && number == 0)
-                    break;
+                    return;
                 else
                     continue;
 
                 Console.Clear();
-                bool choosingCorrect = true;
+
                 do
                 {
-                    choosingCorrect = true;
+
                     Console.Clear();
                     p1.ObjectGraphic();
                     Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
@@ -184,18 +174,18 @@ namespace Warehouse_Application
 
                     if (choosingYesNo == "1")
                     {
-                        if (itIsNumber)
-                            products.RemoveAt(number - 1);
-                        else
-                            products.Remove(p1);
+                        products.Remove(p1);
                         Program.JsonFileRecord(ref products);
-
+                        break;
                     }
-                    else if (choosingYesNo != "2" && choosingYesNo != "1")
-                        choosingCorrect = false;
-                } while (!choosingCorrect);
+                    else if (choosingYesNo == "2")
+                        break;
+                    else
+                        continue;
 
-            } while (!endRemovingRecord);
+                } while (true);
+
+            } while (true);
 
         }
         public static string NameFile()
@@ -565,6 +555,6 @@ namespace Warehouse_Application
             else
                 return false;
         } /// checking if list is empty
-    } /// removing product from list
+    } 
 }
 
