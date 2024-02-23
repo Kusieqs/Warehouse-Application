@@ -82,7 +82,7 @@ public class Product
         else
             throw new FormatException("Quantity is not correct");
 
-        if(Regex.IsMatch(name.Trim() ,@"^[A-Za-z0-9\s]+$") && name.Length > 0)
+        if(Regex.IsMatch(name.Trim() , @"^[A-Za-z]{1}[A-Za-z0-9\s]+$") && name.Length > 0)
         {
             this.name = name.Trim();
         }
@@ -103,7 +103,7 @@ public class Product
         }
         set
         {
-            if (value.Length > 0 && Regex.IsMatch((value), @"^[A-Za-z0-9\s]+$"))
+            if (value.Length > 0 && Regex.IsMatch((value), @"^[A-Za-z]{1}[A-Za-z0-9\s]+$"))
             {
                 name = value.Trim();
             }

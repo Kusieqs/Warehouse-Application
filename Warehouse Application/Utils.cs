@@ -30,7 +30,6 @@ namespace Warehouse_Application
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
             string name, id, price, quantity;
-            DateTime date = DateTime.Now.Date;
             Product p1 = new Product();
             do
             {
@@ -74,7 +73,7 @@ namespace Warehouse_Application
                         return;
 
                     p1.Id = id;
-                    p1.Date = date;
+                    p1.Date = DateTime.Now.Date;
                     p1.addedBy = employee;
 
                     string jsonCreator;

@@ -274,7 +274,7 @@ namespace Warehouse_Application
                             RemovingEmployee(ref listEmployees);
                             break;
                         case "2":
-                            RemovingEmployee(ref listEmployees);
+                            EmployeeModifying(ref listEmployees);
                             break;
                         case "3":
                             return;
@@ -423,16 +423,15 @@ namespace Warehouse_Application
 
             Console.Clear();
             AcceptingModify(copy, out accept);
+
             if (accept)
-            {
                 employee = copy;
-            }
 
         } // Changing informations about employee
         private static void RemovingEmployee(ref List<Employee> listEmployees)
         {
-            bool infinti = false;
             bool correctNumber = false;
+
             do
             {
                 Console.Clear();
@@ -449,48 +448,52 @@ namespace Warehouse_Application
                 correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
                 if (correctNumber && number == 0)
-                {
                     break;
-                }
-                else if (correctNumber && number > 0 && number <= count)
+                else if ((correctNumber && number > 0 && number <= count)&&(!listEmployees[number - 1].mainAccount && listEmployees.Count > 1))
                 {
-                    if (!listEmployees[number - 1].mainAccount && listEmployees.Count > 1)
+                    Console.Clear();
+                    Console.WriteLine("Are you sure to delete this account? \n1.Yes\n2.No");
+                    int.TryParse(Console.ReadLine(), out int result);
+                    if (result == 1)
                     {
                         listEmployees.RemoveAt(number - 1);
-                    }
-                    else if (listEmployees.Count == 1 || listEmployees.Count(x => x.Position == PositionName.Admin) == 1)
-                    {
-                        bool correctAnswer = false;
-                        do
-                        {
-                            Console.Clear();
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("WARNING\n\n");
-                            Console.ResetColor();
-                            Console.Write("You are going to delete last admin position\nThis will delete all files\n\n1.Delete\n2.Continue\n\nNumber: ");
-                            string answer = Console.ReadLine();
-
-                            if (answer == "1")
-                            {
-                                string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                                Directory.Delete(Path.Combine(systemOp, "WareHouse"), true);
-                                Environment.Exit(0);
-                            }
-                            else if (answer == "2")
-                            {
-                                correctAnswer = true;
-                            }
-                        } while (!correctAnswer);
+                        string system = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        string json = JsonConvert.SerializeObject(listEmployees);
+                        File.WriteAllText(system, json);
                     }
                     else
+                        continue;
+                }
+                else if ((correctNumber && number > 0 && number <= count) && (listEmployees.Count == 1 || listEmployees.Count(x => x.Position == PositionName.Admin) == 1))
+                {
+                    do
                     {
                         Console.Clear();
-                        Console.WriteLine("Its main Admin. You can't remove this position\nClick enter to continue!");
-                        Console.ReadKey();
-                    }
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("WARNING\n\n");
+                        Console.ResetColor();
+                        Console.Write("You are going to delete last admin position\nThis will delete all files\n\n1.Delete\n2.Continue\n\nNumber: ");
+                        string answer = Console.ReadLine();
+
+                        if (answer == "1")
+                        {
+                            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                            Directory.Delete(Path.Combine(systemOp, "WareHouse"), true);
+                            Environment.Exit(0); 
+                        }
+                        else if (answer == "2")
+                            break;
+
+                    } while (true);
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Its main Admin! You have to change priority of this account.\nClick enter to continue!");
+                    Console.ReadKey();
                 }
 
-            } while (!infinti);
+            } while (true);
 
         }// Deleting employee
         public static void EmployeeModifying(ref List<Employee> listEmployees)
