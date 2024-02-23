@@ -55,7 +55,8 @@ internal class Program
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
+                                JsonFileRecord(ref listOfProducts);
                                 break;
 
                             case 6:
@@ -155,7 +156,8 @@ internal class Program
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
+                                JsonFileRecord(ref listOfProducts);
                                 break;
 
                             case 6:

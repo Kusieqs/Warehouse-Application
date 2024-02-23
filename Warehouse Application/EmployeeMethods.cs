@@ -28,6 +28,52 @@ namespace Warehouse_Application
             } while (true);
 
         } /// Accepting Modifying employee
+        public static void AddingEmployee(ref List<Employee> employees, bool firsTime)
+        {
+            Employee employee = new Employee();
+            do
+            {
+                try
+                {
+                    Console.Clear();
+                    Console.Write("Choose position of employee\n\n1.Admin\n2.Supplier\n3.Manager\n4.Employee\n0.Exit\n\nNumber: ");
+                    string position = Console.ReadLine();
+                    switch (position)
+                    {
+                        case "1":
+                            employee.Position = PositionName.Admin;
+                            break;
+                        case "2":
+                            employee.Position = PositionName.Supplier;
+                            break;
+                        case "3":
+                            employee.Position = PositionName.Manager;
+                            break;
+                        case "4":
+                            employee.Position = PositionName.Employee;
+                            break;
+                        case "0":
+                            return;
+                        default:
+                            continue;
+                    }
+
+                    Console.Clear();
+                    Console.WriteLine($"Position: {employee.Position}");
+
+                    NewEmployeeInformation(employee, ref employees, firsTime);
+
+                    break;
+
+                }
+                catch (FormatException e)
+                {
+                    Utils.ExceptionAnswer(e.Message);
+                }
+            } while (true);
+
+
+        } /// adding new employee to list
         public static void ChoosingEmployee(ref List<Employee> employees, ref Employee employee, bool firstTime)
         {
             do
@@ -87,52 +133,44 @@ namespace Warehouse_Application
                 }
             } while (true);
         }/// Setting first admin or choosing employee
-        public static void AddingEmployee(ref List<Employee> employees, bool firsTime)
+        public static void MenuOfEmployee(ref List<Employee> listEmployees)
         {
-            Employee employee = new Employee();
             do
             {
                 try
                 {
                     Console.Clear();
-                    Console.Write("Choose position of employee\n\n1.Admin\n2.Supplier\n3.Manager\n4.Employee\n0.Exit\n\nNumber: ");
-                    string position = Console.ReadLine();
-                    switch (position)
+                    Console.Write("1.Remove\n2.Modifying\n3.Exit\n\nNumber: ");
+                    string answer = Console.ReadLine();
+                    switch (answer)
                     {
                         case "1":
-                            employee.Position = PositionName.Admin;
+                            RemovingEmployee(ref listEmployees);
                             break;
                         case "2":
-                            employee.Position = PositionName.Supplier;
+                            EmployeeModifying(ref listEmployees);
                             break;
                         case "3":
-                            employee.Position = PositionName.Manager;
-                            break;
-                        case "4":
-                            employee.Position = PositionName.Employee;
-                            break;
-                        case "0":
                             return;
                         default:
                             continue;
                     }
-
-                    Console.Clear();
-                    Console.WriteLine($"Position: {employee.Position}");
-
-                    NewEmployeeInformation(employee, ref employees, firsTime);
-
-                    break;
-
                 }
-                catch (FormatException e)
+                catch (TargetInvocationException tie)
                 {
-                    Utils.ExceptionAnswer(e.Message);
+                    Exception innerException = tie.InnerException;
+
+                    Utils.ExceptionAnswer(innerException.Message);
+
                 }
+                catch (Exception ex)
+                {
+                    Utils.ExceptionAnswer(ex.Message);
+                }
+                Console.Clear();
+                break;
             } while (true);
-
-
-        } /// adding new employee to list
+        } ///Options to remove or modifying employee
         private static void NewEmployeeInformation(Employee employee, ref List<Employee> employees, bool firsTime)
         {
             Console.Write($"Name: ");
@@ -235,44 +273,6 @@ namespace Warehouse_Application
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
 
         } /// Adding informations do new Employee 
-        public static void MenuOfEmployee(ref List<Employee> listEmployees)
-        {
-            do
-            {
-                try
-                {
-                    Console.Clear();
-                    Console.Write("1.Remove\n2.Modifying\n3.Exit\n\nNumber: ");
-                    string answer = Console.ReadLine();
-                    switch (answer)
-                    {
-                        case "1":
-                            RemovingEmployee(ref listEmployees);
-                            break;
-                        case "2":
-                            EmployeeModifying(ref listEmployees);
-                            break;
-                        case "3":
-                            return;
-                        default:
-                            continue;
-                    }
-                }
-                catch (TargetInvocationException tie)
-                {
-                    Exception innerException = tie.InnerException;
-
-                    Utils.ExceptionAnswer(innerException.Message);
-
-                }
-                catch (Exception ex)
-                {
-                    Utils.ExceptionAnswer(ex.Message);
-                }
-                Console.Clear();
-                break;
-            } while (true);
-        } ///Options to remove or modifying employee
         private static void EmployeeModifyingData(ref Employee employee, List<Employee> employees)
         {
             Employee copy = employee;
@@ -387,7 +387,7 @@ namespace Warehouse_Application
 
 
             PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
-            object valueParsed = ModificationsAndHistory.ParseValue(value, propertyInfo.PropertyType);
+            object valueParsed = Utils.ParseValue(value, propertyInfo.PropertyType);
             copy.GetType().GetProperty(property).SetValue(copy, valueParsed);
 
             if (employees.Any(x => x.Id == valueParsed) && property == "Id")

@@ -553,6 +553,68 @@ namespace Warehouse_Application
             else
                 return false;
         } /// checking if list is empty
-    } 
+        public static object ParseValue(string input, Type targetType)
+        {
+
+            if (targetType == typeof(int))
+            {
+                if (int.TryParse(input, out int x) && x > 0)
+                {
+                    return x;
+                }
+                else
+                {
+                    throw new FormatException("Quantity is not correct");
+                }
+            }
+            else if (targetType == typeof(double))
+            {
+                if (double.TryParse(input, out double x) && x >= 0)
+                {
+                    return x;
+                }
+                else
+                {
+                    throw new FormatException("Price is not correct");
+                }
+            }
+            else if (targetType == typeof(string))
+            {
+                if (input.Length > 0)
+                {
+                    return input;
+                }
+                else
+                {
+                    throw new FormatException("Name is not correct");
+                }
+            }
+            else if (targetType == typeof(DateTime))
+            {
+                if (DateTime.TryParse(input, out DateTime x))
+                {
+                    return x;
+                }
+            }
+            else if (targetType == typeof(bool))
+            {
+                if (bool.TryParse(input, out bool x))
+                {
+                    return x;
+                }
+            }
+            else if (targetType == typeof(Employee))
+            {
+                string[] employeeInfo = input.Split(' ');
+                Enum.TryParse(employeeInfo[2], out PositionName x);
+                int.TryParse(employeeInfo[3], out int y);
+                bool.TryParse(employeeInfo[7], out bool z);
+                return new Employee(employeeInfo[0], employeeInfo[1], x, y, employeeInfo[4], employeeInfo[6], employeeInfo[5], z);
+
+            }
+            throw new FormatException("Error with target type");
+        } // Parse value 
+
+    }
 }
 
