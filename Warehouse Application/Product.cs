@@ -82,7 +82,7 @@ public class Product
         else
             throw new FormatException("Quantity is not correct");
 
-        if(Regex.IsMatch(name.Trim() ,@"^[A-Za-z0-9\s]+$") && name.Length > 0)
+        if(Regex.IsMatch(name.Trim() , @"^[A-Za-z]{1}[A-Za-z0-9\s]+$") && name.Length > 0)
         {
             this.name = name.Trim();
         }
@@ -103,7 +103,7 @@ public class Product
         }
         set
         {
-            if (value.Length > 0 && Regex.IsMatch((value), @"^[A-Za-z0-9\s]+$"))
+            if (value.Length > 0 && Regex.IsMatch((value), @"^[A-Za-z]{1}[A-Za-z0-9\s]+$"))
             {
                 name = value.Trim();
             }
@@ -183,12 +183,12 @@ public class Product
     }
     public void ObjectGraphic()
     {
-        Console.WriteLine($"Name:     {Name}");
-        Console.WriteLine($"Price:    {Price}");
-        Console.WriteLine($"Quantity: {Quantity}");
-        Console.WriteLine($"Id:       {Id}");
-        Console.WriteLine($"Date:     {Date}");
-        Console.WriteLine($"Added by: {addedBy.Position} {addedBy.Name} {addedBy.LastName}\n");
+        Console.WriteLine($"1.Name:     {Name}");
+        Console.WriteLine($"2.Price:    {Price}");
+        Console.WriteLine($"3.Quantity: {Quantity}");
+        Console.WriteLine($"4.Id:       {Id}");
+        Console.WriteLine($"5.Date:     {Date}");
+        Console.WriteLine($"6.Added by: {addedBy.Position} {addedBy.Name} {addedBy.LastName}\n");
     }
 
 }

@@ -5,8 +5,6 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
 using Newtonsoft.Json;
 using OfficeOpenXml;
-using System.IO;
-using OfficeOpenXml.Packaging.Ionic.Zlib;
 
 
 namespace Warehouse_Application
@@ -15,7 +13,6 @@ namespace Warehouse_Application
     {
         public static void ReportOfProducts(ref List<Product> products)
         {
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
             bool endOfRaport = false;
 

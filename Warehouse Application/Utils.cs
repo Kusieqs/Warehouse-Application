@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SixLabors.ImageSharp;
 using System.Text.RegularExpressions;
 
 namespace Warehouse_Application
@@ -31,8 +30,6 @@ namespace Warehouse_Application
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correctPrice, correctQuantity, correctData = false;
             string name, id, price, quantity;
-            DateTime copyDate = DateTime.Now;
-            DateTime date = copyDate.Date;
             Product p1 = new Product();
             do
             {
@@ -52,11 +49,11 @@ namespace Warehouse_Application
                     if (price == "-")
                         return;
 
-                    price = price.Replace('.', ',');
+                    price = price.Replace(',', '.');
                     correctPrice = double.TryParse(price, out double number);
                     if (!correctPrice)
                         throw new FormatException("Wrong price format");
-
+                    
                     p1.Price = number;
 
                     Console.Write("\nQuantity of product: ");
@@ -76,7 +73,7 @@ namespace Warehouse_Application
                         return;
 
                     p1.Id = id;
-                    p1.Date = date;
+                    p1.Date = DateTime.Now.Date;
                     p1.addedBy = employee;
 
                     string jsonCreator;
@@ -102,7 +99,6 @@ namespace Warehouse_Application
                 }
                 catch (Exception e)
                 {
-                    correctData = false;
                     ExceptionAnswer(e.Message);
                 }
             } while (!correctData);
@@ -143,9 +139,7 @@ namespace Warehouse_Application
             Product p1 = new Product();
             string removingRecord;
             int number;
-            bool itIsNumber, correctNumber;
-            bool endRemovingRecord = false;
-
+            bool correctNumber;
 
             do
             {
@@ -156,25 +150,19 @@ namespace Warehouse_Application
                 GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
 
                 if (correctNumber && number <= products.Count && number > 0)
-                {
                     p1 = products[number - 1];
-                    itIsNumber = true;
-                }
                 else if (Regex.IsMatch(removingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == removingRecord))
-                {
                     p1 = products.Find(x => x.Id == removingRecord);
-                    itIsNumber = false;
-                }
                 else if (correctNumber && number == 0)
-                    break;
+                    return;
                 else
                     continue;
 
                 Console.Clear();
-                bool choosingCorrect = true;
+
                 do
                 {
-                    choosingCorrect = true;
+
                     Console.Clear();
                     p1.ObjectGraphic();
                     Console.WriteLine("\nDo you want to remove?\n1.Yes\n2.No");
@@ -184,20 +172,20 @@ namespace Warehouse_Application
 
                     if (choosingYesNo == "1")
                     {
-                        if (itIsNumber)
-                            products.RemoveAt(number - 1);
-                        else
-                            products.Remove(p1);
+                        products.Remove(p1);
                         Program.JsonFileRecord(ref products);
-
+                        break;
                     }
-                    else if (choosingYesNo != "2" && choosingYesNo != "1")
-                        choosingCorrect = false;
-                } while (!choosingCorrect);
+                    else if (choosingYesNo == "2")
+                        break;
+                    else
+                        continue;
 
-            } while (!endRemovingRecord);
+                } while (true);
 
-        }
+            } while (true);
+
+        }//Removing product from list
         public static string NameFile()
         {
             string x = "";
@@ -565,6 +553,68 @@ namespace Warehouse_Application
             else
                 return false;
         } /// checking if list is empty
-    } /// removing product from list
+        public static object ParseValue(string input, Type targetType)
+        {
+
+            if (targetType == typeof(int))
+            {
+                if (int.TryParse(input, out int x) && x > 0)
+                {
+                    return x;
+                }
+                else
+                {
+                    throw new FormatException("Quantity is not correct");
+                }
+            }
+            else if (targetType == typeof(double))
+            {
+                if (double.TryParse(input, out double x) && x >= 0)
+                {
+                    return x;
+                }
+                else
+                {
+                    throw new FormatException("Price is not correct");
+                }
+            }
+            else if (targetType == typeof(string))
+            {
+                if (input.Length > 0)
+                {
+                    return input;
+                }
+                else
+                {
+                    throw new FormatException("Name is not correct");
+                }
+            }
+            else if (targetType == typeof(DateTime))
+            {
+                if (DateTime.TryParse(input, out DateTime x))
+                {
+                    return x;
+                }
+            }
+            else if (targetType == typeof(bool))
+            {
+                if (bool.TryParse(input, out bool x))
+                {
+                    return x;
+                }
+            }
+            else if (targetType == typeof(Employee))
+            {
+                string[] employeeInfo = input.Split(' ');
+                Enum.TryParse(employeeInfo[2], out PositionName x);
+                int.TryParse(employeeInfo[3], out int y);
+                bool.TryParse(employeeInfo[7], out bool z);
+                return new Employee(employeeInfo[0], employeeInfo[1], x, y, employeeInfo[4], employeeInfo[6], employeeInfo[5], z);
+
+            }
+            throw new FormatException("Error with target type");
+        } // Parse value 
+
+    }
 }
 

@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
+
 
 namespace Warehouse_Application
 {
@@ -17,7 +17,7 @@ namespace Warehouse_Application
             string property = string.Empty;
             string value = "";
             int number;
-            bool correctNumber, correctModifying = false, accept;
+            bool correctNumber, accept;
 
             bool ListExist = Utils.IsItListEmpty(products);
             if (ListExist)
@@ -27,193 +27,172 @@ namespace Warehouse_Application
             bool correctAnswer = false;
             do
             {
+                Utils.GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number);
+
+                if (correctNumber && number > 0 && number <= products.Count)
+                    copy = new Product(products[number - 1]);
+                else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
+                    copy = new Product(products.Find(x => x.Id == modifyingRecord));
+                else if (number == 0 && correctNumber)
+                    return;
+                else
+                    continue;
+
+
                 do
                 {
-                    Utils.GraphicRemovingAndModifying(products, out modifyingRecord, out correctNumber, out number);
+                    correctAnswer = true;
+                    Console.Clear();
+                    copy.ObjectGraphic();
+                    Console.WriteLine("7.Exit\n");
+                    Console.Write("Number: ");
 
-                    if (correctNumber && number > 0 && number <= products.Count)
-                        copy = new Product(products[number - 1]);
-                    else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
-                        copy = new Product(products.Find(x => x.Id == modifyingRecord));
-                    else if (number == 0 && correctNumber)
-                        return;
-                    else
-                        continue;
-
-
-                    do
+                    string answer = Console.ReadLine();
+                    switch (answer)
                     {
-                        correctAnswer = true;
-                        Console.Clear();
-                        copy.ObjectGraphic();
-                        Console.WriteLine("7.Exit\n");
-                        Console.Write("Number: ");
+                        case "1":
+                            property = "Name";
+                            break;
+                        case "2":
+                            property = "Price";
+                            break;
+                        case "3":
+                            property = "Quantity";
+                            break;
+                        case "4":
+                            property = "Id";
+                            break;
+                        case "5":
+                            property = "Date";
+                            break;
+                        case "6":
+                            property = "addedBy";
+                            break;
+                        case "7":
+                            property = "x";
+                            correctAnswer = false;
+                            break;
+                        default:
+                            continue;
+                    }
+                } while (string.IsNullOrEmpty(property));
 
-                        string answer = Console.ReadLine();
-                        switch (answer)
-                        {
-                            case "1":
-                                property = "Name";
-                                break;
-                            case "2":
-                                property = "Price";
-                                break;
-                            case "3":
-                                property = "Quantity";
-                                break;
-                            case "4":
-                                property = "Id";
-                                break;
-                            case "5":
-                                property = "Date";
-                                break;
-                            case "6":
-                                property = "addedBy";
-                                break;
-                            case "7":
-                                correctAnswer = false;
-                                property = "x";
-                                break;
-                            default:
-                                break;
-                        }
-                    } while (string.IsNullOrEmpty(property));
-                } while (!correctAnswer);
+                if (!correctAnswer)
+                    continue;
 
                 correctAnswer = false;
                 Employee employee1;
-                do
+                Console.Clear();
+                try
                 {
-                    Console.Clear();
-                    try
+                    copy.ObjectGraphic();
+                    if (property == "Date")
                     {
-                        copy.ObjectGraphic();
+                        int daysInMonth;
+                        DateTime date;
+                        int year, month, day;
+                        Console.Write("\n\nYear: ");
+                        bool yearBool = int.TryParse(Console.ReadLine(), out year);
+                        Console.Write("Month: ");
+                        bool monthBool = int.TryParse(Console.ReadLine(), out month);
+                        Console.Write("Day: ");
+                        bool dayBool = int.TryParse(Console.ReadLine(), out day);
 
-                        if (property == "Date")
+                        if ((yearBool && monthBool && dayBool) && !(year < 1 || month < 1 || month > 12 || day < 1 || year > 2100 || year < 1900))
+                            daysInMonth = DateTime.DaysInMonth(year, month);
+                        else
+                            throw new FormatException("Wrong date");
+
+                        if (daysInMonth >= day)
                         {
-                            DateTime date;
-                            int year, month, day;
-                            bool yearBool = false, monthBool = false, dayBool = false;
-                            Console.Write("\n\nYear: ");
-                            yearBool = int.TryParse(Console.ReadLine(), out year);
-                            Console.Write("Month: ");
-                            monthBool = int.TryParse(Console.ReadLine(), out month);
-                            Console.Write("Day: ");
-                            dayBool = int.TryParse(Console.ReadLine(), out day);
-                            if (yearBool && monthBool && dayBool)
-                            {
-                                if ((year < 1 || month < 1 || month > 12 || day < 1 || year > 2100 || year < 1900))
-                                {
-                                    throw new FormatException("Wrong date");
-                                }
-                                else
-                                {
-                                    int daysInMonth = DateTime.DaysInMonth(year, month);
-                                    if (daysInMonth >= day)
-                                    {
-                                        date = new DateTime(year, month, day);
-                                        value = date.ToString();
-                                    }
-                                    else
-                                    {
-                                        continue;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                throw new FormatException("Wrong date");
-                            }
-                        }
-                        else if (property == "addedBy")
-                        {
-                            string employeeReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
-                            List<Employee> listOfEmployees = JsonConvert.DeserializeObject<List<Employee>>(employeeReader);
-
-                            int numberOfEmployee;
-                            bool correctAdded = false;
-                            do
-                            {
-                                int count = 1;
-                                Console.Clear();
-                                foreach (var employees in listOfEmployees)
-                                {
-                                    Console.WriteLine($"{count}. {employees.Position} {employees.Name} {employees.LastName}");
-                                    count++;
-                                }
-                                Console.Write("\n\nNumber : ");
-                                bool itIsCorrect = int.TryParse(Console.ReadLine(), out numberOfEmployee);
-
-                                if (!itIsCorrect || listOfEmployees.Count < numberOfEmployee || numberOfEmployee <= 0)
-                                    continue;
-
-                                employee1 = listOfEmployees[numberOfEmployee - 1];
-                                correctAdded = true;
-
-                                value = $"{employee1.Name} {employee1.LastName} {employee1.Position} {employee1.Age} {employee1.Id} {employee1.Login} {employee1.Password} {employee1.LastName} {employee1.mainAccount}";
-
-                            } while (!correctAdded);
+                            date = new DateTime(year, month, day);
+                            value = date.ToString();
                         }
                         else
+                            continue;
+
+                    }
+                    else if (property == "addedBy")
+                    {
+                        string employeeReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
+                        List<Employee> listOfEmployees = JsonConvert.DeserializeObject<List<Employee>>(employeeReader);
+
+                        do
                         {
-                            Console.Write($"\nChanging {property}: ");
-                            value = Console.ReadLine();
-                            if (string.IsNullOrEmpty(value))
-                                throw new FormatException("Lack of infomrations to modify");
-                            else if (property == "Price")
-                                value = value.Replace('.', ',');
-                        }
-
-
-                        DateTime d1 = DateTime.Now;
-                        PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
-                        object parsedValue = ParseValue(value, propertyInfo.PropertyType);
-                        copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
-
-
-                        Console.Clear();
-                        if (products.Any(x => x.Id == value) && property == "Id")
-                            throw new FormatException("This id is already exist");
-
-                        AcceptingModify(copy, out accept);
-
-                        if (accept)
-                        {
-                            Product jsonBefore = null;
-                            if (correctNumber && number <= products.Count && number > 0)
+                            int count = 1;
+                            Console.Clear();
+                            foreach (var employees in listOfEmployees)
                             {
-                                jsonBefore = new Product(products[number - 1]);
-                                products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
-                                products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee, products[number - 1].listOfModifications));
+                                Console.WriteLine($"{count}. {employees.Position} {employees.Name} {employees.LastName}");
+                                count++;
                             }
-                            else if (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord))
-                            {
-                                jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
-                                products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
-                                products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), d1, employee, products.Find(x => x.Id == modifyingRecord).listOfModifications));
-                            }
-                            Program.JsonFileRecord(ref products);
-                            correctAnswer = true;
-                        }
-                        else
+                            Console.Write("\n\nNumber : ");
+                            bool itIsCorrect = int.TryParse(Console.ReadLine(), out int numberOfEmployee);
+
+                            if (!itIsCorrect || listOfEmployees.Count < numberOfEmployee || numberOfEmployee <= 0)
+                                continue;
+
+                            employee1 = listOfEmployees[numberOfEmployee - 1];
+
+                            value = $"{employee1.Name} {employee1.LastName} {employee1.Position} {employee1.Age} {employee1.Id} {employee1.Login} {employee1.Password} {employee1.LastName} {employee1.mainAccount}";
                             break;
-                    }
-                    catch (TargetInvocationException tie)
-                    {
-                        Exception innerException = tie.InnerException;
-                        Utils.ExceptionAnswer(innerException.Message);
 
+                        } while (true);
                     }
-                    catch (FormatException e)
+                    else
                     {
-                        Utils.ExceptionAnswer(e.Message);
-                    }
+                        Console.Write($"\nChanging {property}: ");
+                        value = Console.ReadLine();
 
-                } while (!correctAnswer);
-            } while (!correctModifying);
+                        if (string.IsNullOrEmpty(value))
+                            throw new FormatException("Lack of infomrations to modify");
+                        else if (property == "Price")
+                            value = value.Replace('.', ',');
+                    }
+                    Console.Clear();
+                    if (products.Any(x => x.Id == value) && property == "Id")
+                        throw new FormatException("This id is already exist");
+
+                    PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
+                    object parsedValue = Utils.ParseValue(value, propertyInfo.PropertyType);
+                    copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
+
+
+                    AcceptingModify(copy, out accept);
+                    Product jsonBefore = null;
+
+                    if (accept && (correctNumber && number <= products.Count && number > 0))
+                    {
+                        jsonBefore = new Product(products[number - 1]);
+                        products[number - 1].GetType().GetProperty(property).SetValue(products[number - 1], parsedValue);
+                        products[number - 1].HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), DateTime.Now, employee, products[number - 1].listOfModifications));
+                    }
+                    else if (accept && (Regex.IsMatch(modifyingRecord, @"^[A-Za-z]{4}\d{5}$") && products.Any(x => x.Id == modifyingRecord)))
+                    {
+                        jsonBefore = new Product(products.Find(x => x.Id == modifyingRecord));
+                        products.Find(x => x.Id == modifyingRecord).GetType().GetProperty(property).SetValue(products.Find(x => x.Id == modifyingRecord), parsedValue);
+                        products.Find(x => x.Id == modifyingRecord).HistoryOfProduct(new HistoryModifications(new ProductHistory(jsonBefore), new ProductHistory(copy), DateTime.Now, employee, products.Find(x => x.Id == modifyingRecord).listOfModifications));
+                    }
+                    else
+                        continue;
+                    Program.JsonFileRecord(ref products);
+                    break;
+                }
+                catch (TargetInvocationException tie)
+                {
+                    Exception innerException = tie.InnerException;
+                    Utils.ExceptionAnswer(innerException.Message);
+
+                }
+                catch (FormatException e)
+                {
+                    Utils.ExceptionAnswer(e.Message);
+                }
+
+            } while (true);
 
         } // Modifying products (id/index)
-        public static void ModifyingReportHistory(ref List<Product> listOfProducts, string systemOp, Employee employee)
+        public static void ModifyingReportHistory(ref List<Product> listOfProducts, Employee employee)
         {
             bool ListEmpty = Utils.IsItListEmpty(listOfProducts);
             if (ListEmpty)
@@ -224,7 +203,7 @@ namespace Warehouse_Application
             {
                 Product productToChange = new Product();
                 int number;
-                bool correctNumber, garph = false;
+                bool correctNumber;
                 string answer;
                 Console.Clear();
                 int count = 0;
@@ -272,7 +251,6 @@ namespace Warehouse_Application
                 }
                 else if (productToChange.listOfModifications.Count > 0)
                 {
-                    bool attempt = false;
                     do
                     {
                         Console.Clear();
@@ -305,100 +283,33 @@ namespace Warehouse_Application
                         Console.Write("\n\nWrite a ID of modiciation to undoing modification, 0 to exit or 1 to remove all history\nId: ");
                         string secondAnswer = Console.ReadLine();
 
-                        if (Regex.IsMatch(secondAnswer, @"^[a-zA-Z0-9]{5}$"))
+                        if (Regex.IsMatch(secondAnswer, @"^[a-zA-Z0-9]{5}$") && productToChange.listOfModifications.Any(x => x.idModofication == secondAnswer))
                         {
-                            if (productToChange.listOfModifications.Any(x => x.idModofication == secondAnswer))
-                            {
-                                DateTime d1 = DateTime.Now;
+                            HistoryModifications h1 = new HistoryModifications();
+                            h1 = productToChange.listOfModifications.Find(x => x.idModofication == secondAnswer);
+                            productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory(new Product(productToChange)), new ProductHistory(new Product(h1.before)), DateTime.Now, employee, productToChange.listOfModifications));
+                            listOfProducts[index] = new Product(h1.before, productToChange.listOfModifications);
+                            break;
 
-                                HistoryModifications h1 = new HistoryModifications();
-                                h1 = productToChange.listOfModifications.Find(x => x.idModofication == secondAnswer);
-                                productToChange.HistoryOfProduct(new HistoryModifications(new ProductHistory(new Product(productToChange)), new ProductHistory(new Product(h1.before)), d1, employee, productToChange.listOfModifications));
-                                listOfProducts[index] = new Product(h1.before, productToChange.listOfModifications);
-                                attempt = true;
-                                Program.JsonFileRecord(ref listOfProducts);
-
-                            }
                         }
                         else if (secondAnswer == "1")
                         {
                             productToChange.listOfModifications.Clear();
                             listOfProducts[index] = productToChange;
-                            attempt = true;
+                            break;
                         }
                         else if (secondAnswer == "0")
-                            attempt = true;
+                        {
+                            break;
+                        }
 
-                        Program.JsonFileRecord(ref listOfProducts);
-                    } while (!attempt);
+                    } while (true);
                 }
             } while (!endOfModifications);
 
         } // undoing modifications/ All history
-        public static object ParseValue(string input, Type targetType)
-        {
-
-            if (targetType == typeof(int))
-            {
-                if (int.TryParse(input, out int x) && x > 0)
-                {
-                    return x;
-                }
-                else
-                {
-                    throw new FormatException("Quantity is not correct");
-                }
-            }
-            else if (targetType == typeof(double))
-            {
-                if (double.TryParse(input, out double x) && x >= 0)
-                {
-                    return x;
-                }
-                else
-                {
-                    throw new FormatException("Price is not correct");
-                }
-            }
-            else if (targetType == typeof(string))
-            {
-                if (input.Length > 0)
-                {
-                    return input;
-                }
-                else
-                {
-                    throw new FormatException("Name is not correct");
-                }
-            }
-            else if (targetType == typeof(DateTime))
-            {
-                if (DateTime.TryParse(input, out DateTime x))
-                {
-                    return x;
-                }
-            }
-            else if (targetType == typeof(bool))
-            {
-                if (bool.TryParse(input, out bool x))
-                {
-                    return x;
-                }
-            }
-            else if (targetType == typeof(Employee))
-            {
-                string[] employeeInfo = input.Split(' ');
-                Enum.TryParse(employeeInfo[2], out PositionName x);
-                int.TryParse(employeeInfo[3], out int y);
-                bool.TryParse(employeeInfo[7], out bool z);
-                return new Employee(employeeInfo[0], employeeInfo[1], x, y, employeeInfo[4], employeeInfo[6], employeeInfo[5], z);
-
-            }
-            throw new FormatException("Error with target type");
-        } // Parse value 
         private static void AcceptingModify(Product p1, out bool accpet)
         {
-            bool infinity = false;
             do
             {
                 Console.Clear();
@@ -415,8 +326,7 @@ namespace Warehouse_Application
                     accpet = false;
                     return;
                 }
-            } while (!infinity);
-            accpet = false;
+            } while (true);
 
         } // Accepting modifying product
         public static void NewDelivery(ref List<Product> products, Employee employee)
@@ -441,13 +351,11 @@ namespace Warehouse_Application
                 else if (id == "0")
                     answer = true;
                 else if (!products.Any(x => x.Id == id))
-                {
-                    bool correctAnwer;
+                { 
                     do
                     {
                         Console.Clear();
                         Console.WriteLine("This id is not in our database\n\n1. Add product with new ID\n2. Write another Id\n\nNumber: ");
-                        correctAnwer = true;
                         string answerId = Console.ReadLine();
                         switch (answerId)
                         {
@@ -458,10 +366,10 @@ namespace Warehouse_Application
                             case "2":
                                 break;
                             default:
-                                correctAnwer = false;
-                                break;
+                                continue;
                         }
-                    } while (!correctAnwer);
+                        break;
+                    } while (true);
                 }
                 else
                 {
@@ -476,7 +384,6 @@ namespace Warehouse_Application
         {
             Product copy = product;
             string property = string.Empty;
-            string value = "";
             bool accept;
             do
             {
@@ -502,12 +409,11 @@ namespace Warehouse_Application
             } while (string.IsNullOrEmpty(property));
 
             Console.Write($"Changing {property}: ");
-            value = Console.ReadLine();
+            string value = Console.ReadLine();
 
 
-            DateTime d1 = DateTime.Now;
             PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
-            object parsedValue = ParseValue(value, propertyInfo.PropertyType);
+            object parsedValue = Utils.ParseValue(value, propertyInfo.PropertyType);
             copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
             Console.Clear();
 
@@ -516,7 +422,7 @@ namespace Warehouse_Application
             {
                 copy = new Product(products[index]);
                 products[index].GetType().GetProperty(property).SetValue(products[index], parsedValue);
-                products[index].HistoryOfProduct(new HistoryModifications(new ProductHistory(product), new ProductHistory(copy), d1, employee, products[index].listOfModifications));
+                products[index].HistoryOfProduct(new HistoryModifications(new ProductHistory(product), new ProductHistory(copy), DateTime.Now, employee, products[index].listOfModifications));
             }
         } // modifying engine (Delivery)
     }

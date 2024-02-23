@@ -8,7 +8,7 @@ internal class Program
     {
         bool firstTime = true; 
         int number;
-        bool closeProgram = false, correctNumber = false;
+        bool closeProgram = false;
 
         List<Employee> employees = new List<Employee>();
         List<Product> listOfProducts = new List<Product>();
@@ -26,12 +26,12 @@ internal class Program
 
         do
         {
+            bool correctNumber = false;
             switch (employee.Position)
             {
                 case PositionName.Admin:
                     do
                     {
-                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1.\tAdd product\n2. \tRemoving product\n3. \tReports and sorting\n4. \tModifying Product\n5. \tHistory of Modifying\n6. \tStatistics\n7. \tAdding new employee\n8. \tModifying employees\n9. \tLoad JSON file\n10. \tLog out\n0. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
@@ -55,7 +55,8 @@ internal class Program
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
+                                JsonFileRecord(ref listOfProducts);
                                 break;
 
                             case 6:
@@ -67,7 +68,7 @@ internal class Program
                                 break;
 
                             case 8:
-                                EmployeeMethods.EmployeeModifying(ref employees);
+                                EmployeeMethods.MenuOfEmployee(ref employees);
                                 break;
 
                             case 9:
@@ -91,7 +92,6 @@ internal class Program
                 case PositionName.Employee:
                     do
                     {
-                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1. \tAdd product\n2. \tRemoving product\n3. \tModifying Product\n4. \tLoad JSON file\n5. \tLog out\n6. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
@@ -133,7 +133,6 @@ internal class Program
                 case PositionName.Manager:
                     do
                     {
-                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1. \tAdd product\n2. \tRemoving product\n3. \tReports and sorting\n4. \tModifying Product\n5. \tHistory of Modifying\n6. \tLoad JSON file\n7. \tLog out\n8. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
@@ -157,7 +156,8 @@ internal class Program
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, systemOperation,employee);
+                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
+                                JsonFileRecord(ref listOfProducts);
                                 break;
 
                             case 6:
@@ -183,7 +183,6 @@ internal class Program
                 case PositionName.Supplier:
                     do
                     {
-                        correctNumber = true;
                         Console.Clear();
                         Console.WriteLine("1. \tNew delivery\n2. \tLog out\n3. \tExit");
                         Console.Write($"\n\nPosition: {employee.Position}\nName: {employee.Name}\nLast Name: {employee.LastName}\n\nNumber: ");
