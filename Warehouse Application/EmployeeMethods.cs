@@ -63,11 +63,9 @@ namespace Warehouse_Application
                     else if (number == 0)
                         Environment.Exit(0);
 
-
                     employee = employees[number - 1];
 
                     Console.Clear();
-
                     Console.WriteLine("LOGIN");
                     Console.Write("\n\nLogin: ");
                     string login = Console.ReadLine();
@@ -146,9 +144,7 @@ namespace Warehouse_Application
                 employee.Name = name;
             }
             else
-            {
                 throw new FormatException("Wrong name format");
-            }
 
 
             Console.Write("Last name: ");
@@ -160,29 +156,17 @@ namespace Warehouse_Application
                 employee.LastName = lastName;
             }
             else
-            {
                 throw new FormatException("Wrong last name format");
-            }
-
+            
             Console.Write("Id (3 chars): ");
             string id = Console.ReadLine();
 
-            if(Regex.IsMatch(id, @"^[A-Za-z0-9]+$"))
-            {
-                if (employees == null)
-                    employee.Id = id;
-                else
-                {
-                    if (employees.Any(x => x.Id == id))
-                        throw new FormatException("This id is already exist");
-
-                    employee.Id = id;
-                }
-            }
+            if(Regex.IsMatch(id, @"^[A-Za-z0-9]+$") && !employees.Any(x => x.Id == id))
+                employee.Id = id;
+            else if(employees.Any(x => x.Id == id))
+                throw new FormatException("This id is already exist");
             else
-            {
                 throw new FormatException("Wrong id format");
-            }
 
 
             Console.Write("Age: ");
@@ -202,9 +186,7 @@ namespace Warehouse_Application
                     login += p.ToString();
                 }
                 if (firsTime || string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"))))
-                {
                     break;
-                }
                 else if (!employees.Any(x => x.Login == login))
                     break;
 
@@ -235,20 +217,16 @@ namespace Warehouse_Application
                 firsTimeList.Add(employee);
                 json = JsonConvert.SerializeObject(firsTimeList);
             }
+            else if(string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"))))
+            {
+                List<Employee> employees1 = new List<Employee>();
+                employees1.Add(employee);
+                json = JsonConvert.SerializeObject(employees1);
+            }
             else
             {
-                if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"))))
-                {
-                    List<Employee> employees1 = new List<Employee>();
-                    employees1.Add(employee);
-                    json = JsonConvert.SerializeObject(employees1);
-
-                }
-                else
-                {
-                    employees.Add(employee);
-                    json = JsonConvert.SerializeObject(employees);
-                }
+                employees.Add(employee);
+                json = JsonConvert.SerializeObject(employees);
             }
 
             File.WriteAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"), json);
@@ -259,16 +237,14 @@ namespace Warehouse_Application
         } /// Adding informations do new Employee 
         public static void MenuOfEmployee(ref List<Employee> listEmployees)
         {
-            bool correctChoosing = true;
             do
             {
-                correctChoosing = true;
                 try
                 {
                     Console.Clear();
                     Console.Write("1.Remove\n2.Modifying\n3.Exit\n\nNumber: ");
                     string answer = Console.ReadLine();
-                    switch(answer)
+                    switch (answer)
                     {
                         case "1":
                             RemovingEmployee(ref listEmployees);
@@ -279,8 +255,7 @@ namespace Warehouse_Application
                         case "3":
                             return;
                         default:
-                            correctChoosing = false;
-                            break;
+                            continue;
                     }
                 }
                 catch (TargetInvocationException tie)
@@ -295,18 +270,16 @@ namespace Warehouse_Application
                     Utils.ExceptionAnswer(ex.Message);
                 }
                 Console.Clear();
-
-            } while (!correctChoosing);
+                break;
+            } while (true);
         } ///Options to remove or modifying employee
         private static void EmployeeModifyingData(ref Employee employee, List<Employee> employees)
         {
             Employee copy = employee;
             string property = "", value = "";
-            bool correctModify;
 
             do
             {
-                correctModify = true;
                 Console.Clear();
                 employee.GraphicEmployee();
                 Console.WriteLine("9.Exit");
@@ -342,18 +315,18 @@ namespace Warehouse_Application
                     case "9":
                         return;
                     default:
-                        correctModify = false;
-                        break;
+                        continue;
+                        
                 }
-            } while (!correctModify);
+                break;
+            } while (true);
 
 
             if (property == "Position")
             {
-                bool x = true;
                 do
                 {
-                    x = true;
+                    
                     Console.Clear();
                     Console.Write("1.Admin\n2.Supplier\n3.Employee\n4.Manager\n5.Exit\nNumber: ");
                     string answer = Console.ReadLine();
@@ -374,18 +347,17 @@ namespace Warehouse_Application
                         case "5":
                             return;
                         default:
-                            x = false;
-                            break;
+                            continue;
+                            
 
                     }
-                } while (!x);
+                    break;
+                } while (true);
             }
             else if (property == "mainAccount")
             {
-                bool x = true;
                 do
                 {
-                    x = true;
                     Console.Clear();
                     Console.WriteLine("1.Main account (true)\n2.Main account (false)\n3.Exit");
                     string answer = Console.ReadLine();
@@ -400,10 +372,10 @@ namespace Warehouse_Application
                         case "3":
                             return;
                         default:
-                            break;
-
+                            continue;
                     }
-                } while (!x);
+                    break;
+                } while (true);
             }
             else
             {
@@ -473,15 +445,15 @@ namespace Warehouse_Application
                         Console.WriteLine("WARNING\n\n");
                         Console.ResetColor();
                         Console.Write("You are going to delete last admin position\nThis will delete all files\n\n1.Delete\n2.Continue\n\nNumber: ");
-                        string answer = Console.ReadLine();
+                        int.TryParse(Console.ReadLine(), out int result);
 
-                        if (answer == "1")
+                        if (result == 1)
                         {
                             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                             Directory.Delete(Path.Combine(systemOp, "WareHouse"), true);
                             Environment.Exit(0); 
                         }
-                        else if (answer == "2")
+                        else if (result == 2)
                             break;
 
                     } while (true);
@@ -517,9 +489,7 @@ namespace Warehouse_Application
                 bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
                 if (number == 0 && correctNumber)
-                {
                     break;
-                }
                 else if (number <= count && number > 0 && correctNumber)
                 {
                     Employee employee = listEmployees[number - 1];
@@ -533,7 +503,6 @@ namespace Warehouse_Application
                 }
             } while (true);
         }// Modifying employee
-        
     }
 }
 
