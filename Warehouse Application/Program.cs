@@ -16,7 +16,7 @@ internal class Program
 
 
         string systemOperation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse");
-        Utils.FirstTimeUsing(ref listOfProducts, ref systemOperation, ref employees, ref firstTime);
+        Utils.FirstTimeUsing(listOfProducts, ref systemOperation,employees, ref firstTime);
 
 
         EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
@@ -39,11 +39,11 @@ internal class Program
                         switch (number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, employee);
+                                Utils.AddingProduct(listOfProducts, employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts);
+                                Utils.RemovingRecord(listOfProducts);
                                 break;
 
                             case 3:
@@ -99,11 +99,11 @@ internal class Program
                         switch(number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts,employee);
+                                Utils.AddingProduct(listOfProducts,employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts);
+                                Utils.RemovingRecord(listOfProducts);
                                 break;
 
                             case 3:
@@ -140,11 +140,11 @@ internal class Program
                         switch(number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, employee);
+                                Utils.AddingProduct(listOfProducts, employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts);
+                                Utils.RemovingRecord(listOfProducts);
                                 break;
 
                             case 3:

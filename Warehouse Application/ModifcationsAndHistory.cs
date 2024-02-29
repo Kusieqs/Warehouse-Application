@@ -360,7 +360,7 @@ namespace Warehouse_Application
                         switch (answerId)
                         {
                             case "1":
-                                Utils.AddingProduct(ref products, employee);
+                                Utils.AddingProduct(products, employee);
                                 Program.JsonFileRecord(ref products);
                                 break;
                             case "2":
