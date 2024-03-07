@@ -413,7 +413,7 @@ namespace Warehouse_Application
             Console.WriteLine("Click enter to continue");
             Console.ReadKey();
         }///message about error
-        public static void JsonFileLoad(ref List<Product> products)
+        public static void JsonFileLoad(List<Product> products)
         {
             Console.Clear();
             Console.Write("Write path of file: ");
@@ -438,7 +438,7 @@ namespace Warehouse_Application
                             item.ObjectGraphic();
                         }
                         count = 0;
-                        Console.WriteLine("\n\n1.Remove records\n2.Accept list and add to main list\n3.Exit\n\n");
+                        Console.WriteLine("\n\n1.Remove record\n2.Accept list and add to main list\n3.Exit\n\n");
                         Console.Write("Number: ");
                         string answer = Console.ReadLine();
                         int.TryParse(answer, out int number);
@@ -485,7 +485,7 @@ namespace Warehouse_Application
                                             Console.ResetColor();
                                             Console.WriteLine($"1.\n");
                                             productsFromMainList.ObjectGraphic();
-                                            Console.WriteLine("\n\n\n2.\n");
+                                            Console.WriteLine("\n2.\n");
                                             addedList.ObjectGraphic();
                                             Console.Write("Choose 1 to remove from main list or 2 to remove from added list (3 to retrun): ");
 
@@ -507,7 +507,7 @@ namespace Warehouse_Application
                                     }
                                 }
                                 products = products.Concat(jsonList).ToList();
-                                Program.JsonFileRecord(ref products);
+                                Program.JsonFileRecord(products);
                                 Console.Clear();
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine("List added to main list");
@@ -545,61 +545,23 @@ namespace Warehouse_Application
         public static object ParseValue(string input, Type targetType)
         {
 
-            if (targetType == typeof(int))
-            {
-                if (int.TryParse(input, out int x) && x > 0)
-                {
-                    return x;
-                }
-                else
-                {
-                    throw new FormatException("Quantity is not correct");
-                }
-            }
-            else if (targetType == typeof(double))
-            {
-                if (double.TryParse(input, out double x) && x >= 0)
-                {
-                    return x;
-                }
-                else
-                {
-                    throw new FormatException("Price is not correct");
-                }
-            }
-            else if (targetType == typeof(string))
-            {
-                if (input.Length > 0)
-                {
-                    return input;
-                }
-                else
-                {
-                    throw new FormatException("Name is not correct");
-                }
-            }
-            else if (targetType == typeof(DateTime))
-            {
-                if (DateTime.TryParse(input, out DateTime x))
-                {
-                    return x;
-                }
-            }
-            else if (targetType == typeof(bool))
-            {
-                if (bool.TryParse(input, out bool x))
-                {
-                    return x;
-                }
-            }
+            if (targetType == typeof(int) && int.TryParse(input, out int x) && x > 0)
+                return x;
+            else if (targetType == typeof(double) && double.TryParse(input, out double y) && y >= 0)
+                return y;
+            else if (targetType == typeof(string) && input.Length > 0)
+                return input;
+            else if (targetType == typeof(DateTime) && DateTime.TryParse(input, out DateTime date))
+                return date;
+            else if (targetType == typeof(bool) && bool.TryParse(input, out bool isTrue))
+                return isTrue;
             else if (targetType == typeof(Employee))
             {
                 string[] employeeInfo = input.Split(' ');
-                Enum.TryParse(employeeInfo[2], out PositionName x);
-                int.TryParse(employeeInfo[3], out int y);
-                bool.TryParse(employeeInfo[7], out bool z);
-                return new Employee(employeeInfo[0], employeeInfo[1], x, y, employeeInfo[4], employeeInfo[6], employeeInfo[5], z);
-
+                Enum.TryParse(employeeInfo[2], out PositionName posiation);
+                int.TryParse(employeeInfo[3], out int quantity);
+                bool.TryParse(employeeInfo[7], out bool main);
+                return new Employee(employeeInfo[0], employeeInfo[1], posiation, quantity, employeeInfo[4], employeeInfo[6], employeeInfo[5], main);
             }
             throw new FormatException("Error with target type");
         } // Parse value
@@ -608,7 +570,7 @@ namespace Warehouse_Application
             Console.BackgroundColor = ConsoleColor.White;
             Console.WriteLine(x);
             Console.ResetColor();
-        }
+        } // split console words with long white stripe
 
     }
 }
