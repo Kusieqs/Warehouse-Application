@@ -175,7 +175,7 @@ namespace Warehouse_Application
                     }
                     else
                         continue;
-                    Program.JsonFileRecord(ref products);
+                    Program.JsonFileRecord(products);
                     break;
                 }
                 catch (TargetInvocationException tie)
@@ -346,7 +346,7 @@ namespace Warehouse_Application
                     product = new Product(products.Find(x => x.Id == id));
                     int index = products.FindIndex(x => x.Id == id);
                     ModifyingProductDelivery(product, employee, ref products, index);
-                    Program.JsonFileRecord(ref products);
+                    Program.JsonFileRecord(products);
                 }
                 else if (id == "0")
                     answer = true;
@@ -361,7 +361,7 @@ namespace Warehouse_Application
                         {
                             case "1":
                                 Utils.AddingProduct(products, employee);
-                                Program.JsonFileRecord(ref products);
+                                Program.JsonFileRecord(products);
                                 break;
                             case "2":
                                 break;

@@ -180,7 +180,7 @@ namespace Warehouse_Application
                     if (choosingYesNo == "1")
                     {
                         products.Remove(p1);
-                        Program.JsonFileRecord(ref products);
+                        Program.JsonFileRecord(products);
                         break;
                     }
                     else if (choosingYesNo == "2")

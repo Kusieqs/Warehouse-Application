@@ -5,13 +5,14 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 
 namespace Warehouse_Application
 {
     public static class ReportMethods
     {
-        public static void ReportOfProducts(ref List<Product> products)
+        public static void ReportOfProducts(List<Product> products)
         {
 
             bool endOfRaport = false;
@@ -92,6 +93,7 @@ namespace Warehouse_Application
                             }
                             Console.WriteLine("\n\n");
                             ReportMenu(report, ref endSearching, copyList);
+                            
                         } while (!endSearching);
                     }
                     else
@@ -99,28 +101,186 @@ namespace Warehouse_Application
                         Console.WriteLine("\nId is not in the database\nClick enter to continue or 0 to exit");
                         string exitOrNot = Console.ReadLine();
                         if (exitOrNot == "0")
-                            endSearching = true;
+                            break;
                     }
                 }
                 else if (idSearching == "0")
-                    endSearching = true;
+                    break;
                 else
                 {
                     Console.WriteLine("\nWrong id (4 Letters and 5 numbers, example: Abcd12345)\nClick enter to continue or 0 to exit");
                     string exitOrNot = Console.ReadLine();
                 }
 
-            } while (!endSearching);
+            } while (true);
         } // show product with inscribed id
+        private static string CategoryOfSort(string sortingBy,ref bool itIsString,ref bool attempt, ref bool program)
+        {
+            switch (sortingBy)
+            {
+                case "1":
+                    sortingBy = "Price";
+                    itIsString = false;
+                    break;
+                case "2":
+                    sortingBy = "Quantity";
+                    itIsString = false;
+                    break;
+                case "3":
+                    sortingBy = "date";
+                    itIsString = false;
+                    break;
+                case "4":
+                    sortingBy = "addedBy";
+                    do
+                    {
+                        attempt = true;
+                        Console.Clear();
+                        Console.Write("Sorting by:\n1.Position\n2.Name\n3.Last name\n4.Age\n5.Id Employee\nNumber: ");
+                        string answer = Console.ReadLine();
+                        switch (answer)
+                        {
+                            case "1":
+                                sortingBy += ".Position";
+                                break;
+                            case "2":
+                                sortingBy += ".name";
+                                break;
+                            case "3":
+                                sortingBy += ".LastName";
+                                break;
+                            case "4":
+                                sortingBy += ".Age";
+                                itIsString = false;
+                                break;
+                            case "5":
+                                sortingBy += ".Id";
+                                break;
+                            default:
+                                attempt = false;
+                                break;
+                        }
+                    } while (!attempt);
+                    break;
+                case "5":
+                    program = true;
+                    return "";
+                default:
+                    attempt = false;
+                    return "";
+            }
+            return sortingBy;
+        }
+        private static void DateSort(ref string sortingBy,ref string value,ref bool attempt)
+        {
+            DateTime dateSorting;
+            int year, month, day;
+            bool yearBool, monthBool, dayBool;
+            Console.Clear();
+            Console.Write("Sorting by:\n1. Day\n2. Month\n3. Year\n4. Date\nNumber: ");
+            string answerDate = Console.ReadLine();
+            switch (answerDate)
+            {
+                case "1":
+                    sortingBy = "day";
+                    Console.Write("Day: ");
+                    dayBool = int.TryParse(Console.ReadLine(), out day);
+                    if (!dayBool)
+                    {
+                        break;
+                    }
+                    value = day.ToString();
+                    attempt = true;
+                    break;
+
+                case "2":
+                    sortingBy = "month";
+                    Console.Write("Month: ");
+                    monthBool = int.TryParse(Console.ReadLine(), out month);
+                    if (!monthBool)
+                    {
+                        break;
+                    }
+                    value = month.ToString();
+                    attempt = true;
+                    break;
+
+                case "3":
+                    sortingBy = "year";
+                    Console.Write("Year: ");
+                    yearBool = int.TryParse(Console.ReadLine(), out year);
+                    if (!yearBool)
+                    {
+                        break;
+                    }
+                    value = year.ToString();
+                    attempt = true;
+                    break;
+
+                case "4":
+                    Console.Clear();
+                    Console.Write("Year: ");
+                    yearBool = int.TryParse(Console.ReadLine(), out year);
+                    Console.Write("Month: ");
+                    monthBool = int.TryParse(Console.ReadLine(), out month);
+                    Console.Write("Day: ");
+                    dayBool = int.TryParse(Console.ReadLine(), out day);
+                    if (yearBool && monthBool && dayBool)
+                    {
+                        if ((year < 1 || month < 1 || month > 12 || day < 1))
+                        {
+                            int daysInMonth = DateTime.DaysInMonth(year, month);
+                            Console.WriteLine("Wrong Date\nClick enter to continue");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            int daysInMonth = DateTime.DaysInMonth(year, month);
+                            if (daysInMonth >= day)
+                            {
+                                dateSorting = new DateTime(year, month, day);
+                                value = dateSorting.ToString();
+                                attempt = true;
+
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        private static void PositionSort(ref string value,ref bool addedByAccept)
+        {
+            Console.Clear();
+            Console.Write("1.Admin\n2.Manager\n3.Employee\n4.Supplier\nNumber: ");
+            string answer = Console.ReadLine();
+            switch (answer)
+            {
+                case "1":
+                    value = PositionName.Admin.ToString();
+                    break;
+                case "2":
+                    value = PositionName.Manager.ToString();
+                    break;
+                case "3":
+                    value = PositionName.Employee.ToString();
+                    break;
+                case "4":
+                    value = PositionName.Supplier.ToString();
+                    break;
+                default:
+                    addedByAccept = false;
+                    break;
+            }
+        }
         private static void SortingByValue(List<Product> products)
         {
             List<Product> copyList = new List<Product>();
             List<Product> sortList = new List<Product>();
-            bool endOfSort = false, attempt = true, itIsString = true;
+            bool endOfSort = false, attempt = true, itIsString = true, program = false;
             string sortingBy, operatorSort = "";
-            DateTime dateSorting;
             string value = "";
-            int year, month, day;
             do
             {
                 itIsString = true;
@@ -130,58 +290,11 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.Write("1.Sort by value price\n2.Sort by value quantity\n3.Sort by date\n4.Sort by employee\n5.Exit\n\nNumber: ");
                     sortingBy = Console.ReadLine();
-                    switch (sortingBy)
-                    {
-                        case "1":
-                            sortingBy = "Price";
-                            itIsString = false;
-                            break;
-                        case "2":
-                            sortingBy = "Quantity";
-                            itIsString = false;
-                            break;
-                        case "3":
-                            sortingBy = "date";
-                            itIsString = false;
-                            break;
-                        case "4":
-                            sortingBy = "addedBy";
-                            do
-                            {
-                                attempt = true;
-                                Console.Clear();
-                                Console.Write("Sorting by:\n1.Position\n2.Name\n3.Last name\n4.Age\n5.Id Employee\nNumber: ");
-                                string answer = Console.ReadLine();
-                                switch (answer)
-                                {
-                                    case "1":
-                                        sortingBy += ".Position";
-                                        break;
-                                    case "2":
-                                        sortingBy += ".name";
-                                        break;
-                                    case "3":
-                                        sortingBy += ".LastName";
-                                        break;
-                                    case "4":
-                                        sortingBy += ".Age";
-                                        itIsString = false;
-                                        break;
-                                    case "5":
-                                        sortingBy += ".Id";
-                                        break;
-                                    default:
-                                        attempt = false;
-                                        break;
-                                }
-                            } while (!attempt);
-                            break;
-                        case "5":
-                            return;
-                        default:
-                            attempt = false;
-                            break;
-                    }
+
+                    sortingBy = CategoryOfSort(sortingBy, ref itIsString, ref attempt, ref program);
+
+                    if (program)
+                        return;
 
                 } while (!attempt);
 
@@ -191,80 +304,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     if (sortingBy == "date")
                     {
-                        bool yearBool, monthBool, dayBool;
-                        Console.Clear();
-                        Console.Write("Sorting by:\n1. Day\n2. Month\n3. Year\n4. Date\n\nNumber: ");
-                        string answerDate = Console.ReadLine();
-                        switch (answerDate)
-                        {
-                            case "1":
-                                sortingBy = "day";
-                                Console.Write("Day: ");
-                                dayBool = int.TryParse(Console.ReadLine(), out day);
-                                if (!dayBool)
-                                {
-                                    break;
-                                }
-                                value = day.ToString();
-                                attempt = true;
-                                break;
-
-                            case "2":
-                                sortingBy = "month";
-                                Console.Write("Month: ");
-                                monthBool = int.TryParse(Console.ReadLine(), out month);
-                                if (!monthBool)
-                                {
-                                    break;
-                                }
-                                value = month.ToString();
-                                attempt = true;
-                                break;
-
-                            case "3":
-                                sortingBy = "year";
-                                Console.Write("Year: ");
-                                yearBool = int.TryParse(Console.ReadLine(), out year);
-                                if (!yearBool)
-                                {
-                                    break;
-                                }
-                                value = year.ToString();
-                                attempt = true;
-                                break;
-
-                            case "4":
-                                Console.Clear();
-                                Console.Write("Year: ");
-                                yearBool = int.TryParse(Console.ReadLine(), out year);
-                                Console.Write("Month: ");
-                                monthBool = int.TryParse(Console.ReadLine(), out month);
-                                Console.Write("Day: ");
-                                dayBool = int.TryParse(Console.ReadLine(), out day);
-                                if (yearBool && monthBool && dayBool)
-                                {
-                                    if ((year < 1 || month < 1 || month > 12 || day < 1))
-                                    {
-                                        int daysInMonth = DateTime.DaysInMonth(year, month);
-                                        Console.WriteLine("Wrong Date\nClick enter to continue");
-                                        Console.ReadKey();
-                                    }
-                                    else
-                                    {
-                                        int daysInMonth = DateTime.DaysInMonth(year, month);
-                                        if (daysInMonth >= day)
-                                        {
-                                            dateSorting = new DateTime(year, month, day);
-                                            value = dateSorting.ToString();
-                                            attempt = true;
-
-                                        }
-                                    }
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+                        DateSort(ref sortingBy,ref value,ref attempt);
                     }
                     else if (sortingBy == "addedBy.Position")
                     {
@@ -272,27 +312,7 @@ namespace Warehouse_Application
                         do
                         {
                             addedByAccept = true;
-                            Console.Clear();
-                            Console.Write("1.Admin\n2.Manager\n3.Employee\n4.Supplier\nNumber: ");
-                            string answer = Console.ReadLine();
-                            switch (answer)
-                            {
-                                case "1":
-                                    value = PositionName.Admin.ToString();
-                                    break;
-                                case "2":
-                                    value = PositionName.Manager.ToString();
-                                    break;
-                                case "3":
-                                    value = PositionName.Employee.ToString();
-                                    break;
-                                case "4":
-                                    value = PositionName.Supplier.ToString();
-                                    break;
-                                default:
-                                    addedByAccept = false;
-                                    break;
-                            }
+                            PositionSort(ref value, ref addedByAccept);
 
                         } while (!addedByAccept);
                         attempt = true;

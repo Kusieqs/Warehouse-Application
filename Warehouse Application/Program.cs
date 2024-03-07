@@ -19,7 +19,7 @@ internal class Program
         Utils.FirstTimeUsing(listOfProducts, ref systemOperation,employees, ref firstTime);
 
 
-        EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
+        EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
         firstTime = false;
 
         systemOperation = Path.Combine(systemOperation, "Products.json");
@@ -56,7 +56,7 @@ internal class Program
 
                             case 5:
                                 ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
-                                JsonFileRecord(ref listOfProducts);
+                                JsonFileRecord(listOfProducts);
                                 break;
 
                             case 6:
@@ -64,18 +64,18 @@ internal class Program
                                 break;
 
                             case 7:
-                                EmployeeMethods.AddingEmployee(ref employees,firstTime);
+                                EmployeeMethods.AddingEmployee(employees,firstTime);
                                 break;
 
                             case 8:
-                                EmployeeMethods.MenuOfEmployee(ref employees);
+                                EmployeeMethods.MenuOfEmployee(employees);
                                 break;
 
                             case 9:
-                                Utils.JsonFileLoad(ref listOfProducts);
+                                Utils.JsonFileLoad(listOfProducts);
                                 break;
                             case 10:
-                                EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
                                 break;
 
                             case 0:
@@ -111,11 +111,11 @@ internal class Program
                                 break;
 
                             case 4:
-                                Utils.JsonFileLoad(ref listOfProducts);
+                                Utils.JsonFileLoad(listOfProducts);
                                 break;
 
                             case 5:
-                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(employees, ref employee,firstTime);
                                 break;
 
                             case 6:
@@ -157,15 +157,15 @@ internal class Program
 
                             case 5:
                                 ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
-                                JsonFileRecord(ref listOfProducts);
+                                JsonFileRecord(listOfProducts);
                                 break;
 
                             case 6:
-                                Utils.JsonFileLoad(ref listOfProducts);
+                                Utils.JsonFileLoad(listOfProducts);
                                 break;
 
                             case 7:
-                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(employees, ref employee,firstTime);
                                 break;
 
                             case 8:
@@ -194,7 +194,7 @@ internal class Program
                                 break;
 
                             case 2:
-                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee, firstTime);
+                                EmployeeMethods.ChoosingEmployee(employees, ref employee, firstTime);
                                 break;
 
                             case 3:
@@ -211,7 +211,7 @@ internal class Program
         } while (!closeProgram);
 
     }
-    public static void JsonFileRecord(ref List<Product> products) /// Method to overwriting list of Products
+    public static void JsonFileRecord(List<Product> products) /// Method to overwriting list of Products
     {
         string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
