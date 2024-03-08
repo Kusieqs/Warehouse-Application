@@ -5,7 +5,6 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
 using Newtonsoft.Json;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 
 namespace Warehouse_Application
@@ -170,7 +169,7 @@ namespace Warehouse_Application
                     return "";
             }
             return sortingBy;
-        }
+        }// Choosing category of sort
         private static void DateSort(ref string sortingBy,ref string value,ref bool attempt)
         {
             DateTime dateSorting;
@@ -249,7 +248,7 @@ namespace Warehouse_Application
                 default:
                     break;
             }
-        }
+        } // Choosing date of sort
         private static void PositionSort(ref string value,ref bool addedByAccept)
         {
             Console.Clear();
@@ -273,7 +272,67 @@ namespace Warehouse_Application
                     addedByAccept = false;
                     break;
             }
-        }
+        } // Position of employee sort (choosing position)
+        private static void ValueSort(string sortingBy, ref bool attempt, ref string value)
+        {
+            double x;
+            int y;
+            Console.Clear();
+            Console.Write("Value: ");
+            string addedValue = Console.ReadLine();
+            addedValue = addedValue.Replace('.', ',');
+            if (sortingBy == "Price")
+            {
+                attempt = double.TryParse(addedValue, out x);
+                value = x.ToString();
+            }
+            else if (sortingBy == "Quantity")
+            {
+                attempt = int.TryParse(addedValue, out y);
+                value = y.ToString();
+
+            }
+            else if (sortingBy == "addedBy.Age")
+            {
+                attempt = int.TryParse(addedValue, out y);
+                value = y.ToString();
+            }
+        }// Add value of sort
+        private static void ChoosingOperator(bool itIsString, string sortingBy,string value,ref string operatorSort,ref bool attempt)
+        {
+            if (itIsString)
+            {
+                do
+                {
+                    Console.Clear();
+                    Console.Write($"Choose one of this operators ( = , != )\n\n{sortingBy} [operator] {value}: ");
+                    operatorSort = Console.ReadLine();
+                    string[] operators = new string[] { "=", "!=" };
+                    for (int i = 0; i < operators.Length; i++)
+                    {
+                        if (operatorSort == operators[i])
+                            attempt = true;
+                    }
+
+                } while (!attempt);
+            }
+            else
+            {
+                do
+                {
+                    Console.Clear();
+                    Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= )\n\n{sortingBy} [operator] {value}: ");
+                    operatorSort = Console.ReadLine();
+                    string[] operators = new string[] { "=", "!=", ">", "<", ">=", "<=" };
+                    for (int i = 0; i < operators.Length; i++)
+                    {
+                        if (operatorSort == operators[i])
+                            attempt = true;
+                    }
+
+                } while (!attempt);
+            }
+        }//Choosing operator to sort
         private static void SortingByValue(List<Product> products)
         {
             List<Product> copyList = new List<Product>();
@@ -329,65 +388,13 @@ namespace Warehouse_Application
                     {
                         do
                         {
-                            double x;
-                            int y;
-                            Console.Clear();
-                            Console.Write("Value: ");
-                            string addedValue = Console.ReadLine();
-                            addedValue = addedValue.Replace('.', ',');
-                            if (sortingBy == "Price")
-                            {
-                                attempt = double.TryParse(addedValue, out x);
-                                value = x.ToString();
-                            }
-                            else if (sortingBy == "Quantity")
-                            {
-                                attempt = int.TryParse(addedValue, out y);
-                                value = y.ToString();
-
-                            }
-                            else if (sortingBy == "addedBy.Age")
-                            {
-                                attempt = int.TryParse(addedValue, out y);
-                                value = y.ToString();
-                            }
+                            ValueSort(sortingBy, ref attempt, ref value);
                         } while (!attempt);
                     }
                 } while (!attempt);
 
                 attempt = false;
-                if (itIsString)
-                {
-                    do
-                    {
-                        Console.Clear();
-                        Console.Write($"Choose one of this operators ( = , != )\n\n{sortingBy} [operator] {value}: ");
-                        operatorSort = Console.ReadLine();
-                        string[] operators = new string[] { "=", "!=" };
-                        for (int i = 0; i < operators.Length; i++)
-                        {
-                            if (operatorSort == operators[i])
-                                attempt = true;
-                        }
-
-                    } while (!attempt);
-                }
-                else
-                {
-                    do
-                    {
-                        Console.Clear();
-                        Console.Write($"Choose one of this operators ( = , != , > , < , >= , <= )\n\n{sortingBy} [operator] {value}: ");
-                        operatorSort = Console.ReadLine();
-                        string[] operators = new string[] { "=", "!=", ">", "<", ">=", "<=" };
-                        for (int i = 0; i < operators.Length; i++)
-                        {
-                            if (operatorSort == operators[i])
-                                attempt = true;
-                        }
-
-                    } while (!attempt);
-                }
+                ChoosingOperator(itIsString, sortingBy, value, ref operatorSort,ref attempt);
 
                 if (sortingBy.Split('.')[0] == "addedBy")
                 {
@@ -614,10 +621,9 @@ namespace Warehouse_Application
                 Console.WriteLine("File is complete!");
             }
             else
-            {
                 Console.WriteLine("File is empty!\nClick enter to continue");
-                Console.ReadKey();
-            }
+
+            Console.ReadKey();
             Console.Clear();
         } // Saving to txt file
         private static void PdfCreater(string report)
@@ -650,21 +656,18 @@ namespace Warehouse_Application
                     y += lineHeight;
                 }
                 document.Save(Path.Combine(path, "WareHouse", fileName + ".pdf"));
+                Console.WriteLine("File was saved.\nClick enter to continue");
             }
             else
-            {
                 Console.WriteLine("File is empty!\nClick enter to continue");
-                Console.ReadKey();
-            }
+
+            Console.ReadKey();
             Console.Clear();
         } // Saving to pdf file
         private static void ExcelCreater(List<Product> products)
         {
             if (products.Count == 0)
-            {
                 Console.WriteLine("List is empty!\nClick enter to continue");
-                Console.ReadKey();
-            }
             else
             {
                 string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -706,13 +709,14 @@ namespace Warehouse_Application
                     worksheet.Cells.AutoFitColumns();
                     package.Save();
                     Console.Clear();
+                    Console.WriteLine("File was saved.\nClick enter to continue");
                 }
+                Console.ReadKey();
 
             }
         }// Saving to excel file
         private static void JsonCreater(List<Product> products)
         {
-
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string fileName = Utils.NameFile();
             string path = Path.Combine(systemOp, "WareHouse", fileName + ".json");
