@@ -47,15 +47,15 @@ internal class Program
                                 break;
 
                             case 3:
-                                ReportMethods.ReportOfProducts(ref listOfProducts);
+                                ReportMethods.ReportOfProducts(listOfProducts);
                                 break;
 
                             case 4:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
+                                ModificationsAndHistory.ModifyingProduct(listOfProducts,employee);
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
+                                ModificationsAndHistory.ModifyingReportHistory(listOfProducts, employee);
                                 JsonFileRecord(listOfProducts);
                                 break;
 
@@ -107,7 +107,7 @@ internal class Program
                                 break;
 
                             case 3:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
+                                ModificationsAndHistory.ModifyingProduct(listOfProducts,employee);
                                 break;
 
                             case 4:
@@ -148,15 +148,15 @@ internal class Program
                                 break;
 
                             case 3:
-                                ReportMethods.ReportOfProducts(ref listOfProducts);
+                                ReportMethods.ReportOfProducts(listOfProducts);
                                 break;
 
                             case 4:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
+                                ModificationsAndHistory.ModifyingProduct(listOfProducts,employee);
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
+                                ModificationsAndHistory.ModifyingReportHistory(listOfProducts, employee);
                                 JsonFileRecord(listOfProducts);
                                 break;
 
@@ -190,7 +190,7 @@ internal class Program
                         switch (number)
                         {
                             case 1:
-                                ModificationsAndHistory.NewDelivery(ref listOfProducts, employee);
+                                ModificationsAndHistory.NewDelivery(listOfProducts, employee);
                                 break;
 
                             case 2:
