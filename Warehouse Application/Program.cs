@@ -16,10 +16,10 @@ internal class Program
 
 
         string systemOperation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse");
-        Utils.FirstTimeUsing(ref listOfProducts, ref systemOperation, ref employees, ref firstTime);
+        Utils.FirstTimeUsing(listOfProducts, ref systemOperation,employees, ref firstTime);
 
 
-        EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
+        EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
         firstTime = false;
 
         systemOperation = Path.Combine(systemOperation, "Products.json");
@@ -39,24 +39,24 @@ internal class Program
                         switch (number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, employee);
+                                Utils.AddingProduct(listOfProducts, employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts);
+                                Utils.RemovingRecord(listOfProducts);
                                 break;
 
                             case 3:
-                                ReportMethods.ReportOfProducts(ref listOfProducts);
+                                ReportMethods.ReportOfProducts(listOfProducts);
                                 break;
 
                             case 4:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
+                                ModificationsAndHistory.ModifyingProduct(listOfProducts,employee);
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
-                                JsonFileRecord(ref listOfProducts);
+                                ModificationsAndHistory.ModifyingReportHistory(listOfProducts, employee);
+                                JsonFileRecord(listOfProducts);
                                 break;
 
                             case 6:
@@ -64,18 +64,18 @@ internal class Program
                                 break;
 
                             case 7:
-                                EmployeeMethods.AddingEmployee(ref employees,firstTime);
+                                EmployeeMethods.AddingEmployee(employees,firstTime);
                                 break;
 
                             case 8:
-                                EmployeeMethods.MenuOfEmployee(ref employees);
+                                EmployeeMethods.MenuOfEmployee(employees);
                                 break;
 
                             case 9:
-                                Utils.JsonFileLoad(ref listOfProducts);
+                                Utils.JsonFileLoad(listOfProducts);
                                 break;
                             case 10:
-                                EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
                                 break;
 
                             case 0:
@@ -99,23 +99,23 @@ internal class Program
                         switch(number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts,employee);
+                                Utils.AddingProduct(listOfProducts,employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts);
+                                Utils.RemovingRecord(listOfProducts);
                                 break;
 
                             case 3:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
+                                ModificationsAndHistory.ModifyingProduct(listOfProducts,employee);
                                 break;
 
                             case 4:
-                                Utils.JsonFileLoad(ref listOfProducts);
+                                Utils.JsonFileLoad(listOfProducts);
                                 break;
 
                             case 5:
-                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(employees, ref employee,firstTime);
                                 break;
 
                             case 6:
@@ -140,32 +140,32 @@ internal class Program
                         switch(number)
                         {
                             case 1:
-                                Utils.AddingProduct(ref listOfProducts, employee);
+                                Utils.AddingProduct(listOfProducts, employee);
                                 break;
 
                             case 2:
-                                Utils.RemovingRecord(ref listOfProducts);
+                                Utils.RemovingRecord(listOfProducts);
                                 break;
 
                             case 3:
-                                ReportMethods.ReportOfProducts(ref listOfProducts);
+                                ReportMethods.ReportOfProducts(listOfProducts);
                                 break;
 
                             case 4:
-                                ModificationsAndHistory.ModifyingProduct(ref listOfProducts,employee);
+                                ModificationsAndHistory.ModifyingProduct(listOfProducts,employee);
                                 break;
 
                             case 5:
-                                ModificationsAndHistory.ModifyingReportHistory(ref listOfProducts, employee);
-                                JsonFileRecord(ref listOfProducts);
+                                ModificationsAndHistory.ModifyingReportHistory(listOfProducts, employee);
+                                JsonFileRecord(listOfProducts);
                                 break;
 
                             case 6:
-                                Utils.JsonFileLoad(ref listOfProducts);
+                                Utils.JsonFileLoad(listOfProducts);
                                 break;
 
                             case 7:
-                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(employees, ref employee,firstTime);
                                 break;
 
                             case 8:
@@ -190,11 +190,11 @@ internal class Program
                         switch (number)
                         {
                             case 1:
-                                ModificationsAndHistory.NewDelivery(ref listOfProducts, employee);
+                                ModificationsAndHistory.NewDelivery(listOfProducts, employee);
                                 break;
 
                             case 2:
-                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee, firstTime);
+                                EmployeeMethods.ChoosingEmployee(employees, ref employee, firstTime);
                                 break;
 
                             case 3:
@@ -211,7 +211,7 @@ internal class Program
         } while (!closeProgram);
 
     }
-    public static void JsonFileRecord(ref List<Product> products) /// Method to overwriting list of Products
+    public static void JsonFileRecord(List<Product> products) /// Method to overwriting list of Products
     {
         string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");

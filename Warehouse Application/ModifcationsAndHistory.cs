@@ -8,7 +8,7 @@ namespace Warehouse_Application
 {
     public static class ModificationsAndHistory
     {
-        public static void ModifyingProduct(ref List<Product> products, Employee employee)
+        public static void ModifyingProduct(List<Product> products, Employee employee)
         {
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             systemOp = Path.Combine(systemOp, "WareHouse", "Products.json");
@@ -175,7 +175,7 @@ namespace Warehouse_Application
                     }
                     else
                         continue;
-                    Program.JsonFileRecord(ref products);
+                    Program.JsonFileRecord(products);
                     break;
                 }
                 catch (TargetInvocationException tie)
@@ -192,7 +192,7 @@ namespace Warehouse_Application
             } while (true);
 
         } // Modifying products (id/index)
-        public static void ModifyingReportHistory(ref List<Product> listOfProducts, Employee employee)
+        public static void ModifyingReportHistory(List<Product> listOfProducts, Employee employee)
         {
             bool ListEmpty = Utils.IsItListEmpty(listOfProducts);
             if (ListEmpty)
@@ -329,7 +329,7 @@ namespace Warehouse_Application
             } while (true);
 
         } // Accepting modifying product
-        public static void NewDelivery(ref List<Product> products, Employee employee)
+        public static void NewDelivery(List<Product> products, Employee employee)
         {
             Product product;
             bool answer = false;
@@ -345,8 +345,8 @@ namespace Warehouse_Application
                 {
                     product = new Product(products.Find(x => x.Id == id));
                     int index = products.FindIndex(x => x.Id == id);
-                    ModifyingProductDelivery(product, employee, ref products, index);
-                    Program.JsonFileRecord(ref products);
+                    ModifyingProductDelivery(product, employee, products, index);
+                    Program.JsonFileRecord(products);
                 }
                 else if (id == "0")
                     answer = true;
@@ -360,8 +360,8 @@ namespace Warehouse_Application
                         switch (answerId)
                         {
                             case "1":
-                                Utils.AddingProduct(ref products, employee);
-                                Program.JsonFileRecord(ref products);
+                                Utils.AddingProduct(products, employee);
+                                Program.JsonFileRecord(products);
                                 break;
                             case "2":
                                 break;
@@ -380,7 +380,7 @@ namespace Warehouse_Application
 
             } while (!answer);
         }  // adding new Product to list or changing quantity/ price of product
-        private static void ModifyingProductDelivery(Product product, Employee employee, ref List<Product> products, int index)
+        private static void ModifyingProductDelivery(Product product, Employee employee,List<Product> products, int index)
         {
             Product copy = product;
             string property = string.Empty;

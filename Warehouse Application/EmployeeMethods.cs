@@ -28,7 +28,7 @@ namespace Warehouse_Application
             } while (true);
 
         } /// Accepting Modifying employee
-        public static void AddingEmployee(ref List<Employee> employees, bool firsTime)
+        public static void AddingEmployee(List<Employee> employees, bool firsTime)
         {
             Employee employee = new Employee();
             do
@@ -61,7 +61,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.WriteLine($"Position: {employee.Position}");
 
-                    NewEmployeeInformation(employee, ref employees, firsTime);
+                    NewEmployeeInformation(employee, employees, firsTime);
 
                     break;
 
@@ -74,7 +74,7 @@ namespace Warehouse_Application
 
 
         } /// adding new employee to list
-        public static void ChoosingEmployee(ref List<Employee> employees, ref Employee employee, bool firstTime)
+        public static void ChoosingEmployee(List<Employee> employees, ref Employee employee, bool firstTime)
         {
             do
             {
@@ -90,7 +90,7 @@ namespace Warehouse_Application
                         Console.WriteLine("\n\nAdmin Information");
                         employee.Position = PositionName.Admin;
 
-                        NewEmployeeInformation(employee,ref employees, firstTime);
+                        NewEmployeeInformation(employee,employees, firstTime);
                     }
 
                     int line = 1;
@@ -133,7 +133,7 @@ namespace Warehouse_Application
                 }
             } while (true);
         }/// Setting first admin or choosing employee
-        public static void MenuOfEmployee(ref List<Employee> listEmployees)
+        public static void MenuOfEmployee(List<Employee> listEmployees)
         {
             do
             {
@@ -145,10 +145,10 @@ namespace Warehouse_Application
                     switch (answer)
                     {
                         case "1":
-                            RemovingEmployee(ref listEmployees);
+                            RemovingEmployee(listEmployees);
                             break;
                         case "2":
-                            EmployeeModifying(ref listEmployees);
+                            EmployeeModifying(listEmployees);
                             break;
                         case "3":
                             return;
@@ -171,7 +171,7 @@ namespace Warehouse_Application
                 break;
             } while (true);
         } ///Options to remove or modifying employee
-        private static void NewEmployeeInformation(Employee employee, ref List<Employee> employees, bool firsTime)
+        private static void NewEmployeeInformation(Employee employee,List<Employee> employees, bool firsTime)
         {
             Console.Write($"Name: ");
             string name = Console.ReadLine();
@@ -400,7 +400,7 @@ namespace Warehouse_Application
                 employee = copy;
 
         } // Changing informations about employee
-        private static void RemovingEmployee(ref List<Employee> listEmployees)
+        private static void RemovingEmployee(List<Employee> listEmployees)
         {
             bool correctNumber = false;
 
@@ -468,7 +468,7 @@ namespace Warehouse_Application
             } while (true);
 
         }// Deleting employee
-        public static void EmployeeModifying(ref List<Employee> listEmployees)
+        public static void EmployeeModifying(List<Employee> listEmployees)
         {
             do
             {
