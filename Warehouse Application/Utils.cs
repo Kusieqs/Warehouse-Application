@@ -185,7 +185,7 @@ namespace Warehouse_Application
                 Console.Clear();
                 Console.Write("File Name: ");
                 x = Console.ReadLine();
-                if (x.Length > 0)
+                if (x.Length > 0 && Regex.IsMatch(x, @"^[A-Za-z0-9]+$"))
                     attempt = true;
 
             } while (!attempt);

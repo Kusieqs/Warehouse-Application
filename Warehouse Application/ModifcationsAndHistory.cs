@@ -265,11 +265,11 @@ namespace Warehouse_Application
                             Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.Write($"BEFORE\n");
                             Console.ResetColor();
-                            Console.Write($"1.Name:{history.before.name}\n2.Price:{history.before.price}\n3.Quantity:{history.before.quantity}\n4.Id:{history.before.id}\n5.Date:{history.before.date}\n6.Added by: {history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
+                            Console.Write($"1.Name:\t{history.before.name}\n2.Price:\t{history.before.price}\n3.Quantity:\t{history.before.quantity}\n4.Id:\t{history.before.id}\n5.Date:\t{history.before.date}\n6.Added by:\t{history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
                             Console.ForegroundColor = ConsoleColor.Magenta;
-                            Console.WriteLine("AFTER");
+                            Console.WriteLine("\n\nAFTER");
                             Console.ResetColor();
-                            Console.Write($"1.Name:{history.after.name}\n2.Price:{history.after.price}\n3.Quantity:{history.after.quantity}\n4.Id:{history.after.id}\n5.Date:{history.after.date}\n6.Added by: {history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
+                            Console.Write($"1.Name:\t{history.after.name}\n2.Price:\t{history.after.price}\n3.Quantity:\t{history.after.quantity}\n4.Id:\t{history.after.id}\n5.Date:\t{history.after.date}\n6.Added by:\t{history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
                             string x = "".PadLeft(30);
                             Console.WriteLine(x);
                             Console.BackgroundColor = ConsoleColor.White;
