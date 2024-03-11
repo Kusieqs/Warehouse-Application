@@ -61,7 +61,7 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.WriteLine($"Position: {employee.Position}");
 
-                    NewEmployeeInformation(employee, employees, firsTime);
+                    NewEmployeeInformation(employee,employees, firsTime);
 
                     break;
 
@@ -92,7 +92,8 @@ namespace Warehouse_Application
 
                         NewEmployeeInformation(employee,employees, firstTime);
                     }
-
+                    string reader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
+                    employees = JsonConvert.DeserializeObject<List<Employee>>(reader);
                     int line = 1;
                     Console.Clear();
                     foreach (var worker in employees)
@@ -104,7 +105,7 @@ namespace Warehouse_Application
                     Console.Write("\nNumber: ");
                     bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
-                    if (!correctNumber || employees.Count < number)
+                    if (!correctNumber || employees.Count < number || number < 0)
                         continue;
                     else if (number == 0)
                         Environment.Exit(0);
@@ -174,7 +175,7 @@ namespace Warehouse_Application
         private static void NewEmployeeInformation(Employee employee,List<Employee> employees, bool firsTime)
         {
             Console.Write($"Name: ");
-            string name = Console.ReadLine();
+            string name = Console.ReadLine().Trim();
             if (Regex.IsMatch(name, @"^[A-Za-z]+$"))
             {
                 name = name.ToLower();
@@ -186,7 +187,7 @@ namespace Warehouse_Application
 
 
             Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
+            string lastName = Console.ReadLine().Trim();
             if (Regex.IsMatch(lastName, @"^[A-Za-z]+$"))
             {
                 lastName = lastName.ToLower();
@@ -197,7 +198,7 @@ namespace Warehouse_Application
                 throw new FormatException("Wrong last name format");
             
             Console.Write("Id (3 chars): ");
-            string id = Console.ReadLine();
+            string id = Console.ReadLine().Trim();
 
             if(Regex.IsMatch(id, @"^[A-Za-z0-9]+$") && !employees.Any(x => x.Id == id))
                 employee.Id = id;

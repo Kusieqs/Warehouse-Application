@@ -30,11 +30,11 @@ namespace Warehouse_Application
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correct = false;
             string data;
-            Product p1 = new Product();
             do
             {
                 try
                 {
+                    Product p1 = new Product();
                     #region Name
                     Console.Clear();
                     Console.WriteLine("Write '-' to go to menu\n\n");
@@ -86,21 +86,16 @@ namespace Warehouse_Application
                     p1.addedBy = employee;
 
                     string jsonCreator;
-                    correct = true;
-
-                    if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
-                    {
-                        List<Product> products1Copy = new List<Product>();
-                        products1Copy.Add(p1);
-                        jsonCreator = JsonConvert.SerializeObject(products1Copy);
-                        File.WriteAllText(systemOp, jsonCreator);
-                        break;
-                    }
-                    else if (!products.Any(x => x.Id == data))
+                    if (!products.Any(x => x.Id == data))
                     {
                         products.Add(p1);
                         jsonCreator = JsonConvert.SerializeObject(products);
                         File.WriteAllText(systemOp, jsonCreator);
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\nProduct added to list");
+                        Console.ResetColor();
+                        Console.WriteLine("Click enter to continue");
+                        Console.ReadKey();
                     }
                     else
                         throw new FormatException("Id is already exist!");
@@ -110,17 +105,7 @@ namespace Warehouse_Application
                 {
                     ExceptionAnswer(e.Message);
                 }
-            } while (!correct);
-
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nProduct added to list");
-            Console.ResetColor();
-            Console.WriteLine("Click enter to continue");
-            Console.ReadKey();
-
-            string jsonWriter = File.ReadAllText(systemOp);
-            products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
+            } while (true);
 
         }/// adding new product to list
         public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number)

@@ -24,6 +24,12 @@ internal class Program
 
         systemOperation = Path.Combine(systemOperation, "Products.json");
 
+        if(!string.IsNullOrEmpty(systemOperation))
+        {
+            string jsonWriter = File.ReadAllText(systemOperation);
+            listOfProducts = JsonConvert.DeserializeObject<List<Product>>(jsonWriter).ToList();
+        }
+
         do
         {
             bool correctNumber = false;
