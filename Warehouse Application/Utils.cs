@@ -529,10 +529,9 @@ namespace Warehouse_Application
         } /// checking if list is empty
         public static object ParseValue(string input, Type targetType)
         {
-
-            if (targetType == typeof(int) && int.TryParse(input, out int x) && x > 0)
+            if (targetType == typeof(int) && int.TryParse(input, out int x) && x >= 0)
                 return x;
-            else if (targetType == typeof(double) && double.TryParse(input, out double y) && y >= 0)
+            else if (targetType == typeof(double) && double.TryParse(input, out double y) && y > 0)
                 return y;
             else if (targetType == typeof(string) && input.Length > 0)
                 return input;
@@ -548,7 +547,7 @@ namespace Warehouse_Application
                 bool.TryParse(employeeInfo[7], out bool main);
                 return new Employee(employeeInfo[0], employeeInfo[1], posiation, quantity, employeeInfo[4], employeeInfo[6], employeeInfo[5], main);
             }
-            throw new FormatException("Error with target type");
+            throw new FormatException("Error with target type or value");
         } // Parse value
         private static void WhiteStripe(string x)
         {

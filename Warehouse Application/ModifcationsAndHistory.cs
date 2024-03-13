@@ -147,20 +147,19 @@ namespace Warehouse_Application
                         if (string.IsNullOrEmpty(value))
                             throw new FormatException("Lack of infomrations to modify");
                         else if (property == "Price")
-                            value = value.Replace('.', ',');
+                            value = value.Replace(',', '.');
                     }
+
                     Console.Clear();
                     if (products.Any(x => x.Id == value) && property == "Id")
                         throw new FormatException("This id is already exist");
 
                     PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
-                    object parsedValue = Utils.ParseValue(value, propertyInfo.PropertyType);
+                    var parsedValue = Utils.ParseValue(value, propertyInfo.PropertyType);
                     copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
-
-
                     AcceptingModify(copy, out accept);
-                    Product jsonBefore = null;
 
+                    Product jsonBefore = null;
                     if (accept && (correctNumber && number <= products.Count && number > 0))
                     {
                         jsonBefore = new Product(products[number - 1]);
@@ -256,7 +255,7 @@ namespace Warehouse_Application
                         Console.Clear();
                         foreach (var history in productToChange.listOfModifications)
                         {
-
+                            #region informations about modifications
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine($"DATE MODIFICATION: {history.date}\n");
                             Console.WriteLine($"ID MODIFICATION:   {history.idModofication}");
@@ -265,16 +264,17 @@ namespace Warehouse_Application
                             Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.Write($"BEFORE\n");
                             Console.ResetColor();
-                            Console.Write($"1.Name:\t{history.before.name}\n2.Price:\t{history.before.price}\n3.Quantity:\t{history.before.quantity}\n4.Id:\t{history.before.id}\n5.Date:\t{history.before.date}\n6.Added by:\t{history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
+                            Console.Write($"1.Name:\t{history.before.name}\n2.Price:\t\t{history.before.price}\n3.Quantity:\t{history.before.quantity}\n4.Id:\t\t{history.before.id}\n5.Date:\t\t{history.before.date}\n6.Added by:\t{history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
                             Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.WriteLine("\n\nAFTER");
                             Console.ResetColor();
-                            Console.Write($"1.Name:\t{history.after.name}\n2.Price:\t{history.after.price}\n3.Quantity:\t{history.after.quantity}\n4.Id:\t{history.after.id}\n5.Date:\t{history.after.date}\n6.Added by:\t{history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
+                            Console.Write($"1.Name:\t\t{history.after.name}\n2.Price:\t{history.after.price}\n3.Quantity:\t{history.after.quantity}\n4.Id:\t\t{history.after.id}\n5.Date:\t\t{history.after.date}\n6.Added by:\t{history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
                             string x = "".PadLeft(30);
                             Console.WriteLine(x);
                             Console.BackgroundColor = ConsoleColor.White;
                             Console.WriteLine();
                             Console.ResetColor();
+                            #endregion
                         }
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\nNOW:");
