@@ -61,6 +61,9 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.WriteLine($"Position: {employee.Position}");
 
+                    string jsonReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
+                    employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
+
                     NewEmployeeInformation(employee,employees, firsTime);
 
                     break;
@@ -80,8 +83,9 @@ namespace Warehouse_Application
             {
                 try
                 {
+                    string readerFile = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
                     Console.Clear();
-                    if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"))))
+                    if (string.IsNullOrEmpty(readerFile) || readerFile =="[]")
                     {
                         Console.ForegroundColor = ConsoleColor.DarkBlue;
                         Console.WriteLine("Welcome to warehouse app. Please provide information for the main admin");
@@ -92,10 +96,11 @@ namespace Warehouse_Application
 
                         NewEmployeeInformation(employee,employees, firstTime);
                     }
-                    string reader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
-                    employees = JsonConvert.DeserializeObject<List<Employee>>(reader);
+                    readerFile = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
+                    employees = JsonConvert.DeserializeObject<List<Employee>>(readerFile);
                     int line = 1;
                     Console.Clear();
+
                     foreach (var worker in employees)
                     {
                         Console.WriteLine($"{line}. {worker.Name} {worker.LastName} {worker.Position}");
@@ -243,35 +248,16 @@ namespace Warehouse_Application
             else
                 employee.mainAccount = false;
 
-            string json;
-            List<Employee> firsTimeList = new List<Employee>();
 
             Console.Clear();
             Console.WriteLine($"WRITE DOWN THIS INFORMATION:\n\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n\nClick enter to continue");
             Console.ReadKey();
 
+
+            employees.Add(employee);
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            if (firsTime)
-            {
-                firsTimeList.Add(employee);
-                json = JsonConvert.SerializeObject(firsTimeList);
-            }
-            else if(string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"))))
-            {
-                List<Employee> employees1 = new List<Employee>();
-                employees1.Add(employee);
-                json = JsonConvert.SerializeObject(employees1);
-            }
-            else
-            {
-                employees.Add(employee);
-                json = JsonConvert.SerializeObject(employees);
-            }
-
+            string json = JsonConvert.SerializeObject(employees);
             File.WriteAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"), json);
-
-            string jsonReader = File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"));
-            employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
 
         } /// Adding informations do new Employee 
         private static void EmployeeModifyingData(ref Employee employee, List<Employee> employees)

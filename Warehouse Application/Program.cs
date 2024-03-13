@@ -18,18 +18,19 @@ internal class Program
         string systemOperation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse");
         Utils.FirstTimeUsing(listOfProducts, ref systemOperation,employees, ref firstTime);
 
-
         EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
         firstTime = false;
-
         systemOperation = Path.Combine(systemOperation, "Products.json");
 
-        if(!string.IsNullOrEmpty(systemOperation))
+        if(!string.IsNullOrEmpty(File.ReadAllText(systemOperation)))
         {
             string jsonWriter = File.ReadAllText(systemOperation);
             listOfProducts = JsonConvert.DeserializeObject<List<Product>>(jsonWriter).ToList();
         }
-
+        else
+        {
+            listOfProducts = JsonConvert.DeserializeObject<List<Product>>("[]").ToList();
+        }
         do
         {
             bool correctNumber = false;
@@ -81,6 +82,7 @@ internal class Program
                                 Utils.JsonFileLoad(listOfProducts);
                                 break;
                             case 10:
+
                                 EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
                                 break;
 
