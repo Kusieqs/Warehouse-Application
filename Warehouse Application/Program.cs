@@ -18,7 +18,7 @@ internal class Program
         string systemOperation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse");
         Utils.FirstTimeUsing(listOfProducts, ref systemOperation,employees, ref firstTime);
 
-        EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
+        EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
         firstTime = false;
         systemOperation = Path.Combine(systemOperation, "Products.json");
 
@@ -75,7 +75,7 @@ internal class Program
                                 break;
 
                             case 8:
-                                EmployeeMethods.MenuOfEmployee(employees);
+                                EmployeeMethods.MenuOfEmployee(employees,employee.Id);
                                 break;
 
                             case 9:
@@ -83,7 +83,7 @@ internal class Program
                                 break;
                             case 10:
 
-                                EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
                                 break;
 
                             case 0:
@@ -123,7 +123,7 @@ internal class Program
                                 break;
 
                             case 5:
-                                EmployeeMethods.ChoosingEmployee(employees, ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
                                 break;
 
                             case 6:
@@ -173,7 +173,7 @@ internal class Program
                                 break;
 
                             case 7:
-                                EmployeeMethods.ChoosingEmployee(employees, ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
                                 break;
 
                             case 8:
@@ -202,7 +202,7 @@ internal class Program
                                 break;
 
                             case 2:
-                                EmployeeMethods.ChoosingEmployee(employees, ref employee, firstTime);
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee, firstTime);
                                 break;
 
                             case 3:

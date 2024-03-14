@@ -77,7 +77,7 @@ namespace Warehouse_Application
 
 
         } /// adding new employee to list
-        public static void ChoosingEmployee(List<Employee> employees, ref Employee employee, bool firstTime)
+        public static void ChoosingEmployee(ref List<Employee> employees, ref Employee employee, bool firstTime)
         {
             do
             {
@@ -139,7 +139,7 @@ namespace Warehouse_Application
                 }
             } while (true);
         }/// Setting first admin or choosing employee
-        public static void MenuOfEmployee(List<Employee> listEmployees)
+        public static void MenuOfEmployee(List<Employee> listEmployees, string id)
         {
             do
             {
@@ -151,7 +151,7 @@ namespace Warehouse_Application
                     switch (answer)
                     {
                         case "1":
-                            RemovingEmployee(listEmployees);
+                            RemovingEmployee(listEmployees,id);
                             break;
                         case "2":
                             EmployeeModifying(listEmployees);
@@ -387,7 +387,7 @@ namespace Warehouse_Application
                 employee = copy;
 
         } // Changing informations about employee
-        private static void RemovingEmployee(List<Employee> listEmployees)
+        private static void RemovingEmployee(List<Employee> listEmployees,string id)
         {
             bool correctNumber = false;
 
@@ -408,6 +408,10 @@ namespace Warehouse_Application
 
                 if (correctNumber && number == 0)
                     break;
+                else if(id == listEmployees[number - 1].Id)
+                {
+                    throw new FormatException("You can't delete your account");
+                }
                 else if ((correctNumber && number > 0 && number <= count)&&(!listEmployees[number - 1].mainAccount && listEmployees.Count > 1))
                 {
                     Console.Clear();
@@ -418,7 +422,7 @@ namespace Warehouse_Application
                         listEmployees.RemoveAt(number - 1);
                         string system = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                         string json = JsonConvert.SerializeObject(listEmployees);
-                        File.WriteAllText(system, json);
+                        File.WriteAllText(Path.Combine(system,"WareHouse","Employee.json"), json);
                     }
                     else
                         continue;
@@ -455,7 +459,7 @@ namespace Warehouse_Application
             } while (true);
 
         }// Deleting employee
-        public static void EmployeeModifying(List<Employee> listEmployees)
+        private static void EmployeeModifying(List<Employee> listEmployees)
         {
             do
             {
@@ -484,9 +488,8 @@ namespace Warehouse_Application
                     listEmployees[number - 1] = employee;
 
                     string system = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    system = Path.Combine(system, "WareHouse", "Employee.json");
                     string json = JsonConvert.SerializeObject(listEmployees);
-                    File.WriteAllText(system, json);
+                    File.WriteAllText(Path.Combine(system, "WareHouse", "Employee.json"), json);
                 }
             } while (true);
         }// Modifying employee

@@ -332,14 +332,15 @@ namespace Warehouse_Application
         public static void NewDelivery(List<Product> products, Employee employee)
         {
             Product product;
-            bool answer = false;
             do
             {
                 Console.Clear();
-                Console.Write("Write ID or 0 to exit: ");
+                Console.Write("Write ID or - to exit: ");
                 string id = Console.ReadLine();
 
-                if (id.Length != 9)
+                if (id == "-")
+                    break;
+                else if(id.Length != 9)
                     continue;
                 else if (products.Any(x => x.Id == id))
                 {
@@ -348,14 +349,12 @@ namespace Warehouse_Application
                     ModifyingProductDelivery(product, employee, products, index);
                     Program.JsonFileRecord(products);
                 }
-                else if (id == "0")
-                    answer = true;
                 else if (!products.Any(x => x.Id == id))
-                { 
+                {
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("This id is not in our database\n\n1. Add product with new ID\n2. Write another Id\n\nNumber: ");
+                        Console.Write("This id is not in our database\n\n1. Add product with new ID\n2. Write another Id\n\nNumber: ");
                         string answerId = Console.ReadLine();
                         switch (answerId)
                         {
@@ -378,7 +377,7 @@ namespace Warehouse_Application
                     Console.ReadKey();
                 }
 
-            } while (!answer);
+            } while (true);
         }  // adding new Product to list or changing quantity/ price of product
         private static void ModifyingProductDelivery(Product product, Employee employee,List<Product> products, int index)
         {
