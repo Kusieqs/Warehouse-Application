@@ -28,9 +28,9 @@ internal class Program
             listOfProducts = JsonConvert.DeserializeObject<List<Product>>(jsonWriter).ToList();
         }
         else
-        {
             listOfProducts = JsonConvert.DeserializeObject<List<Product>>("[]").ToList();
-        }
+
+
         do
         {
             bool correctNumber = false;
@@ -79,7 +79,7 @@ internal class Program
                                 break;
 
                             case 9:
-                                Utils.JsonFileLoad(listOfProducts);
+                                Utils.JsonFileLoad(ref listOfProducts);
                                 break;
                             case 10:
 
@@ -119,7 +119,7 @@ internal class Program
                                 break;
 
                             case 4:
-                                Utils.JsonFileLoad(listOfProducts);
+                                Utils.JsonFileLoad(ref listOfProducts);
                                 break;
 
                             case 5:
@@ -169,7 +169,7 @@ internal class Program
                                 break;
 
                             case 6:
-                                Utils.JsonFileLoad(listOfProducts);
+                                Utils.JsonFileLoad(ref listOfProducts);
                                 break;
 
                             case 7:

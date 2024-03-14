@@ -25,7 +25,7 @@ namespace Warehouse_Application
             jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
         } /// Checking for existence directory with data
-        public static void AddingProduct(List<Product> products, Employee employee)
+        public static void AddingProduct(List<Product> products, Employee employee,bool delivery = false)
         {
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correct = false;
@@ -105,6 +105,8 @@ namespace Warehouse_Application
                 {
                     ExceptionAnswer(e.Message);
                 }
+                if (delivery)
+                    break;
             } while (true);
 
         }/// adding new product to list
@@ -129,8 +131,6 @@ namespace Warehouse_Application
         } ///List of products to see on Removing Method nad Modifying method
         public static void RemovingRecord(List<Product> products)
         {
-            if (IsItListEmpty(products))
-                return;
 
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop), removingRecord;
             int number;
@@ -139,7 +139,8 @@ namespace Warehouse_Application
 
             do
             {
-
+                if (IsItListEmpty(products))
+                    return;
                 GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
 
                 if (correctNumber && number <= products.Count && number > 0)
@@ -398,11 +399,14 @@ namespace Warehouse_Application
             Console.WriteLine("Click enter to continue");
             Console.ReadKey();
         }///message about error
-        public static void JsonFileLoad(List<Product> products)
+        public static void JsonFileLoad(ref List<Product> products)
         {
             Console.Clear();
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
             Console.Write("Write path of file: ");
-            string path = Console.ReadLine();
+            string file = Console.ReadLine() + ".json";
+            path = Path.Combine(path, file);
             try
             {
                 if (Path.Exists(path))
@@ -431,7 +435,6 @@ namespace Warehouse_Application
                         if (number == 0)
                             continue;
 
-
                         switch (number)
                         {
                             case 1:
@@ -458,9 +461,11 @@ namespace Warehouse_Application
                                 break;
 
                             case 2:
-                                foreach (var productsFromMainList in products)
+                                List<Product> jsonProducts = jsonList.ToList();
+                                List<Product> mainProducts = products.ToList();
+                                foreach (var productsFromMainList in mainProducts)
                                 {
-                                    foreach (var addedList in jsonList)
+                                    foreach (var addedList in jsonProducts)
                                     {
                                         if (productsFromMainList.Id == addedList.Id)
                                         {
@@ -472,7 +477,7 @@ namespace Warehouse_Application
                                             productsFromMainList.ObjectGraphic();
                                             Console.WriteLine("\n2.\n");
                                             addedList.ObjectGraphic();
-                                            Console.Write("Choose 1 to remove from main list or 2 to remove from added list (3 to retrun): ");
+                                            Console.Write("Choose 1 to remove from main list or 2 to remove from added list (3 to exit): ");
 
                                             switch (Console.ReadLine())
                                             {

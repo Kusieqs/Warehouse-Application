@@ -354,12 +354,12 @@ namespace Warehouse_Application
                     do
                     {
                         Console.Clear();
-                        Console.Write("This id is not in our database\n\n1. Add product with new ID\n2. Write another Id\n\nNumber: ");
+                        Console.Write("This id is not in our database\n\n1. Add product with new ID\n2. Write another ID\n\nNumber: ");
                         string answerId = Console.ReadLine();
                         switch (answerId)
                         {
                             case "1":
-                                Utils.AddingProduct(products, employee);
+                                Utils.AddingProduct(products, employee, true);
                                 Program.JsonFileRecord(products);
                                 break;
                             case "2":
