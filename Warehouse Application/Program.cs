@@ -18,11 +18,18 @@ internal class Program
         string systemOperation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse");
         Utils.FirstTimeUsing(listOfProducts, ref systemOperation,employees, ref firstTime);
 
-
-        EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
+        EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
         firstTime = false;
-
         systemOperation = Path.Combine(systemOperation, "Products.json");
+
+        if(!string.IsNullOrEmpty(File.ReadAllText(systemOperation)))
+        {
+            string jsonWriter = File.ReadAllText(systemOperation);
+            listOfProducts = JsonConvert.DeserializeObject<List<Product>>(jsonWriter).ToList();
+        }
+        else
+            listOfProducts = JsonConvert.DeserializeObject<List<Product>>("[]").ToList();
+
 
         do
         {
@@ -68,14 +75,15 @@ internal class Program
                                 break;
 
                             case 8:
-                                EmployeeMethods.MenuOfEmployee(employees);
+                                EmployeeMethods.MenuOfEmployee(employees,employee.Id);
                                 break;
 
                             case 9:
-                                Utils.JsonFileLoad(listOfProducts);
+                                Utils.JsonFileLoad(ref listOfProducts);
                                 break;
                             case 10:
-                                EmployeeMethods.ChoosingEmployee(employees,ref employee,firstTime);
+
+                                EmployeeMethods.ChoosingEmployee(ref employees,ref employee,firstTime);
                                 break;
 
                             case 0:
@@ -111,11 +119,11 @@ internal class Program
                                 break;
 
                             case 4:
-                                Utils.JsonFileLoad(listOfProducts);
+                                Utils.JsonFileLoad(ref listOfProducts);
                                 break;
 
                             case 5:
-                                EmployeeMethods.ChoosingEmployee(employees, ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
                                 break;
 
                             case 6:
@@ -161,11 +169,11 @@ internal class Program
                                 break;
 
                             case 6:
-                                Utils.JsonFileLoad(listOfProducts);
+                                Utils.JsonFileLoad(ref listOfProducts);
                                 break;
 
                             case 7:
-                                EmployeeMethods.ChoosingEmployee(employees, ref employee,firstTime);
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee,firstTime);
                                 break;
 
                             case 8:
@@ -194,7 +202,7 @@ internal class Program
                                 break;
 
                             case 2:
-                                EmployeeMethods.ChoosingEmployee(employees, ref employee, firstTime);
+                                EmployeeMethods.ChoosingEmployee(ref employees, ref employee, firstTime);
                                 break;
 
                             case 3:

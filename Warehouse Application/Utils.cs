@@ -25,16 +25,16 @@ namespace Warehouse_Application
             jsonReader = File.ReadAllText(Path.Combine(systemOperation, "Employee.json"));
             employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
         } /// Checking for existence directory with data
-        public static void AddingProduct(List<Product> products, Employee employee)
+        public static void AddingProduct(List<Product> products, Employee employee,bool delivery = false)
         {
             string systemOp = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Products.json");
             bool correct = false;
             string data;
-            Product p1 = new Product();
             do
             {
                 try
                 {
+                    Product p1 = new Product();
                     #region Name
                     Console.Clear();
                     Console.WriteLine("Write '-' to go to menu\n\n");
@@ -86,21 +86,16 @@ namespace Warehouse_Application
                     p1.addedBy = employee;
 
                     string jsonCreator;
-                    correct = true;
-
-                    if (string.IsNullOrEmpty(File.ReadAllText(systemOp)))
-                    {
-                        List<Product> products1Copy = new List<Product>();
-                        products1Copy.Add(p1);
-                        jsonCreator = JsonConvert.SerializeObject(products1Copy);
-                        File.WriteAllText(systemOp, jsonCreator);
-                        break;
-                    }
-                    else if (!products.Any(x => x.Id == data))
+                    if (!products.Any(x => x.Id == data))
                     {
                         products.Add(p1);
                         jsonCreator = JsonConvert.SerializeObject(products);
                         File.WriteAllText(systemOp, jsonCreator);
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\nProduct added to list");
+                        Console.ResetColor();
+                        Console.WriteLine("Click enter to continue");
+                        Console.ReadKey();
                     }
                     else
                         throw new FormatException("Id is already exist!");
@@ -110,17 +105,9 @@ namespace Warehouse_Application
                 {
                     ExceptionAnswer(e.Message);
                 }
-            } while (!correct);
-
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nProduct added to list");
-            Console.ResetColor();
-            Console.WriteLine("Click enter to continue");
-            Console.ReadKey();
-
-            string jsonWriter = File.ReadAllText(systemOp);
-            products = JsonConvert.DeserializeObject<List<Product>>(jsonWriter);
+                if (delivery)
+                    break;
+            } while (true);
 
         }/// adding new product to list
         public static void GraphicRemovingAndModifying(List<Product> products, out string answer, out bool correctNumber, out int number)
@@ -144,8 +131,6 @@ namespace Warehouse_Application
         } ///List of products to see on Removing Method nad Modifying method
         public static void RemovingRecord(List<Product> products)
         {
-            if (IsItListEmpty(products))
-                return;
 
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop), removingRecord;
             int number;
@@ -154,7 +139,8 @@ namespace Warehouse_Application
 
             do
             {
-
+                if (IsItListEmpty(products))
+                    return;
                 GraphicRemovingAndModifying(products, out removingRecord, out correctNumber, out number);
 
                 if (correctNumber && number <= products.Count && number > 0)
@@ -200,7 +186,7 @@ namespace Warehouse_Application
                 Console.Clear();
                 Console.Write("File Name: ");
                 x = Console.ReadLine();
-                if (x.Length > 0)
+                if (x.Length > 0 && Regex.IsMatch(x, @"^[A-Za-z0-9]+$"))
                     attempt = true;
 
             } while (!attempt);
@@ -413,11 +399,14 @@ namespace Warehouse_Application
             Console.WriteLine("Click enter to continue");
             Console.ReadKey();
         }///message about error
-        public static void JsonFileLoad(List<Product> products)
+        public static void JsonFileLoad(ref List<Product> products)
         {
             Console.Clear();
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
             Console.Write("Write path of file: ");
-            string path = Console.ReadLine();
+            string file = Console.ReadLine() + ".json";
+            path = Path.Combine(path, file);
             try
             {
                 if (Path.Exists(path))
@@ -446,7 +435,6 @@ namespace Warehouse_Application
                         if (number == 0)
                             continue;
 
-
                         switch (number)
                         {
                             case 1:
@@ -473,9 +461,11 @@ namespace Warehouse_Application
                                 break;
 
                             case 2:
-                                foreach (var productsFromMainList in products)
+                                List<Product> jsonProducts = jsonList.ToList();
+                                List<Product> mainProducts = products.ToList();
+                                foreach (var productsFromMainList in mainProducts)
                                 {
-                                    foreach (var addedList in jsonList)
+                                    foreach (var addedList in jsonProducts)
                                     {
                                         if (productsFromMainList.Id == addedList.Id)
                                         {
@@ -487,7 +477,7 @@ namespace Warehouse_Application
                                             productsFromMainList.ObjectGraphic();
                                             Console.WriteLine("\n2.\n");
                                             addedList.ObjectGraphic();
-                                            Console.Write("Choose 1 to remove from main list or 2 to remove from added list (3 to retrun): ");
+                                            Console.Write("Choose 1 to remove from main list or 2 to remove from added list (3 to exit): ");
 
                                             switch (Console.ReadLine())
                                             {
@@ -544,10 +534,9 @@ namespace Warehouse_Application
         } /// checking if list is empty
         public static object ParseValue(string input, Type targetType)
         {
-
-            if (targetType == typeof(int) && int.TryParse(input, out int x) && x > 0)
+            if (targetType == typeof(int) && int.TryParse(input, out int x) && x >= 0)
                 return x;
-            else if (targetType == typeof(double) && double.TryParse(input, out double y) && y >= 0)
+            else if (targetType == typeof(double) && double.TryParse(input, out double y) && y > 0)
                 return y;
             else if (targetType == typeof(string) && input.Length > 0)
                 return input;
@@ -563,7 +552,7 @@ namespace Warehouse_Application
                 bool.TryParse(employeeInfo[7], out bool main);
                 return new Employee(employeeInfo[0], employeeInfo[1], posiation, quantity, employeeInfo[4], employeeInfo[6], employeeInfo[5], main);
             }
-            throw new FormatException("Error with target type");
+            throw new FormatException("Error with target type or value");
         } // Parse value
         private static void WhiteStripe(string x)
         {

@@ -147,20 +147,19 @@ namespace Warehouse_Application
                         if (string.IsNullOrEmpty(value))
                             throw new FormatException("Lack of infomrations to modify");
                         else if (property == "Price")
-                            value = value.Replace('.', ',');
+                            value = value.Replace(',', '.');
                     }
+
                     Console.Clear();
                     if (products.Any(x => x.Id == value) && property == "Id")
                         throw new FormatException("This id is already exist");
 
                     PropertyInfo propertyInfo = copy.GetType().GetProperty(property);
-                    object parsedValue = Utils.ParseValue(value, propertyInfo.PropertyType);
+                    var parsedValue = Utils.ParseValue(value, propertyInfo.PropertyType);
                     copy.GetType().GetProperty(property).SetValue(copy, parsedValue);
-
-
                     AcceptingModify(copy, out accept);
-                    Product jsonBefore = null;
 
+                    Product jsonBefore = null;
                     if (accept && (correctNumber && number <= products.Count && number > 0))
                     {
                         jsonBefore = new Product(products[number - 1]);
@@ -256,7 +255,7 @@ namespace Warehouse_Application
                         Console.Clear();
                         foreach (var history in productToChange.listOfModifications)
                         {
-
+                            #region informations about modifications
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine($"DATE MODIFICATION: {history.date}\n");
                             Console.WriteLine($"ID MODIFICATION:   {history.idModofication}");
@@ -265,16 +264,17 @@ namespace Warehouse_Application
                             Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.Write($"BEFORE\n");
                             Console.ResetColor();
-                            Console.Write($"1.Name:{history.before.name}\n2.Price:{history.before.price}\n3.Quantity:{history.before.quantity}\n4.Id:{history.before.id}\n5.Date:{history.before.date}\n6.Added by: {history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
+                            Console.Write($"1.Name:\t{history.before.name}\n2.Price:\t\t{history.before.price}\n3.Quantity:\t{history.before.quantity}\n4.Id:\t\t{history.before.id}\n5.Date:\t\t{history.before.date}\n6.Added by:\t{history.before.addedBy.Position} {history.before.addedBy.Name} {history.before.addedBy.LastName}");
                             Console.ForegroundColor = ConsoleColor.Magenta;
-                            Console.WriteLine("AFTER");
+                            Console.WriteLine("\n\nAFTER");
                             Console.ResetColor();
-                            Console.Write($"1.Name:{history.after.name}\n2.Price:{history.after.price}\n3.Quantity:{history.after.quantity}\n4.Id:{history.after.id}\n5.Date:{history.after.date}\n6.Added by: {history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
+                            Console.Write($"1.Name:\t\t{history.after.name}\n2.Price:\t{history.after.price}\n3.Quantity:\t{history.after.quantity}\n4.Id:\t\t{history.after.id}\n5.Date:\t\t{history.after.date}\n6.Added by:\t{history.after.addedBy.Position} {history.after.addedBy.Name} {history.after.addedBy.LastName}");
                             string x = "".PadLeft(30);
                             Console.WriteLine(x);
                             Console.BackgroundColor = ConsoleColor.White;
                             Console.WriteLine();
                             Console.ResetColor();
+                            #endregion
                         }
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\nNOW:");
@@ -332,14 +332,15 @@ namespace Warehouse_Application
         public static void NewDelivery(List<Product> products, Employee employee)
         {
             Product product;
-            bool answer = false;
             do
             {
                 Console.Clear();
-                Console.Write("Write ID or 0 to exit: ");
+                Console.Write("Write ID or - to exit: ");
                 string id = Console.ReadLine();
 
-                if (id.Length != 9)
+                if (id == "-")
+                    break;
+                else if(id.Length != 9)
                     continue;
                 else if (products.Any(x => x.Id == id))
                 {
@@ -348,19 +349,17 @@ namespace Warehouse_Application
                     ModifyingProductDelivery(product, employee, products, index);
                     Program.JsonFileRecord(products);
                 }
-                else if (id == "0")
-                    answer = true;
                 else if (!products.Any(x => x.Id == id))
-                { 
+                {
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("This id is not in our database\n\n1. Add product with new ID\n2. Write another Id\n\nNumber: ");
+                        Console.Write("This id is not in our database\n\n1. Add product with new ID\n2. Write another ID\n\nNumber: ");
                         string answerId = Console.ReadLine();
                         switch (answerId)
                         {
                             case "1":
-                                Utils.AddingProduct(products, employee);
+                                Utils.AddingProduct(products, employee, true);
                                 Program.JsonFileRecord(products);
                                 break;
                             case "2":
@@ -378,7 +377,7 @@ namespace Warehouse_Application
                     Console.ReadKey();
                 }
 
-            } while (!answer);
+            } while (true);
         }  // adding new Product to list or changing quantity/ price of product
         private static void ModifyingProductDelivery(Product product, Employee employee,List<Product> products, int index)
         {

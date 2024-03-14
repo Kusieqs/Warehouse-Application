@@ -717,12 +717,18 @@ namespace Warehouse_Application
         }// Saving to excel file
         private static void JsonCreater(List<Product> products)
         {
-            string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string fileName = Utils.NameFile();
-            string path = Path.Combine(systemOp, "WareHouse", fileName + ".json");
-            string json = JsonConvert.SerializeObject(products);
-            File.WriteAllText(path, json);
-
+            if(products.Count < 0)
+                Console.WriteLine("List is empty!\nClick enter to continue");
+            else
+            {
+                string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string fileName = Utils.NameFile();
+                string path = Path.Combine(systemOp, "WareHouse", fileName + ".json");
+                string json = JsonConvert.SerializeObject(products);
+                File.WriteAllText(path, json);
+                Console.WriteLine("File was saved.\nClick enter to continue");
+                Console.ReadKey();
+            }
         } // Saving to json file
     }
 }

@@ -61,7 +61,10 @@ namespace Warehouse_Application
                     Console.Clear();
                     Console.WriteLine($"Position: {employee.Position}");
 
-                    NewEmployeeInformation(employee, employees, firsTime);
+                    string jsonReader = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
+                    employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
+
+                    NewEmployeeInformation(employee,employees, firsTime);
 
                     break;
 
@@ -74,14 +77,15 @@ namespace Warehouse_Application
 
 
         } /// adding new employee to list
-        public static void ChoosingEmployee(List<Employee> employees, ref Employee employee, bool firstTime)
+        public static void ChoosingEmployee(ref List<Employee> employees, ref Employee employee, bool firstTime)
         {
             do
             {
                 try
                 {
+                    string readerFile = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
                     Console.Clear();
-                    if (string.IsNullOrEmpty(File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"))))
+                    if (string.IsNullOrEmpty(readerFile) || readerFile =="[]")
                     {
                         Console.ForegroundColor = ConsoleColor.DarkBlue;
                         Console.WriteLine("Welcome to warehouse app. Please provide information for the main admin");
@@ -92,9 +96,11 @@ namespace Warehouse_Application
 
                         NewEmployeeInformation(employee,employees, firstTime);
                     }
-
+                    readerFile = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WareHouse", "Employee.json"));
+                    employees = JsonConvert.DeserializeObject<List<Employee>>(readerFile);
                     int line = 1;
                     Console.Clear();
+
                     foreach (var worker in employees)
                     {
                         Console.WriteLine($"{line}. {worker.Name} {worker.LastName} {worker.Position}");
@@ -104,7 +110,7 @@ namespace Warehouse_Application
                     Console.Write("\nNumber: ");
                     bool correctNumber = int.TryParse(Console.ReadLine(), out int number);
 
-                    if (!correctNumber || employees.Count < number)
+                    if (!correctNumber || employees.Count < number || number < 0)
                         continue;
                     else if (number == 0)
                         Environment.Exit(0);
@@ -133,7 +139,7 @@ namespace Warehouse_Application
                 }
             } while (true);
         }/// Setting first admin or choosing employee
-        public static void MenuOfEmployee(List<Employee> listEmployees)
+        public static void MenuOfEmployee(List<Employee> listEmployees, string id)
         {
             do
             {
@@ -145,7 +151,7 @@ namespace Warehouse_Application
                     switch (answer)
                     {
                         case "1":
-                            RemovingEmployee(listEmployees);
+                            RemovingEmployee(listEmployees,id);
                             break;
                         case "2":
                             EmployeeModifying(listEmployees);
@@ -174,7 +180,7 @@ namespace Warehouse_Application
         private static void NewEmployeeInformation(Employee employee,List<Employee> employees, bool firsTime)
         {
             Console.Write($"Name: ");
-            string name = Console.ReadLine();
+            string name = Console.ReadLine().Trim();
             if (Regex.IsMatch(name, @"^[A-Za-z]+$"))
             {
                 name = name.ToLower();
@@ -186,7 +192,7 @@ namespace Warehouse_Application
 
 
             Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
+            string lastName = Console.ReadLine().Trim();
             if (Regex.IsMatch(lastName, @"^[A-Za-z]+$"))
             {
                 lastName = lastName.ToLower();
@@ -197,7 +203,7 @@ namespace Warehouse_Application
                 throw new FormatException("Wrong last name format");
             
             Console.Write("Id (3 chars): ");
-            string id = Console.ReadLine();
+            string id = Console.ReadLine().Trim();
 
             if(Regex.IsMatch(id, @"^[A-Za-z0-9]+$") && !employees.Any(x => x.Id == id))
                 employee.Id = id;
@@ -242,35 +248,16 @@ namespace Warehouse_Application
             else
                 employee.mainAccount = false;
 
-            string json;
-            List<Employee> firsTimeList = new List<Employee>();
 
             Console.Clear();
             Console.WriteLine($"WRITE DOWN THIS INFORMATION:\n\nLogin: {employee.Login}\nPassword: {employee.Password}\n\n\nClick enter to continue");
             Console.ReadKey();
 
+
+            employees.Add(employee);
             string systemOp = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            if (firsTime)
-            {
-                firsTimeList.Add(employee);
-                json = JsonConvert.SerializeObject(firsTimeList);
-            }
-            else if(string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"))))
-            {
-                List<Employee> employees1 = new List<Employee>();
-                employees1.Add(employee);
-                json = JsonConvert.SerializeObject(employees1);
-            }
-            else
-            {
-                employees.Add(employee);
-                json = JsonConvert.SerializeObject(employees);
-            }
-
+            string json = JsonConvert.SerializeObject(employees);
             File.WriteAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"), json);
-
-            string jsonReader = File.ReadAllText(Path.Combine(systemOp, "WareHouse", "Employee.json"));
-            employees = JsonConvert.DeserializeObject<List<Employee>>(jsonReader);
 
         } /// Adding informations do new Employee 
         private static void EmployeeModifyingData(ref Employee employee, List<Employee> employees)
@@ -400,7 +387,7 @@ namespace Warehouse_Application
                 employee = copy;
 
         } // Changing informations about employee
-        private static void RemovingEmployee(List<Employee> listEmployees)
+        private static void RemovingEmployee(List<Employee> listEmployees,string id)
         {
             bool correctNumber = false;
 
@@ -421,6 +408,10 @@ namespace Warehouse_Application
 
                 if (correctNumber && number == 0)
                     break;
+                else if(id == listEmployees[number - 1].Id)
+                {
+                    throw new FormatException("You can't delete your account");
+                }
                 else if ((correctNumber && number > 0 && number <= count)&&(!listEmployees[number - 1].mainAccount && listEmployees.Count > 1))
                 {
                     Console.Clear();
@@ -431,7 +422,7 @@ namespace Warehouse_Application
                         listEmployees.RemoveAt(number - 1);
                         string system = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                         string json = JsonConvert.SerializeObject(listEmployees);
-                        File.WriteAllText(system, json);
+                        File.WriteAllText(Path.Combine(system,"WareHouse","Employee.json"), json);
                     }
                     else
                         continue;
@@ -468,7 +459,7 @@ namespace Warehouse_Application
             } while (true);
 
         }// Deleting employee
-        public static void EmployeeModifying(List<Employee> listEmployees)
+        private static void EmployeeModifying(List<Employee> listEmployees)
         {
             do
             {
@@ -497,9 +488,8 @@ namespace Warehouse_Application
                     listEmployees[number - 1] = employee;
 
                     string system = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    system = Path.Combine(system, "WareHouse", "Employee.json");
                     string json = JsonConvert.SerializeObject(listEmployees);
-                    File.WriteAllText(system, json);
+                    File.WriteAllText(Path.Combine(system, "WareHouse", "Employee.json"), json);
                 }
             } while (true);
         }// Modifying employee
